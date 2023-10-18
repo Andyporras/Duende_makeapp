@@ -1,0 +1,10 @@
+vs_project/duendeMakeApp/.vs
+vs_project/duendeMakeApp/duendeMakeApp/bin/
+vs_project/duendeMakeApp/duendeMakeApp/Properties/
+vs_project/duendeMakeApp/duendeMakeApp/wwwroot/
+vs_project/duendeMakeApp/duendeMakeApp/*.json
+vs_project/duendeMakeApp/duendeMakeApp/*.csproj
+.vs
+vs_project/duendeMakeApp/duendeMakeApp/obj/
+vs_project/duendeMakeApp/bin/Debug/
+vs_project/duendeMakeApp/obj/Debug/

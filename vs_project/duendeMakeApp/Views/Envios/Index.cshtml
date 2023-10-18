@@ -1,0 +1,59 @@
+﻿@model IEnumerable<duendeMakeApp.Models.Envio>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaPedido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaEntrega)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Carrito)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Direccion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaPedido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaEntrega)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Carrito.CarritoId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Direccion.DireccionId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estado.EstadoId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.EnvioId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.EnvioId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.EnvioId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

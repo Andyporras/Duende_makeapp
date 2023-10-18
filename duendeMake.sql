@@ -274,7 +274,6 @@ CREATE TABLE PaqueteXCarrito (
 
 ----------------------------------------------------------------- PROCEDIMIENTOS ALMACENADOS
 CREATE PROCEDURE InsertarCategoria
-    @CategoriaID INT,
     @Nombre VARCHAR(100)
 AS
 BEGIN
@@ -285,14 +284,13 @@ BEGIN
         RETURN;
     END
 
-    INSERT INTO Categoria (CategoriaID, Nombre)
-    VALUES (@CategoriaID, @Nombre);
+    INSERT INTO Categoria (Nombre)
+    VALUES (@Nombre);
     PRINT 'Registro insertado exitosamente.';
 END;
 GO
 
 CREATE PROCEDURE InsertarProducto 
-    @ProductoID INT,
     @Nombre VARCHAR(100),
     @Descripcion VARCHAR(100),
     @Precio DECIMAL(10, 2),
@@ -314,15 +312,14 @@ BEGIN
         RETURN;
     END
 
-    INSERT INTO Producto (ProductoID, Nombre, Descripcion, Precio, Cantidad, CategoriaID, Estado)
-    VALUES (@ProductoID, @Nombre, @Descripcion, @Precio, @Cantidad, @CategoriaID, @Estado);
+    INSERT INTO Producto (Nombre, Descripcion, Precio, Cantidad, CategoriaID, Estado)
+    VALUES (@Nombre, @Descripcion, @Precio, @Cantidad, @CategoriaID, @Estado);
 
     PRINT 'Registro insertado exitosamente.';
 END;
 GO
 
 CREATE PROCEDURE InsertarImagen
-    @ImagenID INT,
     @Nombre VARCHAR(30),
     @Descripcion VARCHAR(100),
     @Url VARCHAR(100)
@@ -334,15 +331,14 @@ BEGIN
         RETURN;
     END
 
-    INSERT INTO Imagen (ImagenID, Nombre, Descripcion, Url)
-    VALUES (@ImagenID, @Nombre, @Descripcion, @Url);
+    INSERT INTO Imagen (Nombre, Descripcion, Url)
+    VALUES (@Nombre, @Descripcion, @Url);
 
     PRINT 'Registro insertado exitosamente.';
 END;
 GO
 
 CREATE PROCEDURE InsertarTag 
-    @TagID INT,
     @Nombre VARCHAR(20)
 AS
 BEGIN
@@ -352,15 +348,14 @@ BEGIN
         RETURN;
     END
 
-    INSERT INTO Tag (TagID, Nombre)
-    VALUES (@TagID, @Nombre);
+    INSERT INTO Tag (Nombre)
+    VALUES (@Nombre);
 
     PRINT 'Registro insertado exitosamente.';
 END;
 GO
 
 CREATE PROCEDURE InsertarSubcategoria
-    @SubcategoriaID INT,
     @Nombre VARCHAR(50)
 AS
 BEGIN
@@ -370,15 +365,14 @@ BEGIN
         RETURN;
     END
 
-    INSERT INTO Subcategoria (SubcategoriaID, Nombre)
-    VALUES (@SubcategoriaID, @Nombre);
+    INSERT INTO Subcategoria (Nombre)
+    VALUES (@Nombre);
 
     PRINT 'Registro insertado exitosamente.';
 END;
 GO
 
 CREATE PROCEDURE insertarPaquete
-    @PaqueteID INT,
     @Nombre VARCHAR(100),
     @Descripcion VARCHAR(100),
     @Precio DECIMAL(10, 2),
@@ -392,15 +386,14 @@ BEGIN
         RETURN;
     END
 
-    INSERT INTO Paquete (PaqueteID, Nombre, Descripcion, Precio, CantidadDisponible, Estado)
-    VALUES (@PaqueteID, @Nombre, @Descripcion, @Precio, @CantidadDisponible, @Estado);
+    INSERT INTO Paquete (Nombre, Descripcion, Precio, CantidadDisponible, Estado)
+    VALUES (@Nombre, @Descripcion, @Precio, @CantidadDisponible, @Estado);
 
     PRINT 'Registro insertado exitosamente.';
 END;
 GO
 
 CREATE PROCEDURE InsertarCatalogo
-    @CatalogoID INT,
     @Nombre VARCHAR(100),
     @Descripcion VARCHAR(100),
     @Estado bit
@@ -412,15 +405,14 @@ BEGIN
         RETURN;
     END
 
-    INSERT INTO Catalogo (CatalogoID, Nombre, Descripcion, Estado)
-    VALUES (@CatalogoID, @Nombre, @Descripcion, @Estado);
+    INSERT INTO Catalogo (Nombre, Descripcion, Estado)
+    VALUES (@Nombre, @Descripcion, @Estado);
 
     PRINT 'Registro insertado exitosamente.';
 END;
 GO
 
 CREATE PROCEDURE InsertarDireccion
-    @DireccionID INT,
     @ProvinciaiD VARCHAR(20),
     @Detalle VARCHAR(20)
 AS
@@ -430,15 +422,14 @@ BEGIN
         PRINT 'El DireccionID ya existe. No se puede insertar el registro.';
         RETURN;
     END
-    INSERT INTO Direccion (DireccionID, ProvinciaiD, Detalle)
-    VALUES (@DireccionID, @ProvinciaiD, @Detalle);
+    INSERT INTO Direccion (ProvinciaiD, Detalle)
+    VALUES (@ProvinciaiD, @Detalle);
 
     PRINT 'Registro insertado exitosamente.';
 END;
 GO
 
 CREATE PROCEDURE InsertarEstado
-    @EstadoID INT,
     @Estado VARCHAR(20)
 AS
 BEGIN
@@ -448,8 +439,8 @@ BEGIN
         RETURN;
     END
 
-    INSERT INTO Estado (EstadoID, Estado)
-    VALUES (@EstadoID, @Estado);
+    INSERT INTO EstadoEnvio(Estado)
+    VALUES (@Estado);
 
     PRINT 'Registro insertado exitosamente.';
 END;
@@ -457,7 +448,6 @@ END;
 
 GO
 CREATE PROCEDURE InsertarEnvio
-    @EnvioID INT,
     @FechaPedido date,
     @FechaEntrega date,
     @EstadoID INT,
@@ -489,8 +479,8 @@ BEGIN
         RETURN;
     END
 
-    INSERT INTO Envio (EnvioID, FechaPedido, FechaEntrega, EstadoID, CarritoID, DireccionID)
-    VALUES (@EnvioID, @FechaPedido, @FechaEntrega, @EstadoID, @CarritoID, @DireccionID);
+    INSERT INTO Envio (FechaPedido, FechaEntrega, EstadoID, CarritoID, DireccionID)
+    VALUES (@FechaPedido, @FechaEntrega, @EstadoID, @CarritoID, @DireccionID);
 
     PRINT 'Registro insertado exitosamente.';
 END;
@@ -498,7 +488,6 @@ END;
 
 GO
 CREATE PROCEDURE agregarCarrito
-    @CarritoID INT,
     @UsuarioID INT
 AS
 BEGIN
@@ -514,8 +503,8 @@ BEGIN
         RETURN;
     END
 
-    INSERT INTO Carrito (CarritoID, UsuarioID)
-    VALUES (@CarritoID, @UsuarioID);
+    INSERT INTO Carrito (UsuarioID)
+    VALUES (@UsuarioID);
 
     PRINT 'Registro insertado exitosamente.';
 END;
@@ -675,7 +664,6 @@ END;
 
 GO
 CREATE PROCEDURE InsertarMaquillaje
-    @MaquillajeID INT,
     @Nombre VARCHAR(30),
     @Descripcion VARCHAR(100),
     @Estado bit
@@ -687,8 +675,8 @@ BEGIN
         RETURN;
     END
 
-    INSERT INTO Maquillaje (MaquillajeID, Nombre, Descripcion, Estado)
-    VALUES (@MaquillajeID, @Nombre, @Descripcion, @Estado);
+    INSERT INTO Maquillaje (Nombre, Descripcion, Estado)
+    VALUES (@Nombre, @Descripcion, @Estado);
 
     PRINT 'Registro insertado exitosamente.';
 END;
@@ -854,6 +842,5 @@ BEGIN
 
     PRINT 'Registro eliminado exitosamente.';
 END;
-
 
 

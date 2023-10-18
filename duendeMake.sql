@@ -1,228 +1,275 @@
---create database DUENDEAPP
---go
+-- CREACIÓN DE LA BASE DE DATOS EN CASO DE NO EXISTIR
+USE master
+GO
+IF NOT EXISTS (
+    SELECT name
+    FROM sys.databases
+    WHERE name = N'DUENDEAPP'
+)
+CREATE DATABASE DUENDEAPP
+GO
+USE DUENDEAPP
+GO
 
-
---use DUENDEAPP
---go
-
-
-
+-- CREACIÓN DE TABLAS SI NO EXISTEN
+-- DROP TABLE Imagen;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Imagen' and xtype='U')
 CREATE TABLE Imagen (
-    ImagenID INT PRIMARY KEY,
-    Nombre VARCHAR(30),
+    ImagenID INT,
+    Nombre VARCHAR(50),
     Descripcion VARCHAR(100),
-    Url VARCHAR(100)
+    Url VARCHAR(100),
+    CONSTRAINT pk_imagen PRIMARY KEY (ImagenID)
 );
 
-CREATE TABLE TipoUsuario (
-    TipoUsarioID INT PRIMARY KEY,
-    Tipo VARCHAR(100).
-);
-
-CREATE TABLE Categoria (
-    CategoriaID INT PRIMARY KEY,
-    Nombre VARCHAR(100)
-
-);
-
-CREATE TABLE Subcategoria(
-    SubcategoriaID INT PRIMARY KEY,
-    Nombre VARCHAR(50)
-);
-
-
+-- DROP TABLE Maquillaje;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Maquillaje' AND xtype='U')
 CREATE TABLE Maquillaje(
-    MaquillajeID INT PRIMARY KEY,
+    MaquillajeID INT,
     Nombre VARCHAR(30),
     Descripcion VARCHAR(100),
-    Estado bit
+    Estado bit,
+    CONSTRAINT pk_maquillaje PRIMARY KEY (MaquillajeID)
 );
 
+-- DROP TABLE Tag;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Tag' AND xtype='U')
+CREATE TABLE Tag (
+    TagID INT,
+    Nombre VARCHAR(20),
 
+    CONSTRAINT pk_tag PRIMARY KEY (TagID)
+);
+
+-- DROP TABLE Categoria;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Categoria' AND xtype='U')
+CREATE TABLE Categoria (
+    CategoriaID INT,
+    Nombre VARCHAR(100),
+    CONSTRAINT pk_categoria PRIMARY KEY (CategoriaID)
+);
+
+-- DROP TABLE Provincia;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Provincia' AND xtype='U')
+CREATE TABLE Provincia (
+    ProvinciaID INT,
+    Nombre VARCHAR(15),
+    CONSTRAINT pk_provincia PRIMARY KEY (ProvinciaID)
+);
+
+-- DROP TABLE EstadoEnvio;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='EstadoEnvio' AND xtype='U')
+CREATE TABLE EstadoEnvio(
+    EstadoID INT,
+    Estado VARCHAR(20),
+    CONSTRAINT pk_estado PRIMARY KEY (EstadoID)
+);
+
+-- DROP TABLE Catalogo;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Catalogo' AND xtype='U')
+CREATE TABLE Catalogo (
+    CatalogoID INT,
+    Nombre VARCHAR(30),
+    Descripcion VARCHAR(100),
+    Estado bit,
+
+    CONSTRAINT pk_catalogo PRIMARY KEY (CatalogoID)
+);
+
+-- DROP TABLE Paquete;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Paquete' AND xtype='U')
+CREATE TABLE Paquete (
+    PaqueteID INT,
+    Nombre VARCHAR(100),
+    Descripcion VARCHAR(100),
+    Precio DECIMAL(10, 2),
+    CantidadDisponible INT, 
+    Estado bit,
+
+    CONSTRAINT pk_paquete PRIMARY KEY (PaqueteID)
+);
+GO
+
+-- DROP TABLE TipoUsuario;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='TipoUsuario' AND xtype='U')
+CREATE TABLE TipoUsuario (
+    TipoUsarioID INT,
+    Tipo VARCHAR(100),
+    CONSTRAINT pk_tipoUsuario PRIMARY KEY (TipoUsarioID)
+);
+
+-- DROP TABLE Subcategoria;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Subcategoria' AND xtype='U')
+CREATE TABLE Subcategoria(
+    SubcategoriaID INT,
+    Nombre VARCHAR(50),
+    CONSTRAINT pk_subcategoria PRIMARY KEY (SubcategoriaID)
+);
+
+-- DROP TABLE Usuario;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Usuario' AND xtype='U')
+CREATE TABLE Usuario (
+    UsuarioID INT,
+    Nombre VARCHAR(20),
+    Apellido VARCHAR(50),
+    Correo VARCHAR(50),
+    Usuario VARCHAR(20),
+    clave VARCHAR(500),
+    TipoID INT
+    CONSTRAINT pk_usuario PRIMARY key (UsuarioID),
+    CONSTRAINT fk_tipo FOREIGN KEY (TipoID)
+        REFERENCES TipoUsuario(TipoUsarioID)
+);
+
+-- DROP TABLE Carrito;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Carrito' AND xtype='U')
+CREATE TABLE Carrito (
+    CarritoID INT,
+    UsuarioID INT,
+    CONSTRAINT pk_carrito PRIMARY KEY (CarritoID),
+    CONSTRAINT fk_usuario FOREIGN KEY (UsuarioID)
+        REFERENCES Usuario(UsuarioID)
+);
+
+-- DROP TABLE Producto;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Producto' AND xtype='U')
 CREATE TABLE Producto (
-    ProductoID INT PRIMARY KEY,
+    ProductoID INT,
     Nombre VARCHAR(30),
     Descripcion VARCHAR(200),
     Precio DECIMAL(10, 2),
     Cantidad INT,
 	CategoriaID INT,
     Estado bit,
-    Imagen VARCHAR(100),
-	CONSTRAINT FK_CategoriaID FOREIGN KEY (CategoriaID)
-    REFERENCES Categoria(CategoriaID)
+    ImagenID INT,
+    CONSTRAINT pk_producto PRIMARY KEY (ProductoID),
+	CONSTRAINT fk_categoria FOREIGN KEY (CategoriaID)
+        REFERENCES Categoria(CategoriaID),
+	CONSTRAINT fk_imagen FOREIGN KEY (ImagenID)
+		REFERENCES Imagen(ImagenID)
 );
 
-
-CREATE TABLE Catalogo (
-    CatalogoID INT PRIMARY KEY,
-    Nombre VARCHAR(30),
-    Descripcion VARCHAR(100),
-    Estado bit
-);
-
-CREATE TABLE Paquete (
-    PaqueteID INT PRIMARY KEY,
-    Nombre VARCHAR(100),
-    Descripcion VARCHAR(100),
-    Precio DECIMAL(10, 2),
-    CantidadDisponible INT, 
-    Estado bit
-);
-
-CREATE TABLE Tag (
-    TagID INT PRIMARY KEY,
-    Nombre VARCHAR(20)       
-);
-
-
-
-CREATE TABLE Estado(
-    EstadoID INT PRIMARY KEY,
-    Estado VARCHAR(20)
-);
-
-CREATE TABLE Provincia (
-    ProvinciaID INT PRIMARY KEY,
-    Nombre VARCHAR(15)
-);
-
-
-CREATE TABLE Direccion (
-    DireccionID INT PRIMARY KEY,
-    Provincia VARCHAR(20),
-    CodigoPostal INT,
-    Detalle VARCHAR(100),
-    ProvinciaID INT,
-    CONSTRAINT FK_ProvinciaID FOREIGN KEY (ProvinciaID)
-        REFERENCES Provincia(ProvinciaID)
-);
-
-CREATE TABLE Usuario (
-    UsuarioID INT PRIMARY KEY,
-    Nombre VARCHAR(20),
-    Apellido VARCHAR(50),
-    Correo VARCHAR(50),
-    Usuario VARCHAR(20),
-    clave VARCHAR(500),
-    TipoID INT,
-    CONSTRAINT FK_TipoID FOREIGN KEY (TipoID)
-        REFERENCES TipoUsuario(TipoUsarioID)
-);
-
-
-
-CREATE TABLE Carrito (
-    CarritoID INT PRIMARY KEY,
-    UsuarioID INT,
-    CONSTRAINT FK_UsuarioID FOREIGN KEY (UsuarioID)
-        REFERENCES Usuario(UsuarioID)
-);
-
-
+-- DROP TABLE Venta;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Venta' AND xtype='U')
 CREATE TABLE Venta (
     VentaID INT PRIMARY KEY,
-    imgComprobante VARCHAR(50),
-    CarritoID INT
-    CONSTRAINT FK_CarritoID FOREIGN KEY (CarritoID)
-        REFERENCES Carrito(CarritoID)
-);
-
-
-CREATE TABLE ProductosXCatalogo (
-    ProductoID INT,
-    CatalogoID INT,
-    PRIMARY KEY (ProductoID, CatalogoID),
-    FOREIGN KEY (ProductoID) REFERENCES Producto(ProductoID),
-    FOREIGN KEY (CatalogoID) REFERENCES Catalogo(CatalogoID)
-);
-
-CREATE TABLE ProductosXPaquete (
-    ProductoID INT,
-    PaqueteID INT,
-    PRIMARY KEY (ProductoID, PaqueteID),
-    FOREIGN KEY (ProductoID) REFERENCES Producto(ProductoID),
-    FOREIGN KEY (PaqueteID) REFERENCES Paquete(PaqueteID)
-);
-
-
-CREATE TABLE PaqueteXCatalogo (
-    PaqueteID INT,
-    CatalogoID INT,
-    PRIMARY KEY (PaqueteID, CatalogoID),
-    FOREIGN KEY (PaqueteID) REFERENCES Paquete(PaqueteID),
-    FOREIGN KEY (CatalogoID) REFERENCES Catalogo(CatalogoID)
-);    
-
-
-CREATE TABLE PaqueteXCarrito (
-    PaqueteID INT,
+    imgComprobante int,
     CarritoID INT,
-    PRIMARY KEY (PaqueteID, CarritoID),
-    FOREIGN KEY (PaqueteID) REFERENCES Paquete(PaqueteID),
-    FOREIGN KEY (CarritoID) REFERENCES Carrito(CarritoID)
-);    
+    CONSTRAINT fk_carrito FOREIGN KEY (CarritoID)
+        REFERENCES Carrito(CarritoID),
+	CONSTRAINT fk_comprobante FOREIGN KEY (imgComprobante)
+		REFERENCES Imagen(ImagenID)
+);
 
-
-CREATE TABLE SubcategoriaXProducto (
-    SubcategoriaID INT,
-    ProductoID INT,
-    PRIMARY KEY (SubcategoriaID, ProductoID),
-    FOREIGN KEY (SubcategoriaID) REFERENCES Subcategoria(SubcategoriaID),
-    FOREIGN KEY (ProductoID) REFERENCES Producto(ProductoID)
-);    
-
-
-CREATE TABLE ProductosXCarrito (
-    ProductoID INT,
-    CarritoID INT,
-    PRIMARY KEY (ProductoID, CarritoID),
-    FOREIGN KEY (ProductoID) REFERENCES Producto(ProductoID),
-    FOREIGN KEY (CarritoID) REFERENCES Carrito(CarritoID)
-);    
-
-
-CREATE TABLE ImagenXProducto (
-    ImagenID INT,
-    ProductoID INT,
-    PRIMARY KEY (ImagenID, ProductoID),
-    FOREIGN KEY (ImagenID) REFERENCES Imagen(ImagenID),
-    FOREIGN KEY (ProductoID) REFERENCES Producto(ProductoID)
-);    
-
-
-
-CREATE TABLE TagsXImagen (
-    TagID INT,
-    ImagenID INT,
-    PRIMARY KEY (TagID, ImagenID),
-    FOREIGN KEY (TagID) REFERENCES Tag(TagID),
-    FOREIGN KEY (ImagenID) REFERENCES Imagen(ImagenID)
-);    
-
-
-
+-- DROP TABLE imagenesXmaquillaje;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='imagenesXmaquillaje' AND xtype='U')
 CREATE TABLE imagenesXmaquillaje (
     ImagenID INT,
     MaquillajeID INT,
     PRIMARY KEY (ImagenID, MaquillajeID),
-    FOREIGN KEY (ImagenID) REFERENCES Imagen(ImagenID),
-    FOREIGN KEY (MaquillajeID) REFERENCES Maquillaje(MaquillajeID)
+    CONSTRAINT fk_imagenesXmaquillaje_imagen FOREIGN KEY (ImagenID) REFERENCES Imagen(ImagenID),
+    CONSTRAINT fk_imagenesXmaquillaje_maquillaje FOREIGN KEY (MaquillajeID) REFERENCES Maquillaje(MaquillajeID)
 );
 
+-- DROP TABLE TagsXImagen;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='TagsXImagen' AND xtype='U')
+CREATE TABLE TagsXImagen (
+    TagID INT,
+    ImagenID INT,
+    PRIMARY KEY (TagID, ImagenID),
+    CONSTRAINT fk_tagsXimagen_tag FOREIGN KEY (TagID) REFERENCES Tag(TagID),
+    CONSTRAINT fk_tagsXimagen_imagen FOREIGN KEY (ImagenID) REFERENCES Imagen(ImagenID)
+);
+
+-- DROP TABLE Direccion;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Direccion' AND xtype='U')
+CREATE TABLE Direccion (
+    DireccionID INT,
+    CodigoPostal INT,
+    Detalle VARCHAR(100),
+    ProvinciaID INT,
+    CONSTRAINT pk_direccion PRIMARY KEY (DireccionID),
+    CONSTRAINT fk_provincia FOREIGN KEY (ProvinciaID)
+        REFERENCES Provincia(ProvinciaID)
+);
+
+-- DROP TABLE Envio;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Envio' AND xtype='U')
 CREATE TABLE Envio (
-    EnvioID INT PRIMARY KEY,
+    EnvioID INT,
     FechaPedido date,
     FechaEntrega date,
     EstadoID INT,
     CarritoID INT,
     DireccionID INT,
-    FOREIGN KEY (EstadoID) REFERENCES Estado(EstadoID),
-    FOREIGN KEY (CarritoID) REFERENCES Carrito(CarritoID),
-    FOREIGN KEY (DireccionID) REFERENCES Direccion(DireccionID)
+    CONSTRAINT pk_envio PRIMARY KEY (EnvioID),
+    CONSTRAINT fk_envio_estado FOREIGN KEY (EstadoID) REFERENCES EstadoEnvio(EstadoID),
+    CONSTRAINT fk_envio_carrito FOREIGN KEY (CarritoID) REFERENCES Carrito(CarritoID),
+    CONSTRAINT fk_envio_direccion FOREIGN KEY (DireccionID) REFERENCES Direccion(DireccionID)
+);
+
+-- DROP TABLE SubcategoriaXProducto;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='SubcategoriaXProducto' AND xtype='U')
+CREATE TABLE SubcategoriaXProducto (
+    SubcategoriaID INT,
+    ProductoID INT,
+    PRIMARY KEY (SubcategoriaID, ProductoID),
+    CONSTRAINT fk_subcategoriaXproducto_subcategoria FOREIGN KEY (SubcategoriaID) REFERENCES Subcategoria(SubcategoriaID),
+    CONSTRAINT fk_subcategoriaXproducto_producto FOREIGN KEY (ProductoID) REFERENCES Producto(ProductoID)
+);
+
+-- DROP TABLE ProductosXCarrito;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='ProductosXCarrito' AND xtype='U')
+CREATE TABLE ProductosXCarrito (
+    ProductoID INT,
+    CarritoID INT,
+    PRIMARY KEY (ProductoID, CarritoID),
+    CONSTRAINT fk_productosXcarrito_producto FOREIGN KEY (ProductoID) REFERENCES Producto(ProductoID),
+    CONSTRAINT fk_productosXcarrito_carrito FOREIGN KEY (CarritoID) REFERENCES Carrito(CarritoID)
+);    
+
+-- DROP TABLE ProductosXCatalogo;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='ProductosXCatalogo' AND xtype='U')
+CREATE TABLE ProductosXCatalogo (
+    ProductoID INT,
+    CatalogoID INT,
+    PRIMARY KEY (ProductoID, CatalogoID),
+    CONSTRAINT fk_productosXcatalogo_producto FOREIGN KEY (ProductoID) REFERENCES Producto(ProductoID),
+    CONSTRAINT fk_productosXcatalogo_catalogo FOREIGN KEY (CatalogoID) REFERENCES Catalogo(CatalogoID)
+);
+
+-- DROP TABLE ProductosXPaquete;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='ProductosXPaquete' AND xtype='U')
+CREATE TABLE ProductosXPaquete (
+    ProductoID INT,
+    PaqueteID INT,
+    PRIMARY KEY (ProductoID, PaqueteID),
+    CONSTRAINT fk_productosXpaquete_producto FOREIGN KEY (ProductoID) REFERENCES Producto(ProductoID),
+    CONSTRAINT fk_productosXpaquete_paquete FOREIGN KEY (PaqueteID) REFERENCES Paquete(PaqueteID)
+);
+
+-- DROP TABLE PaqueteXCatalogo;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='PaqueteXCatalogo' AND xtype='U')
+CREATE TABLE PaqueteXCatalogo (
+    PaqueteID INT,
+    CatalogoID INT,
+    PRIMARY KEY (PaqueteID, CatalogoID),
+    CONSTRAINT fk_paquetesXcatalogo_paquete FOREIGN KEY (PaqueteID) REFERENCES Paquete(PaqueteID),
+    CONSTRAINT fk_paquetesXcatalogo_catalogo FOREIGN KEY (CatalogoID) REFERENCES Catalogo(CatalogoID)
 );    
 
 
-GO
+-- DROP TABLE PaqueteXCarrito;
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='PaqueteXCarrito' AND xtype='U')
+CREATE TABLE PaqueteXCarrito (
+    PaqueteID INT,
+    CarritoID INT,
+    PRIMARY KEY (PaqueteID, CarritoID),
+    CONSTRAINT fk_paqueteXcarrito_paquete FOREIGN KEY (PaqueteID) REFERENCES Paquete(PaqueteID),
+    CONSTRAINT fk_paqueteXcarrito_carrito FOREIGN KEY (CarritoID) REFERENCES Carrito(CarritoID)
+);
+
+----------------------------------------------------------------- PROCEDIMIENTOS ALMACENADOS
 CREATE PROCEDURE InsertarCategoria
     @CategoriaID INT,
     @Nombre VARCHAR(100)
@@ -239,9 +286,8 @@ BEGIN
     VALUES (@CategoriaID, @Nombre);
     PRINT 'Registro insertado exitosamente.';
 END;
-
-
 GO
+
 CREATE PROCEDURE InsertarProducto 
     @ProductoID INT,
     @Nombre VARCHAR(100),
@@ -249,7 +295,7 @@ CREATE PROCEDURE InsertarProducto
     @Precio DECIMAL(10, 2),
     @Cantidad INT,
     @CategoriaID INT,
-    @Estado bit,
+    @Estado bit
 AS
 BEGIN
 
@@ -270,9 +316,8 @@ BEGIN
 
     PRINT 'Registro insertado exitosamente.';
 END;
-
-
 GO
+
 CREATE PROCEDURE InsertarImagen
     @ImagenID INT,
     @Nombre VARCHAR(30),
@@ -291,8 +336,8 @@ BEGIN
 
     PRINT 'Registro insertado exitosamente.';
 END;
-
 GO
+
 CREATE PROCEDURE InsertarTag 
     @TagID INT,
     @Nombre VARCHAR(20)
@@ -309,8 +354,8 @@ BEGIN
 
     PRINT 'Registro insertado exitosamente.';
 END;
-
 GO
+
 CREATE PROCEDURE InsertarSubcategoria
     @SubcategoriaID INT,
     @Nombre VARCHAR(50)
@@ -327,9 +372,8 @@ BEGIN
 
     PRINT 'Registro insertado exitosamente.';
 END;
-
-
 GO
+
 CREATE PROCEDURE insertarPaquete
     @PaqueteID INT,
     @Nombre VARCHAR(100),
@@ -350,9 +394,8 @@ BEGIN
 
     PRINT 'Registro insertado exitosamente.';
 END;
-
-
 GO
+
 CREATE PROCEDURE InsertarCatalogo
     @CatalogoID INT,
     @Nombre VARCHAR(100),
@@ -371,14 +414,11 @@ BEGIN
 
     PRINT 'Registro insertado exitosamente.';
 END;
-
-
 GO
+
 CREATE PROCEDURE InsertarDireccion
     @DireccionID INT,
-    @Provincia VARCHAR(20),
-    @Canton VARCHAR(20),
-    @Distrito VARCHAR(20),
+    @ProvinciaiD VARCHAR(20),
     @Detalle VARCHAR(20)
 AS
 BEGIN
@@ -387,16 +427,13 @@ BEGIN
         PRINT 'El DireccionID ya existe. No se puede insertar el registro.';
         RETURN;
     END
-
-    INSERT INTO Direccion (DireccionID, Provincia, Canton, Distrito, Detalle)
-    VALUES (@DireccionID, @Provincia, @Canton, @Distrito, @Detalle);
+    INSERT INTO Direccion (DireccionID, ProvinciaiD, Detalle)
+    VALUES (@DireccionID, @ProvinciaiD, @Detalle);
 
     PRINT 'Registro insertado exitosamente.';
 END;
-
-
-
 GO
+
 CREATE PROCEDURE InsertarEstado
     @EstadoID INT,
     @Estado VARCHAR(20)

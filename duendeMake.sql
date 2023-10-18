@@ -11,64 +11,83 @@ GO
 USE DUENDEAPP
 GO
 
+/*
+DROP TABLE Imagen;
+DROP TABLE Maquillaje;
+DROP TABLE Tag;
+DROP TABLE Categoria;
+DROP TABLE Provincia;
+DROP TABLE EstadoEnvio;
+DROP TABLE Catalogo;
+DROP TABLE Paquete;
+DROP TABLE TipoUsuario;
+DROP TABLE Subcategoria;
+DROP TABLE Usuario;
+DROP TABLE Carrito;
+DROP TABLE Producto;
+DROP TABLE Venta;
+DROP TABLE imagenesXmaquillaje;
+DROP TABLE TagsXImagen;
+DROP TABLE Direccion;
+DROP TABLE Envio;
+DROP TABLE SubcategoriaXProducto;
+DROP TABLE ProductosXCarrito;
+DROP TABLE ProductosXCatalogo;
+DROP TABLE ProductosXPaquete;
+DROP TABLE PaqueteXCatalogo;
+DROP TABLE PaqueteXCarrito;
+*/
 -- CREACIÓN DE TABLAS SI NO EXISTEN
--- DROP TABLE Imagen;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Imagen' and xtype='U')
 CREATE TABLE Imagen (
-    ImagenID INT,
+    ImagenID INT IDENTITY(1,1),
     Nombre VARCHAR(50),
     Descripcion VARCHAR(100),
     Url VARCHAR(100),
     CONSTRAINT pk_imagen PRIMARY KEY (ImagenID)
 );
 
--- DROP TABLE Maquillaje;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Maquillaje' AND xtype='U')
 CREATE TABLE Maquillaje(
-    MaquillajeID INT,
+    MaquillajeID INT IDENTITY(1,1),
     Nombre VARCHAR(30),
     Descripcion VARCHAR(100),
     Estado bit,
     CONSTRAINT pk_maquillaje PRIMARY KEY (MaquillajeID)
 );
 
--- DROP TABLE Tag;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Tag' AND xtype='U')
 CREATE TABLE Tag (
-    TagID INT,
+    TagID INT IDENTITY(1,1),
     Nombre VARCHAR(20),
 
     CONSTRAINT pk_tag PRIMARY KEY (TagID)
 );
 
--- DROP TABLE Categoria;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Categoria' AND xtype='U')
 CREATE TABLE Categoria (
-    CategoriaID INT,
+    CategoriaID INT IDENTITY(1,1),
     Nombre VARCHAR(100),
     CONSTRAINT pk_categoria PRIMARY KEY (CategoriaID)
 );
 
--- DROP TABLE Provincia;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Provincia' AND xtype='U')
 CREATE TABLE Provincia (
-    ProvinciaID INT,
+    ProvinciaID INT IDENTITY(1,1),
     Nombre VARCHAR(15),
     CONSTRAINT pk_provincia PRIMARY KEY (ProvinciaID)
 );
 
--- DROP TABLE EstadoEnvio;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='EstadoEnvio' AND xtype='U')
 CREATE TABLE EstadoEnvio(
-    EstadoID INT,
+    EstadoID INT IDENTITY(1,1),
     Estado VARCHAR(20),
     CONSTRAINT pk_estado PRIMARY KEY (EstadoID)
 );
 
--- DROP TABLE Catalogo;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Catalogo' AND xtype='U')
 CREATE TABLE Catalogo (
-    CatalogoID INT,
+    CatalogoID INT IDENTITY(1,1),
     Nombre VARCHAR(30),
     Descripcion VARCHAR(100),
     Estado bit,
@@ -76,10 +95,9 @@ CREATE TABLE Catalogo (
     CONSTRAINT pk_catalogo PRIMARY KEY (CatalogoID)
 );
 
--- DROP TABLE Paquete;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Paquete' AND xtype='U')
 CREATE TABLE Paquete (
-    PaqueteID INT,
+    PaqueteID INT IDENTITY(1,1),
     Nombre VARCHAR(100),
     Descripcion VARCHAR(100),
     Precio DECIMAL(10, 2),
@@ -90,26 +108,23 @@ CREATE TABLE Paquete (
 );
 GO
 
--- DROP TABLE TipoUsuario;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='TipoUsuario' AND xtype='U')
 CREATE TABLE TipoUsuario (
-    TipoUsarioID INT,
+    TipoUsarioID INT IDENTITY(1,1),
     Tipo VARCHAR(100),
     CONSTRAINT pk_tipoUsuario PRIMARY KEY (TipoUsarioID)
 );
 
--- DROP TABLE Subcategoria;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Subcategoria' AND xtype='U')
 CREATE TABLE Subcategoria(
-    SubcategoriaID INT,
+    SubcategoriaID INT IDENTITY(1,1),
     Nombre VARCHAR(50),
     CONSTRAINT pk_subcategoria PRIMARY KEY (SubcategoriaID)
 );
 
--- DROP TABLE Usuario;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Usuario' AND xtype='U')
 CREATE TABLE Usuario (
-    UsuarioID INT,
+    UsuarioID INT IDENTITY(1,1),
     Nombre VARCHAR(20),
     Apellido VARCHAR(50),
     Correo VARCHAR(50),
@@ -121,20 +136,18 @@ CREATE TABLE Usuario (
         REFERENCES TipoUsuario(TipoUsarioID)
 );
 
--- DROP TABLE Carrito;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Carrito' AND xtype='U')
 CREATE TABLE Carrito (
-    CarritoID INT,
+    CarritoID INT IDENTITY(1,1),
     UsuarioID INT,
     CONSTRAINT pk_carrito PRIMARY KEY (CarritoID),
     CONSTRAINT fk_usuario FOREIGN KEY (UsuarioID)
         REFERENCES Usuario(UsuarioID)
 );
 
--- DROP TABLE Producto;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Producto' AND xtype='U')
 CREATE TABLE Producto (
-    ProductoID INT,
+    ProductoID INT IDENTITY(1,1),
     Nombre VARCHAR(30),
     Descripcion VARCHAR(200),
     Precio DECIMAL(10, 2),
@@ -149,19 +162,18 @@ CREATE TABLE Producto (
 		REFERENCES Imagen(ImagenID)
 );
 
--- DROP TABLE Venta;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Venta' AND xtype='U')
 CREATE TABLE Venta (
-    VentaID INT PRIMARY KEY,
+    VentaID INT IDENTITY(1,1),
     imgComprobante int,
     CarritoID INT,
+    CONSTRAINT pk_ventaID PRIMARY KEY (VentaID),
     CONSTRAINT fk_carrito FOREIGN KEY (CarritoID)
         REFERENCES Carrito(CarritoID),
 	CONSTRAINT fk_comprobante FOREIGN KEY (imgComprobante)
 		REFERENCES Imagen(ImagenID)
 );
 
--- DROP TABLE imagenesXmaquillaje;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='imagenesXmaquillaje' AND xtype='U')
 CREATE TABLE imagenesXmaquillaje (
     ImagenID INT,
@@ -171,7 +183,6 @@ CREATE TABLE imagenesXmaquillaje (
     CONSTRAINT fk_imagenesXmaquillaje_maquillaje FOREIGN KEY (MaquillajeID) REFERENCES Maquillaje(MaquillajeID)
 );
 
--- DROP TABLE TagsXImagen;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='TagsXImagen' AND xtype='U')
 CREATE TABLE TagsXImagen (
     TagID INT,
@@ -181,10 +192,9 @@ CREATE TABLE TagsXImagen (
     CONSTRAINT fk_tagsXimagen_imagen FOREIGN KEY (ImagenID) REFERENCES Imagen(ImagenID)
 );
 
--- DROP TABLE Direccion;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Direccion' AND xtype='U')
 CREATE TABLE Direccion (
-    DireccionID INT,
+    DireccionID INT IDENTITY(1,1),
     CodigoPostal INT,
     Detalle VARCHAR(100),
     ProvinciaID INT,
@@ -193,10 +203,9 @@ CREATE TABLE Direccion (
         REFERENCES Provincia(ProvinciaID)
 );
 
--- DROP TABLE Envio;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Envio' AND xtype='U')
 CREATE TABLE Envio (
-    EnvioID INT,
+    EnvioID INT IDENTITY(1,1),
     FechaPedido date,
     FechaEntrega date,
     EstadoID INT,
@@ -208,7 +217,6 @@ CREATE TABLE Envio (
     CONSTRAINT fk_envio_direccion FOREIGN KEY (DireccionID) REFERENCES Direccion(DireccionID)
 );
 
--- DROP TABLE SubcategoriaXProducto;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='SubcategoriaXProducto' AND xtype='U')
 CREATE TABLE SubcategoriaXProducto (
     SubcategoriaID INT,
@@ -218,7 +226,6 @@ CREATE TABLE SubcategoriaXProducto (
     CONSTRAINT fk_subcategoriaXproducto_producto FOREIGN KEY (ProductoID) REFERENCES Producto(ProductoID)
 );
 
--- DROP TABLE ProductosXCarrito;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='ProductosXCarrito' AND xtype='U')
 CREATE TABLE ProductosXCarrito (
     ProductoID INT,
@@ -228,7 +235,6 @@ CREATE TABLE ProductosXCarrito (
     CONSTRAINT fk_productosXcarrito_carrito FOREIGN KEY (CarritoID) REFERENCES Carrito(CarritoID)
 );    
 
--- DROP TABLE ProductosXCatalogo;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='ProductosXCatalogo' AND xtype='U')
 CREATE TABLE ProductosXCatalogo (
     ProductoID INT,
@@ -238,7 +244,6 @@ CREATE TABLE ProductosXCatalogo (
     CONSTRAINT fk_productosXcatalogo_catalogo FOREIGN KEY (CatalogoID) REFERENCES Catalogo(CatalogoID)
 );
 
--- DROP TABLE ProductosXPaquete;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='ProductosXPaquete' AND xtype='U')
 CREATE TABLE ProductosXPaquete (
     ProductoID INT,
@@ -248,7 +253,6 @@ CREATE TABLE ProductosXPaquete (
     CONSTRAINT fk_productosXpaquete_paquete FOREIGN KEY (PaqueteID) REFERENCES Paquete(PaqueteID)
 );
 
--- DROP TABLE PaqueteXCatalogo;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='PaqueteXCatalogo' AND xtype='U')
 CREATE TABLE PaqueteXCatalogo (
     PaqueteID INT,
@@ -259,7 +263,6 @@ CREATE TABLE PaqueteXCatalogo (
 );    
 
 
--- DROP TABLE PaqueteXCarrito;
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='PaqueteXCarrito' AND xtype='U')
 CREATE TABLE PaqueteXCarrito (
     PaqueteID INT,

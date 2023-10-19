@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using duendeMakeApp.Models;
+using duendeMakeApp.DAO;
 
 namespace duendeMakeApp.Controllers
 {
@@ -51,21 +52,37 @@ namespace duendeMakeApp.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> IniciarSeccion(string correo, string clave)
+        {
+            return RedirectToAction("Index", "Maquillajes");
+        }
+
         // POST: Usuarios/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UsuarioId,Nombre,Apellido,Correo,Usuario1,Clave,TipoId")] Usuario usuario)
+        //public async Task<IActionResult> Create([Bind("UsuarioId,Nombre,Apellido,Correo,Usuario1,Clave,TipoId")] Usuario usuario)
+        public async Task<IActionResult> Create(string nombre, string apellido, string correo, string usuario1, string clave, string rClave)
         {
-            if (ModelState.IsValid)
+            if(clave != rClave)
             {
-                _context.Add(usuario);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return Problem("Las contraseñas no coinciden");
             }
-            ViewData["TipoId"] = new SelectList(_context.TipoUsuarios, "TipoUsarioId", "TipoUsarioId", usuario.TipoId);
-            return View(usuario);
+            if (UsuarioExists(correo))
+            {
+                return Problem("El correo ya existe");
+            }
+            Usuario usuario = new Usuario();
+            usuario.Nombre = nombre;
+            usuario.Apellido = apellido;
+            usuario.Correo = correo;
+            usuario.Usuario1 = usuario1;
+            usuario.Clave = clave;
+            usuario.TipoId = 1;
+            return RedirectToAction("Index", "Maquillajes");
         }
 
         // GET: Usuarios/Edit/5
@@ -158,7 +175,10 @@ namespace duendeMakeApp.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
+        private bool UsuarioExists(String correo)
+        {
+            return (_context.Usuarios?.Any(e => e.Correo == correo)).GetValueOrDefault();
+        }
         private bool UsuarioExists(int id)
         {
           return (_context.Usuarios?.Any(e => e.UsuarioId == id)).GetValueOrDefault();

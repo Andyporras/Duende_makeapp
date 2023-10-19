@@ -11,6 +11,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<DuendeappContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("conexion")));
 
+// Agregar el servicio de HttpClientFactory
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,6 +31,7 @@ app.UseRouting();
 app.UseAuthentication();;
 
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",

@@ -32,8 +32,9 @@
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="ImagenId" />
+        <input type="hidden" name="id" asp-for="ImagenId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>
+
 </div>

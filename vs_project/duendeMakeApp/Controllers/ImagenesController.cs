@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using duendeMakeApp.Models;
+
 
 namespace duendeMakeApp.Controllers
 {
     public class ImagenesController : Controller
     {
         private readonly DuendeappContext _context;
+        private readonly IHttpClientFactory _clientFactory;
 
-        public ImagenesController(DuendeappContext context)
+        public ImagenesController(DuendeappContext context, IHttpClientFactory clientFactory)
         {
             _context = context;
+            _clientFactory = clientFactory;
         }
 
         // GET: Imagenes
@@ -55,16 +53,37 @@ namespace duendeMakeApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ImagenId,Nombre,Descripcion,Url")] Imagen imagen)
+        public async Task<IActionResult> Create(string Nombre, string Descripcion, IFormFile imageFile)
         {
-            if (ModelState.IsValid)
+            if (imageFile == null || imageFile.Length == 0)
             {
-                _context.Add(imagen);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("imageFile", "Please select an image.");
+                return View();
             }
+
+            Imagen imagen = new Imagen();
+            imagen.Nombre = Nombre;
+            imagen.Descripcion = Descripcion;
+
+            ImgurController imgurController = ImgurController.GetInstance(_clientFactory);
+            string imgurImageUrl = await imgurController.SubirImagenAImgur(imageFile);
+
+            if (!string.IsNullOrEmpty(imgurImageUrl))
+            {
+                imagen.Url = imgurImageUrl;
+
+                if (ModelState.IsValid)
+                {
+                    _context.Add(imagen);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
             return View(imagen);
         }
+
+
 
         // GET: Imagenes/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -89,11 +108,6 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ImagenId,Nombre,Descripcion,Url")] Imagen imagen)
         {
-            if (id != imagen.ImagenId)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
@@ -120,7 +134,7 @@ namespace duendeMakeApp.Controllers
         // GET: Imagenes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Imagens == null)
+            if (_context.Imagens == null)
             {
                 return NotFound();
             }
@@ -144,6 +158,7 @@ namespace duendeMakeApp.Controllers
             {
                 return Problem("Entity set 'DuendeappContext.Imagens'  is null.");
             }
+            Console.WriteLine("DeleteConfirmed: ", id);
             var imagen = await _context.Imagens.FindAsync(id);
             if (imagen != null)
             {

@@ -24,7 +24,7 @@ namespace duendeMakeApp.Controllers
             return instance ?? (instance = new ImgurController(httpClientFactory));
         }
 
-        public async Task<string> SubirImagenAImgur(IFormFile imageFile)
+        public async Task<string> SubirImagen(IFormFile imageFile)
         {
             using (HttpClient httpClient = _clientFactory.CreateClient())
             {

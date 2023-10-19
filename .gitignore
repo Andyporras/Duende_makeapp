@@ -8,3 +8,4 @@ vs_project/duendeMakeApp/duendeMakeApp/*.csproj
 vs_project/duendeMakeApp/duendeMakeApp/obj/
 vs_project/duendeMakeApp/bin/Debug/
 vs_project/duendeMakeApp/obj/Debug/
+vs_project/duendeMakeApp/duendeMakeApp/appsettings.json

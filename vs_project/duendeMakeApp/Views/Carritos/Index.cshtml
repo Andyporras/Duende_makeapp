@@ -1,28 +1,27 @@
 ﻿@model IEnumerable<duendeMakeApp.Models.Carrito>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Carrito de compras";
 }
 
-<h1>Index</h1>
+<h1>Carrito de compras</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Usuario)
+                @Html.DisplayNameFor(model => model.Productos)
             </th>
-            <th></th>
+            <th>Precio unitario</th>
+            <th>Cantidad</th>
+            <th>Total</th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Usuario.UsuarioId)
+                @Html.DisplayFor(modelItem => item.Productos)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.CarritoId">Edit</a> |

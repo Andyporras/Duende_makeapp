@@ -66,8 +66,8 @@ namespace duendeMakeApp.Controllers
             imagen.Descripcion = Descripcion;
 
             ImgurController imgurController = ImgurController.GetInstance(_clientFactory);
-            string imgurImageUrl = await imgurController.SubirImagenAImgur(imageFile);
-
+            string imgurImageUrl = await imgurController.SubirImagen(imageFile);
+            
             if (!string.IsNullOrEmpty(imgurImageUrl))
             {
                 imagen.Url = imgurImageUrl;

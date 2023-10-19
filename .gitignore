@@ -15,3 +15,9 @@ vs_project/duendeMakeApp/.config/
 vs_project/duendeMakeApp/Properties/PublishProfiles/
 vs_project/duendeMakeApp/bin/
 vs_project/duendeMakeApp/obj/Release/
+vs_project/duendeMakeApp/appsettings.json
+vs_project/duendeMakeApp/obj/project.nuget.cache
+vs_project/duendeMakeApp/obj/project.assets.json
+vs_project/duendeMakeApp/obj/duendeMakeApp.csproj.nuget.g.props
+vs_project/duendeMakeApp/obj/duendeMakeApp.csproj.nuget.dgspec.json
+vs_project/duendeMakeApp/appsettings.json

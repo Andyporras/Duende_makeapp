@@ -9,7 +9,7 @@ IF NOT EXISTS (
 GO
 USE DUENDEAPP
 GO
-
+select * from Usuario;
 /*
 DROP TABLE Imagen;
 DROP TABLE Maquillaje;

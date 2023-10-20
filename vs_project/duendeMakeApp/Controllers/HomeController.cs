@@ -13,7 +13,7 @@ namespace duendeMakeApp.Controllers
         public HomeController(ILogger<HomeController> logger, IEmailSender emailSender)
         {
             _logger = logger;
-            _emailSender = EmailSender.GetInstance();
+            _emailSender = EmailSenderDAO.GetInstance();
         }
 
         public async Task<IActionResult>Index()

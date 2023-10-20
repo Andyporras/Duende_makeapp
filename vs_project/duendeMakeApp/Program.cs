@@ -17,7 +17,7 @@ builder.Services.AddDbContext<DuendeappContext>(options =>
 // Agregar el servicio de HttpClientFactory
 builder.Services.AddHttpClient();
 
-builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddTransient<IEmailSender, EmailSenderDAO>();
 
 var app = builder.Build();
 

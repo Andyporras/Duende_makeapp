@@ -5,17 +5,17 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 
-public class EmailSender : IEmailSender
+public class EmailSenderDAO : IEmailSender
 {
-    private static EmailSender? instance;
+    private static EmailSenderDAO? instance;
 
-    public EmailSender() { }
+    public EmailSenderDAO() { }
 
-    public static EmailSender GetInstance()
+    public static EmailSenderDAO GetInstance()
     {
         if (instance == null)
         {
-            instance = new EmailSender();
+            instance = new EmailSenderDAO();
         }
         return instance;
     }

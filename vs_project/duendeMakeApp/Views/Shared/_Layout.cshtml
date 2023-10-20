@@ -91,16 +91,16 @@
                     <!-- Pills content -->
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-                            <form>
+                            <form asp-controller="Usuarios" asp-action="IniciarSeccion" method="post">
                                 <!-- Email input -->
                                 <div class="form-outline mb-4">
-                                    <input type="email" id="loginName" class="form-control" />
+                                    <input type="email" id="loginName" class="form-control" name="correo"/>
                                     <label class="form-label" for="loginName">Correo</label>
                                 </div>
 
                                 <!-- Password input -->
                                 <div class="form-outline mb-4">
-                                    <input type="password" id="loginPassword" class="form-control" />
+                                    <input type="password" id="loginPassword" class="form-control" name="clave" />
                                     <label class="form-label" for="loginPassword">Contraseña</label>
                                 </div>
 
@@ -117,40 +117,40 @@
                             </form>
                         </div>
                         <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
-                            <form>
+                            <form asp-controller="Usuarios" asp-action="Create" method="post">
                                 <!-- Name input -->
                                 <div class="form-outline mb-4">
-                                    <input type="text" id="registroNombre" class="form-control" />
+                                    <input type="text" id="registroNombre" class="form-control" name="nombre"/>
                                     <label class="form-label" for="registroNombre">Nombre</label>
                                 </div>
 
                                 <!-- Username input -->
                                 <div class="form-outline mb-4">
-                                    <input type="text" id="registroApellido" class="form-control" />
+                                    <input type="text" id="registroApellido" class="form-control" name="apellido"/>
                                     <label class="form-label" for="registroApellido">Apellido</label>
                                 </div>
 
                                 <!-- Username input -->
                                 <div class="form-outline mb-4">
-                                    <input type="text" id="registroUsuario" class="form-control" />
+                                    <input type="text" id="registroUsuario" class="form-control" name="usuario1"/>
                                     <label class="form-label" for="registroUsuario">Usuario</label>
                                 </div>
 
                                 <!-- Email input -->
                                 <div class="form-outline mb-4">
-                                    <input type="email" id="registroCorreo" class="form-control" />
+                                    <input type="email" id="registroCorreo" class="form-control" name="correo"/>
                                     <label class="form-label" for="registroCorreo">Email</label>
                                 </div>
 
                                 <!-- Password input -->
                                 <div class="form-outline mb-4">
-                                    <input type="password" id="registroContrasenna" class="form-control" />
+                                    <input type="password" id="registroContrasenna" class="form-control" name="clave"/>
                                     <label class="form-label" for="registroContrasenna">Password</label>
                                 </div>
 
                                 <!-- Repeat Password input -->
                                 <div class="form-outline mb-4">
-                                    <input type="password" id="registroRepetirContrasenna" class="form-control" />
+                                    <input type="password" id="registroRepetirContrasenna" class="form-control" name="rClave"/>
                                     <label class="form-label" for="registroRepetirContrasenna">Repeat password</label>
                                 </div>
 

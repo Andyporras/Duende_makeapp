@@ -1,4 +1,6 @@
-﻿using duendeMakeApp.Models;
+﻿using duendeMakeApp.DAO;
+using duendeMakeApp.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,14 +9,16 @@ namespace duendeMakeApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IEmailSender _emailSender;
+        public HomeController(ILogger<HomeController> logger, IEmailSender emailSender)
         {
             _logger = logger;
+            _emailSender = EmailSender.GetInstance();
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult>Index()
         {
+            await _emailSender.SendEmailAsync("miltonjosue2001@gmail.com", "duendeMakeApp", "Hola, \n Tu código es 123497yny4.\n\nSaludos,\n\nDuende Milton😀.");
             return View();
         }
 

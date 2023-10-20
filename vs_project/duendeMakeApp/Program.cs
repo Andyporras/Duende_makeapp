@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using duendeMakeApp.Models;
+using System.Configuration;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using duendeMakeApp.DAO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +16,8 @@ builder.Services.AddDbContext<DuendeappContext>(options =>
 
 // Agregar el servicio de HttpClientFactory
 builder.Services.AddHttpClient();
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 

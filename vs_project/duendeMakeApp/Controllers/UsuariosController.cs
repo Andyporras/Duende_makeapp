@@ -196,6 +196,38 @@ namespace duendeMakeApp.Controllers
             usuario.TipoId = 1;
             return RedirectToAction("Index", "Maquillajes");
         }
+
+        public async Task<IActionResult> OlvidarClave()
+        {
+                return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RestablecerContraseña(string correo)
+        {
+            if(correo == null)
+            {
+                TempData["Mensaje"] = "No se ha ingresado el correo";
+                return RedirectToAction("OlvidarClave", "Usuarios");
+            }
+            if(!UsuarioExists(correo))
+            {
+                TempData["Mensaje"] = "El correo no existe";
+                return RedirectToAction("OlvidarClave", "Usuarios");
+            }
+            // Usuario
+            Usuario usuario = new Usuario();
+            usuario = _context.Usuarios.Where(item => item.Correo == correo).FirstOrDefault();
+            // clave 
+            string clave = usuario.Clave;
+            // enviar correo
+            EmailSenderDAO emailSenderDAO = EmailSenderDAO.GetInstance();
+            await emailSenderDAO.SendEmailAsync(correo, "Restablecer contraseña", "Su contraseña es: " + clave);
+
+            TempData["Mensaje"] = "Se ha enviado un correo con su contraseña";
+            return RedirectToAction("Index", "Maquillajes");
+        }
         private bool UsuarioExists(String correo)
         {
             return (_context.Usuarios?.Any(e => e.Correo == correo)).GetValueOrDefault();
@@ -204,6 +236,5 @@ namespace duendeMakeApp.Controllers
         {
           return (_context.Usuarios?.Any(e => e.UsuarioId == id)).GetValueOrDefault();
         }
-
     }
 }

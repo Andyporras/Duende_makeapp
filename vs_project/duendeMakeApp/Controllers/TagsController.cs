@@ -89,10 +89,10 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("TagId,Nombre")] Tag tag)
         {
-            if (id != tag.TagId)
-            {
-                return NotFound();
-            }
+            //if (id != tag.TagId)
+            //{
+            //    return NotFound();
+            //}
 
             if (ModelState.IsValid)
             {

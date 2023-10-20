@@ -181,11 +181,13 @@ namespace duendeMakeApp.Controllers
         {
             if (clave != rClave)
             {
-                return Problem("Las contraseñas no coinciden");
+                TempData["Mensaje"] = "Las contraseñas no coinciden";
+                return RedirectToAction("Index", "Maquillajes");
             }
             if (UsuarioExists(correo))
             {
-                return Problem("El correo ya existe");
+                TempData["Mensaje"] = "El correo ya existe";
+                return RedirectToAction("Index", "Maquillajes");
             }
             Usuario usuario = new Usuario();
             usuario.Nombre = nombre;

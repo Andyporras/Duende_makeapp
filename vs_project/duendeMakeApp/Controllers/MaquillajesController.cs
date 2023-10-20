@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using duendeMakeApp.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace duendeMakeApp.Controllers
 {
@@ -21,7 +22,7 @@ namespace duendeMakeApp.Controllers
         // GET: Maquillajes
         public async Task<IActionResult> Index()
         {
-              return _context.Maquillajes != null ? 
+            return _context.Maquillajes != null ? 
                           View(await _context.Maquillajes.ToListAsync()) :
                           Problem("Entity set 'DuendeappContext.Maquillajes'  is null.");
         }

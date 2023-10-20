@@ -43,6 +43,7 @@ DROP TABLE PaqueteXCarrito;
  
 
 ----------------------------------------------------------------- PROCEDIMIENTOS ALMACENADOS
+go
 CREATE or alter PROCEDURE InsertarCategoria
     @Nombre VARCHAR(100)
 AS

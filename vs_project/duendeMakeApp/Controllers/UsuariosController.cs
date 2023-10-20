@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using duendeMakeApp.Models;
 using duendeMakeApp.DAO;
+using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
+using Microsoft.Data.SqlClient;
+using System.Drawing;
 
 namespace duendeMakeApp.Controllers
 {
@@ -50,39 +53,6 @@ namespace duendeMakeApp.Controllers
         {
             ViewData["TipoId"] = new SelectList(_context.TipoUsuarios, "TipoUsarioId", "TipoUsarioId");
             return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> IniciarSeccion(string correo, string clave)
-        {
-            return RedirectToAction("Index", "Maquillajes");
-        }
-
-        // POST: Usuarios/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("UsuarioId,Nombre,Apellido,Correo,Usuario1,Clave,TipoId")] Usuario usuario)
-        public async Task<IActionResult> Create(string nombre, string apellido, string correo, string usuario1, string clave, string rClave)
-        {
-            if(clave != rClave)
-            {
-                return Problem("Las contraseñas no coinciden");
-            }
-            if (UsuarioExists(correo))
-            {
-                return Problem("El correo ya existe");
-            }
-            Usuario usuario = new Usuario();
-            usuario.Nombre = nombre;
-            usuario.Apellido = apellido;
-            usuario.Correo = correo;
-            usuario.Usuario1 = usuario1;
-            usuario.Clave = clave;
-            usuario.TipoId = 1;
-            return RedirectToAction("Index", "Maquillajes");
         }
 
         // GET: Usuarios/Edit/5
@@ -171,9 +141,60 @@ namespace duendeMakeApp.Controllers
             {
                 _context.Usuarios.Remove(usuario);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> IniciarSeccion(string correo, string clave)
+        {
+            if (correo == null || clave == null)
+            {
+                // mensaje que indique que no ingreso la contraseña o correo 
+                TempData["Mensaje"] = "No se ha ingresado la contraseña o el correo.";
+                return RedirectToAction("Index", "Maquillajes"); // Retorna la vista actual ; // Retorna la vista actual
+            }
+            Usuario usuario = new Usuario();
+            usuario = _context.Usuarios.Where(item => item.Correo == correo && item.Clave == clave).FirstOrDefault();
+            if (usuario == null)
+            {
+                TempData["Mensaje"] = "El correo o la contraseña son incorrectos.";
+                return RedirectToAction("Index", "Maquillajes");
+            }
+            // sacamos el tipo de usuario
+            int tipo = usuario.TipoId.GetValueOrDefault();
+            TipoUsuario tipoUsuario = _context.TipoUsuarios.Where(item => item.TipoUsarioId == tipo).FirstOrDefault();
+            // guardamos el tipo de usuario en la sesion
+
+            TempData["Usuario"] = tipoUsuario.Tipo;
+            return RedirectToAction("Index", "Maquillajes");
+        }
+
+        // POST: Usuarios/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("UsuarioId,Nombre,Apellido,Correo,Usuario1,Clave,TipoId")] Usuario usuario)
+        public async Task<IActionResult> Create(string nombre, string apellido, string correo, string usuario1, string clave, string rClave)
+        {
+            if (clave != rClave)
+            {
+                return Problem("Las contraseñas no coinciden");
+            }
+            if (UsuarioExists(correo))
+            {
+                return Problem("El correo ya existe");
+            }
+            Usuario usuario = new Usuario();
+            usuario.Nombre = nombre;
+            usuario.Apellido = apellido;
+            usuario.Correo = correo;
+            usuario.Usuario1 = usuario1;
+            usuario.Clave = clave;
+            usuario.TipoId = 1;
+            return RedirectToAction("Index", "Maquillajes");
         }
         private bool UsuarioExists(String correo)
         {
@@ -183,5 +204,6 @@ namespace duendeMakeApp.Controllers
         {
           return (_context.Usuarios?.Any(e => e.UsuarioId == id)).GetValueOrDefault();
         }
+
     }
 }

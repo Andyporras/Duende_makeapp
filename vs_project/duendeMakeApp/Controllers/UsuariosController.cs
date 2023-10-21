@@ -196,6 +196,12 @@ namespace duendeMakeApp.Controllers
             usuario.Usuario1 = usuario1;
             usuario.Clave = clave;
             usuario.TipoId = 1;
+
+            //guardar el nuevo usuario en la base de datos
+            _context.Add(usuario);
+            await _context.SaveChangesAsync();
+            TempData["Mensaje"] = "El usuario se ha creado exitosamente";
+
             return RedirectToAction("Index", "Maquillajes");
         }
 

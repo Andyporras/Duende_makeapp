@@ -18,6 +18,7 @@ builder.Services.AddDbContext<DuendeappContext>(options =>
 builder.Services.AddHttpClient();
 
 builder.Services.AddTransient<IEmailSender, EmailSenderDAO>();
+builder.Services.AddScoped<Usuario>();
 
 var app = builder.Build();
 

@@ -16,3 +16,80 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+img {
+    max-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+}
+
+/*los que tengan clase btn y btn-primary entonces se aplica background  color #A2D94A*/
+.btn.btn-primary {
+    background-color: #A2D94A !important;
+    color: #F6FFE7;
+    box-shadow: 0 0px 0px 0px #3b71ca !important;
+}
+
+
+
+.btn.btn-secondary {
+    background-color: #F6FFE7;
+    color: #A2D94A !important;
+    box-shadow: 0 0px 0px 0px #3b71ca !important;
+    border: 1px solid #A2D94A !important;
+}
+
+.btn.btn-secondary:hover {
+    background-color: #A2D94A;
+    color: #F6FFE7 !important;
+    box-shadow: 0 0px 0px 0px #3b71ca !important;
+}
+
+.btn.btn-danger {
+    background-color: #D94A4A;
+    color: #FFE7E7 !important;
+    box-shadow: 0 0px 0px 0px #3b71ca !important;
+}
+
+.btn.btn-outline-danger {
+    border: 1px solid #D94A4A !important;
+    background-color: #FFE7E7 !important;
+    color: #D94A4A !important;
+}
+
+.btn.btn-info {
+    background-color: #A08D8D;
+    color: #F6FFE7 !important;
+    box-shadow: 0 0px 0px 0px #3b71ca !important;
+}
+
+.btn:hover {
+    filter: brightness(95%);
+}
+
+/*cuando .btn.btn-info este active, hover, focus o focus visible*/
+.btn.btn-info:active, .btn.btn-info:hover, .btn.btn-info:focus, .btn.btn-info:focus-visible {
+    background-color: #A08D8D;
+    color: #F6FFE7 !important;
+    box-shadow: 0 0px 0px 0px #3b71ca !important;
+}
+
+
+.modal-footer-makeup {
+    justify-content: center;
+}
+
+.btn-moddal-makeup-primary {
+    width: 100%;
+}
+
+.btn-moddal-makeup-secondary {
+    width: 47%;
+}
+
+.carousel.slide {
+    width: 100%;
+    height: 225px;
+    max-width: 100%;
+    max-height: 225px;
+}

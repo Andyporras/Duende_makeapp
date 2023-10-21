@@ -1,27 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using duendeMakeApp.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace duendeMakeApp.Controllers
 {
     public class MaquillajesController : Controller
     {
         private readonly DuendeappContext _context;
+        private static Usuario? _usuario;
 
-        public MaquillajesController(DuendeappContext context)
+        public MaquillajesController(DuendeappContext context, Usuario usuario)
         {
+            _usuario = usuario;
             _context = context;
         }
 
         // GET: Maquillajes
         public async Task<IActionResult> Index()
         {
+            ViewBag.usuario = _usuario;
+            ViewBag.tags = _context.Tags;
             return _context.Maquillajes != null ? 
                           View(await _context.Maquillajes.ToListAsync()) :
                           Problem("Entity set 'DuendeappContext.Maquillajes'  is null.");

@@ -13,6 +13,17 @@
 </head>
 <body>
     <header>
+        @try {
+            @if (ViewBag.usuario.UsuarioId == null || ViewBag.usuario.UsuarioId == 0 || ViewBag.usuario.TipoUsuario.TipoUsuarioId == 2)
+            {
+                <h1>Soy un cliente</h1>
+            }
+        }
+        catch (Exception ex)
+        {
+            <h1>falta implementar validación de usuario en sesion</h1>
+        }
+        
         <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #202124 !important;">
             <a class="navbar-brand" asp-area="" asp-controller="Maquillajes" asp-action="Index"><img src="~/css/nb.png" height="60" alt="El rincón de Duende"/></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,18 +38,29 @@
                     <li class="nav-item">
                         <a class="navbar-brand" asp-area="" asp-controller="Productos" asp-action="Index" style="color: #fafafa !important;">Productos</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:#fafafa">
-                            Otros
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" asp-area="" asp-controller="Tags" asp-action="Index">Tags</a>
-                            <a class="dropdown-item" asp-area="" asp-controller="Catalogos" asp-action="Index">Catálogos</a>
-                            <a class="dropdown-item" asp-area="" asp-controller="Paquetes" asp-action="Index">Paquetes</a>
-                            <a class="dropdown-item" asp-area="" asp-controller="Categorias" asp-action="Index">Categorías</a>
-                            <a class="dropdown-item" asp-area="" asp-controller="Subcategorias" asp-action="Index">Sub-categorías</a>
-                        </div>
-                    </li>
+                    @try
+                    {
+                        @if (ViewBag.usuario.UsuarioId == null || ViewBag.usuario.UsuarioId == 0 || ViewBag.usuario.TipoUsuario.TipoUsuarioId == 2)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:#fafafa">
+                                    Otros
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-header">se muestra para facilidad, pero se debe quitar despues si es un cliente</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Tags" asp-action="Index">Tags</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Catalogos" asp-action="Index">Catálogos</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Paquetes" asp-action="Index">Paquetes</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Categorias" asp-action="Index">Categorías</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Subcategorias" asp-action="Index">Sub-categorías</a>
+                                </div>
+                            </li>
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        
+                    }
                 </ul>
                 <a class="navbar-brand" asp-area="" asp-controller="Carritos" asp-action="Index"><img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" width="28" height="38" alt="Carrito de compras"/></a>
                 <form class="form-inline my-2 my-lg-0">

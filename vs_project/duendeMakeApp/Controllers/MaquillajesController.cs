@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using duendeMakeApp.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace duendeMakeApp.Controllers
 {
@@ -16,8 +17,9 @@ namespace duendeMakeApp.Controllers
         }
 
         // GET: Maquillajes
-        public async Task<IActionResult> Index(Usuario usuario)
+        public async Task<IActionResult> Index(int usuarioId)
         {
+            Usuario usuario = UsuariosController.GetUsuario(usuarioId, _context);
             if (usuario != null)
             {
                 _usuario = usuario;
@@ -48,11 +50,21 @@ namespace duendeMakeApp.Controllers
             return View(maquillaje);
         }
 
-        // GET: Maquillajes/Create
-        public IActionResult Create()
+        // POST: Maquillajes/Create
+        [HttpPost, ActionName("CreateIndex")]
+        public IActionResult Create(int usuarioId)
         {
-            return View();
+            var usuario = _context.Usuarios.FirstOrDefault(u => u.UsuarioId == usuarioId);
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.usuario = usuario;
+            ViewBag.Tags = _context.Tags.ToList();
+            return View("Create");
         }
+
 
         // POST: Maquillajes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.

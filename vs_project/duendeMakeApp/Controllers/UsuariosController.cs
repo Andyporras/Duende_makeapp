@@ -253,5 +253,12 @@ namespace duendeMakeApp.Controllers
             TempData["Usuario"] = null;
             return RedirectToAction("Index", "Maquillajes");
         }
+
+        //una funcion estatica para obtener el objeto de un Usuario que se busca por id
+        public static Usuario GetUsuario(int id, DuendeappContext context)
+        {
+            Usuario? usuario = context.Usuarios.Where(item => item.UsuarioId == id).FirstOrDefault();
+            return usuario;
+        }
     }
 }

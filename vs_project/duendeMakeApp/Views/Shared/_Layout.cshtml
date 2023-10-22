@@ -16,7 +16,7 @@
         @try {
             @if (ViewBag.usuario.UsuarioId == null || ViewBag.usuario.UsuarioId == 0 || ViewBag.usuario.TipoUsuario.TipoUsuarioId == 2)
             {
-                <h1>Soy un cliente</h1>
+                <h1>Soy un cliente default</h1>
                 <p>id: @ViewBag.usuario.UsuarioId</p>
                 <p>nombre: @ViewBag.usuario.Nombre</p>
                 <p>correo: @ViewBag.usuario.Correo</p>
@@ -31,7 +31,14 @@
             }
             else
             {
-                <h1>Soy administrador</h1>
+                if (ViewBag.usuario.TipoId == 1)
+                {
+                    <h1>Soy administrador</h1>
+                }
+                else
+                {
+                    <h1>Soy cliente normal</h1>
+                }
                 <p>id: @ViewBag.usuario.UsuarioId</p>
                 <p>nombre: @ViewBag.usuario.Nombre</p>
                 <p>correo: @ViewBag.usuario.Correo</p>
@@ -77,7 +84,7 @@
                         
                     }
                 </ul>
-                <a class="navbar-brand" asp-area="" asp-controller="Carritos" asp-action="Index"><img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" width="28" height="38" alt="Carrito de compras"/></a>
+
                 <form class="form-inline my-2 my-lg-0">
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
@@ -88,6 +95,12 @@
                     {
                         @if (ViewBag.usuario.UsuarioId != 0)
                         {
+                            //si es cliente se muestra el carrito
+                            @if (ViewBag.usuario.TipoId == 2)
+                            {
+                                <a class="navbar-brand" asp-area="" asp-controller="Carritos" asp-action="Index"><img src="https://i.imgur.com/QhG3fVp.png" width="28" height="38" alt="Carrito de compras" /></a>
+                            }
+
                             <a class="btn btn-outline-danger" asp-controller="Usuarios" asp-action="CerrarSesion">
                                 Cerrar Sesión
                             </a>
@@ -116,11 +129,11 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    @*<footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2023 - duendeMakeApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
+    </footer>*@
 
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog">

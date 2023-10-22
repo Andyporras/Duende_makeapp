@@ -1,42 +1,62 @@
 ﻿@model duendeMakeApp.Models.Maquillaje
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Agregar maquillaje";
 }
 
-<h1>Create</h1>
+@if (ViewBag.usuario.TipoId == 1)
+{
+    <h1>Agregar</h1>
 
-<h4>Maquillaje</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <h4>Maquillaje</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Nombre" class="control-label"></label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Descripcion" class="control-label"></label>
+                    <input asp-for="Descripcion" class="form-control" />
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+                <div>
+                    <div class="form-group">
+                        @*<label asp-for="Estado" class="control-label"></label>*@
+                        <input role="switch" type="hidden" asp-for="Estado" class="form-control" value="True" />
+                        <span asp-validation-for="Estado" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Seleccionar imagenes</label>
+                    <input asp-for="Imagens" type="file" class="form-control btn btn-secondary" multiple>
+                    <span asp-validation-for="Imagens" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Seleccionar Tags:</label>
+                    @foreach (var tag in ViewBag.Tags)
+                    {
+                        <label class="btn btn-secondary">
+                            <input type="checkbox" name="TagIds" value="@tag.TagId"> @tag.Nombre
+                        </label>
+                    }
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Agregar maquillaje" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-danger" asp-route-usuarioId="@ViewBag.usuario.UsuarioId">Cancelar</a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+}
+else
+{
+    <div class="alert alert-danger">Acceso denegado.</div>
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

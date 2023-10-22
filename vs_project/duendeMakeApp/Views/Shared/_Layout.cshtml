@@ -47,7 +47,17 @@
         }
         
         <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #202124 !important;">
-            <a class="navbar-brand" asp-area="" asp-controller="Maquillajes" asp-action="Index"><img src="~/css/nb.png" height="60" alt="El rincón de Duende"/></a>
+            <a class="navbar-brand" asp-area="" asp-controller="Maquillajes" asp-action="Index"
+               asp-route-usuarioId="
+                @try {
+                    @ViewBag.usuario.UsuarioId
+                }
+                catch (Exception ex) {
+                   <text>0</text>
+                }
+            ">
+                <img src="~/css/nb.png" height="60" alt="El rincón de Duende"/>
+            </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>

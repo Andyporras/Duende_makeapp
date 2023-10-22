@@ -26,10 +26,29 @@
                         @ViewBag.selectedTag
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" asp-area="" asp-controller="Maquillajes" asp-action="Filtrar" name="selectedTag">Todas</a>
+                        @if (ViewBag.usuario.UsuarioId != 0)
+                        {
+                            <a class="dropdown-item"
+                            asp-controller="Maquillajes"
+                            asp-action="Index"
+                            asp-route-usuarioId="@ViewBag.usuario.UsuarioId"
+                            name="selectedTag">
+                                Todas
+                            </a>
+                        }
+                        else {
+                            <a class="dropdown-item" asp-controller="Maquillajes" asp-action="Filtrar" name="selectedTag">Todasasdasd</a>
+                        }
+                        
                         @foreach (Tag tag in ViewBag.tags)
                         {
-                            <a class="dropdown-item" asp-area="" asp-controller="Maquillajes" asp-action="Filtrar" name="selectedTag" asp-route-selectedTag="@tag.Nombre">@tag.Nombre</a>
+                            if (ViewBag.usuario != null)
+                            {
+                                <a class="dropdown-item" asp-route-usuarioId="@ViewBag.usuario.UsuarioId" asp-controller="Maquillajes" asp-action="Filtrar" name="selectedTag" asp-route-selectedTag="@tag.Nombre">@tag.Nombre</a>
+                            }
+                            else {
+                                <a class="dropdown-item" asp-area="" asp-controller="Maquillajes" asp-action="Filtrar" name="selectedTag" asp-route-selectedTag="@tag.Nombre">@tag.Nombre</a>
+                            }
                         }
                     </div>
                 </li>
@@ -39,11 +58,13 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                @if (ViewBag.usuario.TipoId == 1)
-                {
+                @try {
+                    @if (ViewBag.usuario.TipoId == 1) {
                         <button type="submit" class="btn btn-primary" asp-action="CreateIndex" asp-route-usuarioId="@ViewBag.usuario.UsuarioId">Agregar maquillaje</button>
-                }
-            </form>
+                        }
+                    }
+                catch (Exception ex){}
+                </form>
         </div>
     </nav>
 

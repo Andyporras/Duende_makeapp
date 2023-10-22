@@ -13,6 +13,8 @@ namespace duendeMakeApp.Controllers
         public MaquillajesController(DuendeappContext context, Usuario usuario)
         {
             _usuario = usuario;
+            _usuario.UsuarioId = 0;
+            _usuario.TipoId = 2;
             _context = context;
         }
 
@@ -178,9 +180,17 @@ namespace duendeMakeApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Filtrar(string selectedTag)
+        public async Task<IActionResult> Filtrar(int usuarioId,  string selectedTag)
         {
-            ViewBag.usuario = _usuario;
+            Usuario usuario = UsuariosController.GetUsuario(usuarioId, _context);
+            if (usuario == null)
+            {
+                ViewBag.usuario = new Usuario();
+            }
+            else
+            {
+                ViewBag.usuario = usuario;
+            }
             ViewBag.tags = _context.Tags;
             //obtener maquillajes filtrados por tag
             Console.WriteLine("selectedTag: " + selectedTag);

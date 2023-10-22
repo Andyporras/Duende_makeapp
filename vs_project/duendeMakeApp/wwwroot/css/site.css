@@ -101,8 +101,49 @@ img {
 }
 
 .carousel.slide {
-    width: 100%;
+    width: 320px;
     height: 225px;
-    max-width: 100%;
+    max-width: 320px;
+    min-width: 320px;
     max-height: 225px;
+    min-height: 225px;
+}
+
+.card.mb-4.box-shadow {
+    display: flex;
+justify-content: center;
+align-items: center;
+
+}
+
+.card-img-top {
+    max-height: 320px;
+    max-width: 320px;
+    min-width: 320px;
+    min-height: 320px;
+    object-fit: contain;
+}
+.card-body {
+    width: 100%;
+}
+
+.carousel-control-next:hover, .carousel-control-prev:hover {
+    background-color: #A2D94A;
+}
+
+.carousel.slide, .carousel-item.active {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.img-fluid {
+    max-height: 225px;
+    max-width: 320px;
+}
+/*cuando se le hace click a .img-fluid se pone en pantalla grande*/
+.img-fluid:hover {
+    cursor: pointer;
+    max-height: 100%;
+    max-width: 100%;
 }

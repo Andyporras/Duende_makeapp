@@ -115,7 +115,9 @@
                                                             @foreach (var imagen in maquillaje.Imagens)
                                                             {
                                                                 <div class="carousel-item @(imagen == maquillaje.Imagens.First() ? "active" : "")">
-                                                                    <img class="d-block w-100" src="@imagen.Url" data-holder-rendered="true">
+                                                                    <a href="@imagen.Url.Replace("m\\/","m/")" target="_blank">
+                                                                        <img class="img-fluid" src="@imagen.Url" data-holder-rendered="true">
+                                                                    </a>
                                                                 </div>
                                                             }
                                                         </div>

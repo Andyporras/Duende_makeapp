@@ -9,13 +9,15 @@ namespace duendeMakeApp.Controllers
     {
         private readonly DuendeappContext _context;
         private static Usuario? _usuario;
-
-        public MaquillajesController(DuendeappContext context, Usuario usuario)
+        private readonly IHttpClientFactory _clientFactory;
+            
+        public MaquillajesController(DuendeappContext context, Usuario usuario, IHttpClientFactory clientFactory)
         {
             _usuario = usuario;
             _usuario.UsuarioId = 0;
             _usuario.TipoId = 2;
             _context = context;
+            _clientFactory = clientFactory;
         }
 
         // GET: Maquillajes
@@ -29,7 +31,8 @@ namespace duendeMakeApp.Controllers
 
             ViewBag.usuario = _usuario;
             ViewBag.tags = _context.Tags;
-            return _context.Maquillajes != null ? 
+            var maquillajes = _context.Maquillajes.Include(m => m.Imagens).ThenInclude(i => i.Tags).ToList();
+            return maquillajes != null ? 
                           View(await _context.Maquillajes.ToListAsync()) :
                           Problem("Entity set 'DuendeappContext.Maquillajes'  is null.");
         }
@@ -73,16 +76,57 @@ namespace duendeMakeApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaquillajeId,Nombre,Descripcion,Estado")] Maquillaje maquillaje)
+        public async Task<IActionResult> Create([Bind("Nombre, Descripcion, Estado")] Maquillaje maquillaje, List<int> TagIds, List<IFormFile> Imagens)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(maquillaje);
+                // Guarda las imágenes
+                if (Imagens != null && Imagens.Any())
+                {
+                    // guardar imagen ImagensController tiene la funcion private async Create(string Nombre, string Descripcion, IFormFile imageFile)
+                    foreach (var imageFile in Imagens)
+                    {
+                        ImgurController imgurController = ImgurController.GetInstance(_clientFactory);
+                        string imgurImageUrl = await imgurController.SubirImagen(imageFile);
+                        if (imgurImageUrl != null)
+                        {
+                            Imagen imagen = new Imagen();
+                            imagen.Url = imgurImageUrl;
+                            imagen.Nombre = maquillaje.Nombre;
+                            imagen.Descripcion = maquillaje.Descripcion;
+                            _context.Imagens.Add(imagen);
+                            await _context.SaveChangesAsync();
+
+                            int idImg = ImagenesController.buscarImagenXurl(imgurImageUrl, _context);
+                            if (idImg != 0)
+                            {
+                                maquillaje.Imagens.Add(_context.Imagens.Find(idImg));
+                            }
+
+                            foreach (int tagId in TagIds)
+                            {
+                                Tag tag = _context.Tags.Find(tagId);
+                                if (tag != null)
+                                {
+                                    imagen.Tags.Add(tag);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Guarda el maquillaje en la base de datos
+                
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            // Si hay errores de validación, vuelve a la vista de creación
+            ViewBag.Tags = _context.Tags.ToList();
             return View(maquillaje);
         }
+
 
         // GET: Maquillajes/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -197,27 +241,9 @@ namespace duendeMakeApp.Controllers
             if (selectedTag != null || selectedTag == "Todas")
             {
                 ViewBag.selectedTag = selectedTag;
-                // hay que obtener las imagenes de los maquillajes y si al menos una tiene el tag seleccionado, se muestra
-                var maquillajes = await _context.Maquillajes.ToListAsync();
-                var maquillajesFiltrados = new List<Maquillaje>();
-                foreach (var maquillaje in maquillajes)
-                {
-                    var imagenes = maquillaje.Imagens;
-                    foreach (var imagen in imagenes)
-                    {
-                        var tags = await _context.Tags.ToListAsync();
-                        foreach (var tag in tags)
-                        {
-                            if (tag.Nombre == selectedTag)
-                            {
-                                maquillajesFiltrados.Add(maquillaje);
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                //retorna la vista index pero con el modelo de maquillajes filtrados
+                var maquillajes = _context.Maquillajes.Include(m => m.Imagens).ThenInclude(i => i.Tags).ToList();
+                var maquillajesFiltrados = maquillajes.Where(m => m.Imagens.Any(i => i.Tags.Any(t => t.Nombre == selectedTag))).ToList();
+                
                 return View("Index", maquillajesFiltrados);
             }
 

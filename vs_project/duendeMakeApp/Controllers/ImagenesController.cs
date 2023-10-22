@@ -67,7 +67,7 @@ namespace duendeMakeApp.Controllers
 
             ImgurController imgurController = ImgurController.GetInstance(_clientFactory);
             string imgurImageUrl = await imgurController.SubirImagen(imageFile);
-            
+
             if (!string.IsNullOrEmpty(imgurImageUrl))
             {
                 imagen.Url = imgurImageUrl;
@@ -172,6 +172,21 @@ namespace duendeMakeApp.Controllers
         private bool ImagenExists(int id)
         {
           return (_context.Imagens?.Any(e => e.ImagenId == id)).GetValueOrDefault();
+        }
+
+        public static int buscarImagenXurl (string url, DuendeappContext context)
+        {
+            if (context.Imagens != null)
+            {
+                foreach (var imagen in context.Imagens)
+                {
+                    if (string.Compare(imagen.Url, url) == 0)
+                    {
+                        return imagen.ImagenId;
+                    }
+                }
+            }
+            return 0;
         }
     }
 }

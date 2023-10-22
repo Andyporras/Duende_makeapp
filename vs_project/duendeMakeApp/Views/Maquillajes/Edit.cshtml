@@ -10,9 +10,10 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" asp-route-id="@Model.MaquillajeId">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="MaquillajeId" />
+            <input type="hidden" asp-for="@Model.MaquillajeId"/>
+            <input type="hidden" asp-for="@Model.MaquillajeId" name="id"/>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
                 <input asp-for="Nombre" class="form-control" />

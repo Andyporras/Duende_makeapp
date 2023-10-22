@@ -93,6 +93,8 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("MaquillajeId,Nombre,Descripcion,Estado")] Maquillaje maquillaje)
         {
+            Console.WriteLine("id: " + id);
+            Console.WriteLine("MaquillajeId: " + maquillaje.MaquillajeId);
             if (id != maquillaje.MaquillajeId)
             {
                 return NotFound();

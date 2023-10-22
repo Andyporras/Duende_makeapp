@@ -168,7 +168,7 @@ namespace duendeMakeApp.Controllers
             // guardamos el tipo de usuario en la sesion
 
             TempData["Usuario"] = tipoUsuario.Tipo;
-            return RedirectToAction("Index", "Maquillajes");
+            return RedirectToAction("Index", "Maquillajes", usuario);
         }
 
         // POST: Usuarios/Create
@@ -236,13 +236,22 @@ namespace duendeMakeApp.Controllers
             TempData["Mensaje"] = "Se ha enviado un correo con su contraseña";
             return RedirectToAction("Index", "Maquillajes");
         }
+
+
         private bool UsuarioExists(String correo)
         {
             return (_context.Usuarios?.Any(e => e.Correo == correo)).GetValueOrDefault();
         }
+        
         private bool UsuarioExists(int id)
         {
           return (_context.Usuarios?.Any(e => e.UsuarioId == id)).GetValueOrDefault();
+        }
+
+        public async Task<IActionResult> CerrarSesion()
+        {
+            TempData["Usuario"] = null;
+            return RedirectToAction("Index", "Maquillajes");
         }
     }
 }

@@ -16,8 +16,13 @@ namespace duendeMakeApp.Controllers
         }
 
         // GET: Maquillajes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(Usuario usuario)
         {
+            if (usuario != null)
+            {
+                _usuario = usuario;
+            }
+
             ViewBag.usuario = _usuario;
             ViewBag.tags = _context.Tags;
             return _context.Maquillajes != null ? 
@@ -156,6 +161,43 @@ namespace duendeMakeApp.Controllers
         private bool MaquillajeExists(int id)
         {
           return (_context.Maquillajes?.Any(e => e.MaquillajeId == id)).GetValueOrDefault();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Filtrar(string selectedTag)
+        {
+            ViewBag.usuario = _usuario;
+            ViewBag.tags = _context.Tags;
+            //obtener maquillajes filtrados por tag
+            Console.WriteLine("selectedTag: " + selectedTag);
+            if (selectedTag != null || selectedTag == "Todas")
+            {
+                ViewBag.selectedTag = selectedTag;
+                // hay que obtener las imagenes de los maquillajes y si al menos una tiene el tag seleccionado, se muestra
+                var maquillajes = await _context.Maquillajes.ToListAsync();
+                var maquillajesFiltrados = new List<Maquillaje>();
+                foreach (var maquillaje in maquillajes)
+                {
+                    var imagenes = maquillaje.Imagens;
+                    foreach (var imagen in imagenes)
+                    {
+                        var tags = await _context.Tags.ToListAsync();
+                        foreach (var tag in tags)
+                        {
+                            if (tag.Nombre == selectedTag)
+                            {
+                                maquillajesFiltrados.Add(maquillaje);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                //retorna la vista index pero con el modelo de maquillajes filtrados
+                return View("Index", maquillajesFiltrados);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

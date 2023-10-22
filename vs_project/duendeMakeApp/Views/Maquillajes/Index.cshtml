@@ -22,13 +22,14 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Categorías
+                        Categoría
+                        @ViewBag.selectedTag
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" asp-area="" asp-controller="Maquillajes" asp-action="Filtrar" name="selectedTag">Todas</a>
                         @foreach (Tag tag in ViewBag.tags)
                         {
-                            <a class="dropdown-item">@tag.Nombre</a>
-                            @*<a class="dropdown-item" asp-area="" asp-controller="Tags" asp-action="Index">Halloween</a>*@
+                            <a class="dropdown-item" asp-area="" asp-controller="Maquillajes" asp-action="Filtrar" name="selectedTag" asp-route-selectedTag="@tag.Nombre">@tag.Nombre</a>
                         }
                     </div>
                 </li>
@@ -38,8 +39,10 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
-                <a class="btn btn-primary" asp-action="Create">Agregar maquillaje</a>
+                @if (ViewBag.usuario.TipoId == 1)
+                {
+                    <a class="btn btn-primary" asp-action="Create">Agregar maquillaje</a>
+                }
             </form>
         </div>
     </nav>

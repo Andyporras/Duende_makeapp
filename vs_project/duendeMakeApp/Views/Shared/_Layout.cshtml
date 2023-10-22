@@ -17,11 +17,26 @@
             @if (ViewBag.usuario.UsuarioId == null || ViewBag.usuario.UsuarioId == 0 || ViewBag.usuario.TipoUsuario.TipoUsuarioId == 2)
             {
                 <h1>Soy un cliente</h1>
+                <p>id: @ViewBag.usuario.UsuarioId</p>
+                <p>nombre: @ViewBag.usuario.Nombre</p>
+                <p>correo: @ViewBag.usuario.Correo</p>
+                <p>tipo: @ViewBag.usuario.TipoId</p>
             }
         }
         catch (Exception ex)
         {
-            <h1>falta implementar validación de usuario en sesion</h1>
+            if (ViewBag.usuario == null)
+            {
+                <h1>falta implementar validación de usuario en sesion</h1>
+            }
+            else
+            {
+                <h1>Soy administrador</h1>
+                <p>id: @ViewBag.usuario.UsuarioId</p>
+                <p>nombre: @ViewBag.usuario.Nombre</p>
+                <p>correo: @ViewBag.usuario.Correo</p>
+                <p>tipo: @ViewBag.usuario.TipoId</p>
+            }
         }
         
         <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #202124 !important;">
@@ -68,9 +83,28 @@
                             aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
-                        Iniciar sesión
-                    </button>
+                    @*si el usuario no es null, entonces se muestra el boton de cerrar sesion*@
+                    @try
+                    {
+                        @if (ViewBag.usuario.UsuarioId != 0)
+                        {
+                            <a class="btn btn-outline-danger" asp-controller="Usuarios" asp-action="CerrarSesion">
+                                Cerrar Sesión
+                            </a>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                Iniciar sesión
+                            </button>
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            Iniciar sesión
+                        </button>
+                    }
                 </form>
 
             </div>

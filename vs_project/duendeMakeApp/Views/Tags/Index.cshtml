@@ -4,10 +4,24 @@
     ViewData["Title"] = "Index";
 }
 
+@*<div class="alert alert-info">usuario: @ViewBag.Usuario.TipoID</div> *@
+
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @try
+    {
+        @* <div class="alert alert-info">usuario: @ViewBag.usuario.TipoId</div> *@
+        @if (ViewBag.usuario.TipoId == 1)
+        {
+            <a asp-action="Create">Create New</a>
+        }
+    }
+    catch (Exception e)
+    {
+        @* no se muestra el crear *@
+    }
+   
 </p>
 <table class="table">
     <thead>

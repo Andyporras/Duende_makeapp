@@ -12,15 +12,25 @@ namespace duendeMakeApp.Controllers
     public class TagsController : Controller
     {
         private readonly DuendeappContext _context;
+        private static Usuario? _usuario;
 
-        public TagsController(DuendeappContext context)
+        public TagsController(DuendeappContext context, Usuario usuario)
         {
+            _usuario = usuario;
             _context = context;
         }
 
         // GET: Tags
         public async Task<IActionResult> Index()
         {
+            String correo = Usuario.SeccionActual;
+            if(correo != null)
+            {
+                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            }
+   
+            ViewBag.Usuario = _usuario;
+            ViewBag.Tags = _context.Tags;
               return _context.Tags != null ? 
                           View(await _context.Tags.ToListAsync()) :
                           Problem("Entity set 'DuendeappContext.Tags'  is null.");

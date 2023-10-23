@@ -23,10 +23,14 @@ namespace duendeMakeApp.Controllers
         // GET: Maquillajes
         public async Task<IActionResult> Index(int usuarioId)
         {
-            Usuario usuario = UsuariosController.GetUsuario(usuarioId, _context);
-            if (usuario != null)
+            String correo = Usuario.SeccionActual;
+            if (correo != "")
             {
-                _usuario = usuario;
+                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            }
+            else
+            {
+                _usuario = null;
             }
 
             ViewBag.usuario = _usuario;

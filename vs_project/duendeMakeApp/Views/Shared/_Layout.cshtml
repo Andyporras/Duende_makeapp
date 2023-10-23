@@ -91,7 +91,19 @@
                     }
                     catch (Exception ex)
                     {
-                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:#fafafa">
+                                Otros
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-header">se muestra para facilidad, pero se debe quitar despues si es un cliente</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Tags" asp-action="Index">Tags</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Catalogos" asp-action="Index">Catálogos</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Paquetes" asp-action="Index">Paquetes</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Categorias" asp-action="Index">Categorías</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Subcategorias" asp-action="Index">Sub-categorías</a>
+                            </div>
+                        </li>
                     }
                 </ul>
 

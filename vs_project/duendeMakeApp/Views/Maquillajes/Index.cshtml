@@ -134,11 +134,18 @@
                                                 <div class="modal-footer modal-footer-makeup">
                                                     @if (ViewBag.usuario.TipoId != 1)
                                                     {
-                                                        <a asp-action="" asp-route-id="" class="btn btn-primary btn-moddal-makeup-primary">Contratar</a>
+                                                            if(ViewBag.usuario.UsuarioId == 0)
+                                                            {
+                                                                <p class="btn btn-primary btn-moddal-makeup-primary" data-bs-toggle="modal" data-bs-target="#loginModal" data-dismiss="modal">Contratar</p>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a asp-action="" asp-route-id="" class="btn btn-primary btn-moddal-makeup-primary">Contratar</a>
+                                                            }
                                                     } else
                                                     {
-                                                        <a class="btn btn-danger btn-moddal-makeup-secondary" asp-action="Delete" asp-route-id="@maquillaje.MaquillajeId">Eliminar</a>
-                                                        <a asp-action="Edit" asp-route-id="@maquillaje.MaquillajeId" asp-route-usuarioId="@ViewBag.usuario.UsuarioId" class="btn btn-info btn-moddal-makeup-secondary">Editar</a>
+                                                        <a class="btn btn-danger btn-moddal-makeup-secondary" asp-action="Delete" asp-route-id="@maquillaje.MaquillajeId" asp-route-usuarioId="@ViewBag.usuario.UsuarioId">Eliminar</a>
+                                                        <a class="btn btn-info btn-moddal-makeup-secondary" asp-action="Edit" asp-route-id="@maquillaje.MaquillajeId" asp-route-usuarioId="@ViewBag.usuario.UsuarioId">Editar</a>
                                                     }
                                                 </div>
                                             </td>

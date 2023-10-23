@@ -214,19 +214,21 @@ namespace duendeMakeApp.Controllers
         }
 
         // GET: Maquillajes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int usuarioId)
         {
             if (id == null || _context.Maquillajes == null)
             {
                 return NotFound();
             }
 
-            var maquillaje = await _context.Maquillajes
-                .FirstOrDefaultAsync(m => m.MaquillajeId == id);
+            Maquillaje maquillaje = _context.Maquillajes.Include(m => m.Imagens).ThenInclude(i => i.Tags).FirstOrDefault(m => m.MaquillajeId == id);
             if (maquillaje == null)
             {
                 return NotFound();
             }
+            Usuario usuario = UsuariosController.GetUsuario(usuarioId, _context);
+            ViewBag.usuario = usuario;
+            ViewBag.Tags = _context.Tags.ToList();
 
             return View(maquillaje);
         }
@@ -234,20 +236,36 @@ namespace duendeMakeApp.Controllers
         // POST: Maquillajes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int usuarioId)
         {
+            Usuario usuario = UsuariosController.GetUsuario(usuarioId, _context);
+            ViewBag.usuario = usuario;
+            ViewBag.Tags = _context.Tags.ToList();
+            Console.WriteLine("id: " + id);
+            Console.WriteLine("idUsuario: " + usuarioId);
             if (_context.Maquillajes == null)
             {
                 return Problem("Entity set 'DuendeappContext.Maquillajes'  is null.");
             }
-            var maquillaje = await _context.Maquillajes.FindAsync(id);
+
+            Maquillaje maquillaje = _context.Maquillajes.Include(m => m.Imagens).FirstOrDefault(m => m.MaquillajeId == id);
+
             if (maquillaje != null)
             {
+                // Hacer una copia de la lista de imágenes
+                List<Imagen> imagenesACopiar = maquillaje.Imagens.ToList();
+
+                // Iterar sobre la copia de la lista de imágenes y eliminarlas del maquillaje
+                foreach (Imagen imagen in imagenesACopiar)
+                {
+                    maquillaje.Imagens.Remove(imagen);
+                }
+
                 _context.Maquillajes.Remove(maquillaje);
             }
-            
+
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), usuario);
         }
 
         private bool MaquillajeExists(int id)

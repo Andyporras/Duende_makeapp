@@ -175,6 +175,7 @@ namespace duendeMakeApp.Controllers
             var paquete = await _context.Paquetes.FindAsync(id);
             if (paquete != null)
             {
+                // Hacer copias de las listas de productos y paquetes
                 _context.Paquetes.Remove(paquete);
             }
             

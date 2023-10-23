@@ -69,6 +69,9 @@ namespace duendeMakeApp.Controllers
         // GET: Catalogos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            String correo = Usuario.SeccionActual;
+            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            ViewBag.Usuario = _usuario;
             if (id == null || _context.Catalogos == null)
             {
                 return NotFound();
@@ -81,7 +84,6 @@ namespace duendeMakeApp.Controllers
             
             ViewBag.productos = _context.Productos;
             ViewBag.paquetes = _context.Paquetes;
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
 
             if (catalogo == null)
             {
@@ -97,6 +99,9 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int CatalogoId, [Bind("CatalogoId,Nombre,Descripcion,Estado")] Catalogo catalogo, List<int> ProductosIds, List<int> PaquetesIds)
         {
+            String correo = Usuario.SeccionActual;
+            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            ViewBag.Usuario = _usuario;
             if (CatalogoId != catalogo.CatalogoId)
             {
                 return NotFound();

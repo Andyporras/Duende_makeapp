@@ -8,7 +8,7 @@
 
 @try
 {
-    @if (ViewBag.Usuario.Tipo.Tipo == "admin")
+    @if (ViewBag.Usuario.TipoId == 1)
     {
         <h4>Catálogo @Model.CatalogoId</h4>
         <hr />
@@ -80,9 +80,10 @@
         <div class="alert alert-danger">Acceso denegado.</div>
     }
 }
-catch (Exception)
+catch (Exception ex)
 {
     <div class="alert alert-danger">Acceso denegado.</div>
+    @ex
 }
 
 

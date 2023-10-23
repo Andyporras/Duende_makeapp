@@ -39,13 +39,21 @@
             @Html.DisplayNameFor(model => model.Estado)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
+            @if (Model.Estado == true)
+            {
+                <h5><span class="badge badge-success">Activo</span></h5>
+            }
+            else
+            {
+                <h5><span class="badge badge-danger">Inactivo</span></h5>
+            }
         </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="PaqueteId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="hidden" asp-for="PaqueteId" name="id"/>
+        @* <input type="submit" value="Delete" class="btn btn-danger" /> | *@
+        <a class="btn btn-primary" asp-action="Index">Regresar</a>
+        <input class="btn btn-danger" type="submit" value="Eliminar" />
     </form>
 </div>

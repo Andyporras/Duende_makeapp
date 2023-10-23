@@ -1,0 +1,33 @@
+﻿@model IEnumerable<duendeMakeApp.Models.Producto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+        <H1>Carrito de compras</H1>
+ 
+        
+        
+        <table class="table table-striped ">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripcion</th>
+                    <th>Precio</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Nombre</td>
+                        <td>@item.Descripcion</td>
+                        <td>@item.Precio</td>
+
+
+                    </tr>
+
+                }
+            </tbody>
+        </table>

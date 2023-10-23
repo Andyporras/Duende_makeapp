@@ -6,12 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using duendeMakeApp.Models;
+using System.ComponentModel;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace duendeMakeApp.Controllers
 {
     public class ProductosController : Controller
     {
         private readonly DuendeappContext _context;
+        private List<Producto> productosCarrito = new List<Producto>();
 
         public ProductosController(DuendeappContext context)
         {
@@ -168,6 +172,182 @@ namespace duendeMakeApp.Controllers
         private bool ProductoExists(int id)
         {
           return (_context.Productos?.Any(e => e.ProductoId == id)).GetValueOrDefault();
+        }
+
+
+
+
+        public IActionResult index3()
+        {
+
+            var oLista = new List<Producto>();
+            using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
+
+            {
+                conexion.Open();
+                SqlCommand cmd = new SqlCommand("ObtenerProductosEnCarrito", conexion);
+                cmd.Parameters.AddWithValue("@CarritoID", 2);
+                cmd.Parameters.AddWithValue("@UsuarioID", 1);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                using (var dr = cmd.ExecuteReader())
+                {
+
+                    while (dr.Read())
+                    {
+                        oLista.Add(new Producto()
+                        {
+                            ProductoId = (int)dr["ProductoID"]
+,
+                            Nombre = dr["Nombre"].ToString(),
+
+                            Descripcion = dr["Descripcion"].ToString(),
+
+                            Precio = (decimal)dr["Precio"],
+
+                            Cantidad = (int?)dr["Cantidad"],
+
+                            CategoriaId = (int)dr["CategoriaID"],
+                            Estado = true,
+                            ImagenId = (int)dr["ImagenID"],
+
+                        });
+
+                    }
+                }
+            }
+
+            return View(oLista);
+        }
+
+
+        public IActionResult agregarAlCarrito(int id)
+        {
+
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
+                {
+                    conexion.Open();
+
+                    SqlCommand cmd = new SqlCommand("AgregarProductoCarrito", conexion);
+
+
+                    cmd.Parameters.AddWithValue("@idProducto", id);
+                    cmd.Parameters.AddWithValue("@idCarrito", 2);
+                    cmd.Parameters.AddWithValue("@idCliente", 1);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.ExecuteNonQuery();
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                string error = e.Message;
+                TempData["mensaje"] = "El producto ya se encuentra en el carrito.";
+                return RedirectToAction("Index", "Productos");
+
+            }
+            TempData["mensaje"] = "Producto agregado al carrito exitosamente.";
+            return RedirectToAction("index", "Productos");
+        }
+
+
+
+        public IActionResult eliminarDelCarrrito(int id)
+        {
+
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
+                {
+                    conexion.Open();
+
+                    SqlCommand cmd = new SqlCommand("eliminarDelCarrito", conexion);
+
+
+                    cmd.Parameters.AddWithValue("@IDProducto", id);
+                    cmd.Parameters.AddWithValue("@IDCarrito", 2);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.ExecuteNonQuery();
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                string error = e.Message;
+                TempData["mensaje"] = "Ha sucedido un error inesperado";
+                return RedirectToAction("index3", "Productos");
+
+            }
+            TempData["mensaje"] = "Producto eliminado del carrito exitosamente.";
+            return RedirectToAction("index3", "Productos");
+        }
+
+
+
+        public IActionResult SumarProducto(int id)
+        {
+
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
+                {
+                    conexion.Open();
+
+                    SqlCommand cmd = new SqlCommand("SumarCantidadProductos", conexion);
+
+
+                    cmd.Parameters.AddWithValue("@IDProducto", id);
+                    cmd.Parameters.AddWithValue("@IDCarrito", 2);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.ExecuteNonQuery();
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                string error = e.Message;
+                TempData["mensaje"] = "Ha sucedido un error inesperado";
+                return RedirectToAction("index3", "Productos");
+
+            }
+            return RedirectToAction("index3", "Productos");
+        }
+
+
+        public IActionResult RestarProducto(int id)
+        {
+
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
+                {
+                    conexion.Open();
+
+                    SqlCommand cmd = new SqlCommand("RestarCantidadProductos", conexion);
+
+
+                    cmd.Parameters.AddWithValue("@IDProducto", id);
+                    cmd.Parameters.AddWithValue("@IDCarrito", 2);
+                    cmd.Parameters.AddWithValue("@cantFinal", 1);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.ExecuteNonQuery();
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                string error = e.Message;
+                TempData["mensaje"] = "Ha sucedido un error inesperado";
+                return RedirectToAction("index3", "Productos");
+
+            }
+            return RedirectToAction("index3", "Productos");
         }
     }
 }

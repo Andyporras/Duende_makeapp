@@ -12,16 +12,29 @@ namespace duendeMakeApp.Controllers
     public class CategoriasController : Controller
     {
         private readonly DuendeappContext _context;
+        private static Usuario? _usuario;
 
-        public CategoriasController(DuendeappContext context)
+        public CategoriasController(DuendeappContext context, Usuario usuario)
         {
+            _usuario = usuario;
             _context = context;
         }
 
         // GET: Categorias
         public async Task<IActionResult> Index()
         {
-              return _context.Categoria != null ? 
+            String correo = Usuario.SeccionActual;
+            if (correo != "")
+            {
+                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            }
+            else
+            {
+                _usuario = null;
+            }
+
+            ViewBag.Usuario = _usuario;
+            return _context.Categoria != null ? 
                           View(await _context.Categoria.ToListAsync()) :
                           Problem("Entity set 'DuendeappContext.Categoria'  is null.");
         }

@@ -12,16 +12,29 @@ namespace duendeMakeApp.Controllers
     public class PaquetesController : Controller
     {
         private readonly DuendeappContext _context;
+        private static Usuario? _usuario;
 
-        public PaquetesController(DuendeappContext context)
+        public PaquetesController(DuendeappContext context, Usuario usuario)
         {
+            _usuario = usuario;
             _context = context;
         }
 
         // GET: Paquetes
         public async Task<IActionResult> Index()
         {
-              return _context.Paquetes != null ? 
+            String correo = Usuario.SeccionActual;
+            if (correo != "")
+            {
+                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            }
+            else
+            {
+                _usuario = null;
+            }
+
+            ViewBag.Usuario = _usuario;
+            return _context.Paquetes != null ? 
                           View(await _context.Paquetes.ToListAsync()) :
                           Problem("Entity set 'DuendeappContext.Paquetes'  is null.");
         }

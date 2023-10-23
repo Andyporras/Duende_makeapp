@@ -152,11 +152,17 @@
 
 
                         </div>
-                        <div class="modal-footer">
-                            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@producto.ProductoId">Eliminar</a>
-                            <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@producto.ProductoId">Editar</a>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                        </div>
+                        @try{
+                            @if (ViewBag.usuario.TipoId == 1)
+                            {
+                                <div class="modal-footer">
+                                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@producto.ProductoId">Eliminar</a>
+                                    <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@producto.ProductoId">Editar</a>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                </div>
+                            }
+                        }
+                        catch(Exception e){}
                     </div>
                 </div>
             </div>

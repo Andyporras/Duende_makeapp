@@ -12,16 +12,29 @@ namespace duendeMakeApp.Controllers
     public class SubcategoriasController : Controller
     {
         private readonly DuendeappContext _context;
+        private static Usuario? _usuario;
 
-        public SubcategoriasController(DuendeappContext context)
+        public SubcategoriasController(DuendeappContext context, Usuario usuario)
         {
+            _usuario = usuario;
             _context = context;
         }
 
         // GET: Subcategorias
         public async Task<IActionResult> Index()
         {
-              return _context.Subcategoria != null ? 
+            String correo = Usuario.SeccionActual;
+            if (correo != "")
+            {
+                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            }
+            else
+            {
+                _usuario = null;
+            }
+
+            ViewBag.Usuario = _usuario;
+            return _context.Subcategoria != null ? 
                           View(await _context.Subcategoria.ToListAsync()) :
                           Problem("Entity set 'DuendeappContext.Subcategoria'  is null.");
         }

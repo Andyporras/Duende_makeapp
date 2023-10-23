@@ -167,7 +167,10 @@ namespace duendeMakeApp.Controllers
             TipoUsuario tipoUsuario = _context.TipoUsuarios.Where(item => item.TipoUsarioId == tipo).FirstOrDefault();
             // guardamos el tipo de usuario en la sesion
 
-            TempData["Usuario"] = tipoUsuario.Tipo;
+            //TempData["Usuario"] = usuario;
+            // cambiar el valor de inicio de seccion en Usuario
+            Usuario.SeccionActual = correo;
+            //TempData["Mensaje"] = "Bienvenido " + usuario.Nombre + " " + usuario.Apellido + " al sistema de Duende MakeApp";
             return RedirectToAction("Index", "Maquillajes", usuario);
         }
 
@@ -251,6 +254,7 @@ namespace duendeMakeApp.Controllers
         public async Task<IActionResult> CerrarSesion()
         {
             TempData["Usuario"] = null;
+            Usuario.SeccionActual = "";
             return RedirectToAction("Index", "Maquillajes");
         }
 

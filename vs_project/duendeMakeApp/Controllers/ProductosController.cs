@@ -16,15 +16,28 @@ namespace duendeMakeApp.Controllers
     {
         private readonly DuendeappContext _context;
         private List<Producto> productosCarrito = new List<Producto>();
+        private static Usuario? _usuario;
 
-        public ProductosController(DuendeappContext context)
+        public ProductosController(DuendeappContext context, Usuario usuario)
         {
+            _usuario = usuario;
             _context = context;
         }
 
         // GET: Productos
         public async Task<IActionResult> Index()
         {
+            String correo = Usuario.SeccionActual;
+            if (correo != "")
+            {
+                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            }
+            else
+            {
+                _usuario = null;
+            }
+
+            ViewBag.Usuario = _usuario;
             var duendeappContext = _context.Productos.Include(p => p.Categoria).Include(p => p.Imagen);
             return View(await duendeappContext.ToListAsync());
         }

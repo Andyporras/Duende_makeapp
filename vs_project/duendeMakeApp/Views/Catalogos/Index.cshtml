@@ -1,47 +1,62 @@
 ﻿@model IEnumerable<duendeMakeApp.Models.Catalogo>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Catálogos";
 }
 
-<h1>Index</h1>
+@try
+{
+    @if (ViewBag.Usuario.Tipo.Tipo == "admin")
+    {
+        <h1>Catálogos</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descripcion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descripcion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CatalogoId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CatalogoId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CatalogoId">Delete</a>
-            </td>
-        </tr>
+        <p>
+            <a class="btn btn-primary" asp-action="Create">Crear nuevo catálogo</a>
+        </p>
+        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+                    <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
+                    <th>@Html.DisplayNameFor(model => model.Estado)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="myTable">
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descripcion)
+                        </td>
+                        <td>
+                            @if (item.Estado == true)
+                            {
+                                <h5><span class="badge badge-success">Activo</span></h5>
+                            }
+                            else
+                            {
+                                <h5><span class="badge badge-danger">Inactivo</span></h5>
+                            }
+                        </td>
+                        <td>
+                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.CatalogoId">Editar</a>
+                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.CatalogoId">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else {
+        <div class="alert alert-danger">Acceso ddenegado.</div>
+    }
 }
-    </tbody>
-</table>
+catch (Exception ex)
+{
+    <div class="alert alert-danger">Acceso denegado.</div>
+    @ex
+}

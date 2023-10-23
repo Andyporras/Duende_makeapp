@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://mdbcdn.b-cdn.net/wp-content/themes/mdbootstrap4/docs-app/css/dist/mdb5/standard/core.min.css">
     <link rel="stylesheet" id="roboto-subset.css-css" href="https://mdbcdn.b-cdn.net/wp-content/themes/mdbootstrap4/docs-app/css/mdb5/fonts/roboto-subset.css?ver=3.9.0-update.5" type="text/css" media="all">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.18/r-2.2.2/datatables.min.css" />
 </head>
 <body>
     <header>
@@ -65,10 +66,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="navbar-brand" asp-area="" asp-controller="Maquillajes" asp-action="Index" style="color: #fafafa !important;">Galeria</a>
+                        <a class="navbar-brand" asp-controller="Maquillajes" asp-action="Index" style="color: #fafafa !important;">Galeria</a>
                     </li>
                     <li class="nav-item">
-                        <a class="navbar-brand" asp-area="" asp-controller="Productos" asp-action="Index" style="color: #fafafa !important;">Productos</a>
+                        <a class="navbar-brand" asp-controller="Productos" asp-action="Index" style="color: #fafafa !important;">Productos</a>
                     </li>
                     @try
                     {
@@ -79,12 +80,11 @@
                                     Otros
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-header">se muestra para facilidad, pero se debe quitar despues si es un cliente</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Tags" asp-action="Index">Tags</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Catalogos" asp-action="Index">Catálogos</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Paquetes" asp-action="Index">Paquetes</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Categorias" asp-action="Index">Categorías</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Subcategorias" asp-action="Index">Sub-categorías</a>
+                                    <a class="dropdown-item" asp-controller="Tags" asp-action="Index">Tags</a>
+                                    <a class="dropdown-item" asp-controller="Catalogos" asp-action="Index">Catálogos</a>
+                                    <a class="dropdown-item" asp-controller="Paquetes" asp-action="Index">Paquetes</a>
+                                    <a class="dropdown-item" asp-controller="Categorias" asp-action="Index">Categorías</a>
+                                    <a class="dropdown-item" asp-controller="Subcategorias" asp-action="Index">Sub-categorías</a>
                                 </div>
                             </li>
                         }
@@ -255,6 +255,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://mdbcdn.b-cdn.net/wp-content/themes/mdbootstrap4/docs-app/js/dist/mdb5/standard/core.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.18/r-2.2.2/datatables.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

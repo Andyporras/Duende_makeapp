@@ -7,16 +7,19 @@ namespace duendeMakeApp.Controllers
     public class CatalogosController : Controller
     {
         private readonly DuendeappContext _context;
+        private static Usuario? _usuario;
 
-        public CatalogosController(DuendeappContext context)
+        public CatalogosController(DuendeappContext context, Usuario usuario)
         {
             _context = context;
+            _usuario = usuario;
         }
 
         // GET: Catalogos
         public async Task<IActionResult> Index()
         {
-              return _context.Catalogos != null ? 
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            return _context.Catalogos != null ? 
                           View(await _context.Catalogos.ToListAsync()) :
                           Problem("Entity set 'DuendeappContext.Catalogos'  is null.");
         }
@@ -42,6 +45,7 @@ namespace duendeMakeApp.Controllers
         // GET: Catalogos/Create
         public IActionResult Create()
         {
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
             return View();
         }
 
@@ -58,6 +62,7 @@ namespace duendeMakeApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
             return View(catalogo);
         }
 
@@ -69,7 +74,15 @@ namespace duendeMakeApp.Controllers
                 return NotFound();
             }
 
-            var catalogo = await _context.Catalogos.FindAsync(id);
+            var catalogo = await _context.Catalogos
+                .Include(c => c.Productos)
+                .Include(c => c.Paquetes)
+                .FirstOrDefaultAsync(c => c.CatalogoId == id);
+            
+            ViewBag.productos = _context.Productos;
+            ViewBag.paquetes = _context.Paquetes;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+
             if (catalogo == null)
             {
                 return NotFound();
@@ -82,9 +95,9 @@ namespace duendeMakeApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CatalogoId,Nombre,Descripcion,Estado")] Catalogo catalogo)
+        public async Task<IActionResult> Edit(int CatalogoId, [Bind("CatalogoId,Nombre,Descripcion,Estado")] Catalogo catalogo, List<int> ProductosIds, List<int> PaquetesIds)
         {
-            if (id != catalogo.CatalogoId)
+            if (CatalogoId != catalogo.CatalogoId)
             {
                 return NotFound();
             }
@@ -93,7 +106,56 @@ namespace duendeMakeApp.Controllers
             {
                 try
                 {
-                    _context.Update(catalogo);
+                    Catalogo? catalagoRegistrado = await _context.Catalogos
+                        .Include(c => c.Productos)
+                        .Include(c => c.Paquetes)
+                        .FirstOrDefaultAsync(c => c.CatalogoId == CatalogoId);
+                    
+                    catalagoRegistrado.Nombre = catalogo.Nombre;
+                    catalagoRegistrado.Descripcion = catalogo.Descripcion;
+                    catalagoRegistrado.Estado = catalogo.Estado;
+
+                    if (catalagoRegistrado != null)
+                    {
+                        // Hacer copias de las listas de productos y paquetes
+                        List<Producto> productosACopiar = catalagoRegistrado.Productos.ToList();
+                        List<Paquete> paquetesACopiar = catalagoRegistrado.Paquetes.ToList();
+
+                        // Iterar sobre las copias de las listas y eliminar los elementos de las copias
+                        foreach (Producto producto in productosACopiar)
+                        {
+                            catalagoRegistrado.Productos.Remove(producto);
+                        }
+
+                        foreach (Paquete paquete in paquetesACopiar)
+                        {
+                            catalagoRegistrado.Paquetes.Remove(paquete);
+                        }
+                    }
+                    await _context.SaveChangesAsync();
+
+                    //asociar los productos y paquetes
+                    foreach (int id in ProductosIds)
+                    {
+                        Producto? producto = _context.Productos.Find(id);
+                        if (producto != null)
+                        {
+                            catalagoRegistrado.Productos.Add(producto);
+                        }
+                    }
+                    
+                    foreach (int id in PaquetesIds)
+                    {
+                        Paquete? paquete = _context.Paquetes.Find(id);
+                        if (paquete != null)
+                        {
+                            catalagoRegistrado.Paquetes.Add(paquete);
+                        }
+                    }
+                    //_context.Entry(catalogo).State = EntityState.Modified;
+                    //_context.Entry(catalogo).Collection(c => c.Productos).IsModified = true;
+                    //_context.Entry(catalogo).Collection(c => c.Paquetes).IsModified = true;
+                    _context.Update(catalagoRegistrado);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -122,6 +184,8 @@ namespace duendeMakeApp.Controllers
 
             var catalogo = await _context.Catalogos
                 .FirstOrDefaultAsync(m => m.CatalogoId == id);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+
             if (catalogo == null)
             {
                 return NotFound();
@@ -139,7 +203,33 @@ namespace duendeMakeApp.Controllers
             {
                 return Problem("Entity set 'DuendeappContext.Catalogos'  is null.");
             }
-            var catalogo = await _context.Catalogos.FindAsync(id);
+            var catalogo = await _context.Catalogos
+                .Include(c => c.Productos)
+                .Include(c => c.Paquetes)
+                .FirstOrDefaultAsync(c => c.CatalogoId == id);
+
+            if (catalogo != null)
+            {
+                // Hacer copias de las listas de productos y paquetes
+                List<Producto> productosACopiar = catalogo.Productos.ToList();
+                List<Paquete> paquetesACopiar = catalogo.Paquetes.ToList();
+
+                // Iterar sobre las copias de las listas y eliminar los elementos de las copias
+                foreach (Producto producto in productosACopiar)
+                {
+                    catalogo.Productos.Remove(producto);
+                }
+
+                foreach (Paquete paquete in paquetesACopiar)
+                {
+                    catalogo.Paquetes.Remove(paquete);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+
+
             if (catalogo != null)
             {
                 _context.Catalogos.Remove(catalogo);

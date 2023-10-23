@@ -1,39 +1,58 @@
 ﻿@model duendeMakeApp.Models.Catalogo
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar catálogo";
 }
+@try
+{
+    @if (ViewBag.Usuario.Tipo.Tipo == "admin")
+    {
+        <h1>Eliminar</h1>
 
-<h1>Delete</h1>
-
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Catalogo</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descripcion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descripcion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-    </dl>
+        <h3>¿Estás segura que deseas eliminar este catálogo?</h3>
+        <div>
+            <h4>Catalogo @Model.CatalogoId</h4>
+            <hr />
+            <dl class="row">
+                <dt class = "col-sm-2">
+                    @Html.DisplayNameFor(model => model.Nombre)
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.Nombre)
+                </dd>
+                <dt class = "col-sm-2">
+                    @Html.DisplayNameFor(model => model.Descripcion)
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.Descripcion)
+                </dd>
+                <dt class = "col-sm-2">
+                    @Html.DisplayNameFor(model => model.Estado)
+                </dt>
+                <dd class = "col-sm-10">
+                    @if (Model.Estado == true)
+                    {
+                        <h5><span class="badge badge-success">Activo</span></h5>
+                    }
+                    else
+                    {
+                        <h5><span class="badge badge-danger">Inactivo</span></h5>
+                    }
+                </dd>
+            </dl>
     
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="CatalogoId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
-</div>
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="CatalogoId" name="id" />
+                <a class="btn btn-primary" asp-action="Index">Regresar</a>
+                <input class="btn btn-danger" type="submit" value="Eliminar"/>
+            </form>
+        </div>
+    }
+    else {
+        <div class="alert alert-danger">Acceso denegado.</div>
+    }
+}
+catch (Exception ex)
+{
+    <div class="alert alert-danger">Acceso denegado.</div>
+}

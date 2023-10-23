@@ -23,17 +23,7 @@ namespace duendeMakeApp.Controllers
         // GET: Maquillajes
         public async Task<IActionResult> Index(int usuarioId)
         {
-            String correo = Usuario.SeccionActual;
-            if (correo != "")
-            {
-                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            }
-            else
-            {
-                _usuario = null;
-            }
-
-            ViewBag.usuario = _usuario;
+            ViewBag.usuario = UsuariosController.GetSessionUser(_context);
             ViewBag.tags = _context.Tags;
             var maquillajes = _context.Maquillajes.Include(m => m.Imagens).ThenInclude(i => i.Tags).ToList();
             return maquillajes != null ? 

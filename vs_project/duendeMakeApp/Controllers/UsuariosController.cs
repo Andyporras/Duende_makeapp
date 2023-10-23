@@ -259,9 +259,17 @@ namespace duendeMakeApp.Controllers
         }
 
         //una funcion estatica para obtener el objeto de un Usuario que se busca por id
-        public static Usuario GetUsuario(int id, DuendeappContext context)
+        public static Usuario? GetUsuario(int id, DuendeappContext context)
         {
             Usuario? usuario = context.Usuarios.Where(item => item.UsuarioId == id).FirstOrDefault();
+            return usuario;
+        }
+
+        public static Usuario? GetSessionUser(DuendeappContext _context)
+        {
+            String correo = Usuario.SeccionActual;
+            Usuario? usuario = _context.Usuarios.Where(u => u.Correo == correo).Include(u => u.Tipo).FirstOrDefault();
+
             return usuario;
         }
     }

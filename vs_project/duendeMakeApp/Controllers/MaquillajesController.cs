@@ -129,7 +129,7 @@ namespace duendeMakeApp.Controllers
 
 
         // GET: Maquillajes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int usuarioId)
         {
             if (id == null || _context.Maquillajes == null)
             {
@@ -141,44 +141,76 @@ namespace duendeMakeApp.Controllers
             {
                 return NotFound();
             }
+            Usuario usuario = UsuariosController.GetUsuario(usuarioId, _context);
+            ViewBag.usuario = usuario;
+            ViewBag.Tags = _context.Tags.ToList();
             return View(maquillaje);
         }
+
+
 
         // POST: Maquillajes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MaquillajeId,Nombre,Descripcion,Estado")] Maquillaje maquillaje)
+        public async Task<IActionResult> Edit(int idUsuario, [Bind("MaquillajeId,Nombre,Descripcion,Estado")] Maquillaje maquillaje, List<int> TagIds, List<IFormFile> Imagens)
         {
-            Console.WriteLine("id: " + id);
+            Console.WriteLine("id: " + idUsuario);
             Console.WriteLine("MaquillajeId: " + maquillaje.MaquillajeId);
-            if (id != maquillaje.MaquillajeId)
-            {
-                return NotFound();
-            }
-
+            Usuario usuario = UsuariosController.GetUsuario(idUsuario, _context);
             if (ModelState.IsValid)
             {
-                try
+                Maquillaje maquillajeRegistrado = _context.Maquillajes.Find(maquillaje.MaquillajeId);
+                if (maquillajeRegistrado == null)
                 {
-                    _context.Update(maquillaje);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+
+                maquillajeRegistrado.Nombre = maquillaje.Nombre;
+                maquillajeRegistrado.Descripcion = maquillaje.Descripcion;
+                //maquillajeRegistrado.Estado = maquillaje.Estado;
+
+                // Guarda las imágenes
+                // guardar imagen ImagensController tiene la funcion private async Create(string Nombre, string Descripcion, IFormFile imageFile)
+                foreach (var imageFile in Imagens)
                 {
-                    if (!MaquillajeExists(maquillaje.MaquillajeId))
+                    ImgurController imgurController = ImgurController.GetInstance(_clientFactory);
+                    string imgurImageUrl = await imgurController.SubirImagen(imageFile);
+                    if (imgurImageUrl != null)
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        Imagen imagen = new Imagen();
+                        imagen.Url = imgurImageUrl;
+                        imagen.Nombre = maquillaje.Nombre;
+                        imagen.Descripcion = maquillaje.Descripcion;
+                        _context.Imagens.Add(imagen);
+                        await _context.SaveChangesAsync();
+
+                        //int idImg = ImagenesController.buscarImagenXurl(imgurImageUrl, _context);
+                        int idImg = _context.Imagens.FirstOrDefault(i => i.Url == imgurImageUrl).ImagenId;
+
+                        if (idImg != 0)
+                        {
+                            maquillaje.Imagens.Add(_context.Imagens.Find(idImg));
+                        }
+
+                        foreach (int tagId in TagIds)
+                        {
+                            Tag tag = _context.Tags.Find(tagId);
+                            if (tag != null)
+                            {
+                                imagen.Tags.Add(tag);
+                            }
+                        }
+
+                        maquillajeRegistrado.Imagens.Add(imagen);
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(maquillaje);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index), usuario);
+            //return View(maquillaje);
         }
 
         // GET: Maquillajes/Delete/5

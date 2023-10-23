@@ -138,27 +138,27 @@
                                                     } else
                                                     {
                                                         <a class="btn btn-danger btn-moddal-makeup-secondary" asp-action="Delete" asp-route-id="@maquillaje.MaquillajeId">Eliminar</a>
-                                                        <a asp-action="Edit" asp-route-id="@maquillaje.MaquillajeId" class="btn btn-info btn-moddal-makeup-secondary">Editar</a>
+                                                        <a asp-action="Edit" asp-route-id="@maquillaje.MaquillajeId" asp-route-usuarioId="@ViewBag.usuario.UsuarioId" class="btn btn-info btn-moddal-makeup-secondary">Editar</a>
                                                     }
                                                 </div>
                                             </td>
                                             <td class="row">
-                                                <dt class="col-sm-2">
+                                                <dt class="">
                                                     @Html.DisplayNameFor(maquillaje => maquillaje.Nombre)
                                                 </dt>
-                                                <dd class="col-sm-10">
+                                                <dd class="">
                                                     @maquillaje.Nombre
                                                 </dd>
-                                                <dt class="col-sm-2">
+                                                <dt class="">
                                                     @Html.DisplayNameFor(maquillaje => maquillaje.Descripcion)
                                                 </dt>
-                                                <dd class="col-sm-10">
+                                                <dd class="">
                                                     @maquillaje.Descripcion
                                                 </dd>
-                                                <dt class="col-sm-2">
+                                                <dt class="">
                                                     @Html.DisplayNameFor(maquillaje => maquillaje.Estado)
                                                 </dt>
-                                                <dd class="col-sm-10">
+                                                <dd class="">
                                                     @maquillaje.Estado
                                                 </dd>
                                             </td>
@@ -167,9 +167,6 @@
                                     </table>
                                     
                                 </div>
-
-
-
                             </div>
                         </div>
                     </div>

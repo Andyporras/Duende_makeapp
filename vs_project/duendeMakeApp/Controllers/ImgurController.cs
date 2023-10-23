@@ -41,6 +41,7 @@ namespace duendeMakeApp.Controllers
                         if (response.IsSuccessStatusCode)
                         {
                             string responseData = await response.Content.ReadAsStringAsync();
+                            Console.WriteLine(responseData);
                             int startIndex = responseData.IndexOf("\"link\":\"") + 8;
                             int endIndex = responseData.IndexOf("\"", startIndex);
                             if (startIndex >= 8 && endIndex > startIndex)

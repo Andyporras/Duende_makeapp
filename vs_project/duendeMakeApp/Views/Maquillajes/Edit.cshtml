@@ -1,45 +1,75 @@
 ﻿@model duendeMakeApp.Models.Maquillaje
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar maquillaje";
+}
+@try
+{
+    @if (ViewBag.usuario.TipoId == 1)
+    {
+        <h1>Editar</h1>
+
+        <h4>Maquillaje @Model.MaquillajeId</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Edit" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="MaquillajeId" name="MaquillajeId" />
+                    <input type="hidden" value="@ViewBag.usuario.UsuarioId" name="idUsuario" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Nombre" class="control-label"></label>
+                        <input asp-for="Nombre" class="form-control" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Descripcion" class="control-label"></label>
+                        <input asp-for="Descripcion" class="form-control" />
+                        <span asp-validation-for="Descripcion" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        @*<label asp-for="Estado" class="control-label"></label>*@
+                        <input role="switch" type="hidden" asp-for="Estado" class="form-control" value="True" />
+                        <span asp-validation-for="Estado" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Seleccionar imagenes</label>
+                        <input type="file" class="form-control btn btn-secondary" name="Imagens" multiple>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Seleccionar Tags:</label>
+                        @foreach (var tag in ViewBag.Tags)
+                        {
+                            <label class="btn btn-secondary">
+                                <input type="checkbox" name="TagIds" value="@tag.TagId"> @tag.Nombre
+                            </label>
+                        }
+                    </div>
+                    <div class="form-group">
+                        <a type="button" class="btn btn-outline-danger" asp-controller="Imagenes" asp-action="Filtrar" asp-route-maquillajeId="@Model.MaquillajeId" asp-route-usuarioId="@ViewBag.usuario.UsuarioId">
+                            Modificar imagenes del maquillaje
+                        </a>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Guardar Cambios" class="btn btn-primary" />
+                        <a asp-action="Index" class="btn btn-danger" asp-route-usuarioId="@ViewBag.usuario.UsuarioId">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">Acceso denegado.</div>
+    }
+}
+catch (Exception)
+{
+    <div class="alert alert-danger">Acceso denegado.</div>
 }
 
-<h1>Editar</h1>
-
-<h4>Maquillaje @Model.MaquillajeId</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" asp-route-id="@Model.MaquillajeId">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="@Model.MaquillajeId"/>
-            <input type="hidden" asp-for="@Model.MaquillajeId" name="id"/>
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Guardar" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Volver</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

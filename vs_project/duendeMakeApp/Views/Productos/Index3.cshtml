@@ -1,0 +1,67 @@
+﻿@model IEnumerable<duendeMakeApp.Models.Producto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<section class="h-100 h-custom">
+    
+    <div class="container h-100 py-5">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
+                <h1>Carrito de compras</h1>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="h4">Producto</th>
+                                <th scope="col" class="h4">Precio</th>
+                                <th scope="col" class="h4">Cantidad</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://i.imgur.com/2DsA49b.webp" class="img-fluid rounded-3"
+                                                 style="width: 120px;" alt="Book">
+                                            <div class="flex-column ms-4">
+                                                <p class="h5">@item.Nombre</p>
+                                                <p class="h7">@item.Descripcion</p>
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <td class="align-middle">
+                                        <p class="mb-0" style="font-weight: 500;">₡@item.Precio</p>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="d-flex flex-row">
+
+                                            <input id="form1" min="0" name="quantity" value="@item.Cantidad" type="number"
+                                                   class="form-control form-control-sm" style="width: 50px;" disabled />
+                                            <a class="btn btn-outline-primary" asp-action="SumarProducto" asp-route-id="@item.ProductoId">➕</a>
+                                            <a class="btn btn-outline-primary" asp-action="RestarProducto" asp-route-id="@item.ProductoId">➖</a>                                            
+                                           
+
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">
+                                        <a class="btn btn-outline-danger" asp-action="eliminarDelCarrrito" asp-route-id="@item.ProductoId">❌</a>
+
+                                    </td>
+                                </tr>
+                      
+                            }
+                            
+
+                            
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-primary btn-lg">Checkout</button>
+                </div>
+
+</section>

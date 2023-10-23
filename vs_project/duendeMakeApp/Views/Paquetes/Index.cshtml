@@ -53,11 +53,18 @@
                             @Html.DisplayFor(modelItem => item.CantidadDisponible)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Estado)
+                            @if (item.Estado == true)
+                            {
+                                <h5><span class="badge badge-success">Activo</span></h5>
+                            }
+                            else
+                            {
+                                <h5><span class="badge badge-danger">Inactivo</span></h5>
+                            }
                         </td>
                         <td>
                             <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.PaqueteId">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.PaqueteId">Details</a> |
+                            @* <a asp-action="Details" asp-route-id="@item.PaqueteId">Details</a> | *@
                             <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.PaqueteId">Delete</a>
                         </td>
                     </tr>

@@ -60,6 +60,9 @@ namespace duendeMakeApp.Controllers
         // GET: Paquetes/Create
         public IActionResult Create()
         {
+            String correo = Usuario.SeccionActual;
+            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            ViewBag.Usuario = _usuario;
             return View();
         }
 
@@ -70,6 +73,9 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PaqueteId,Nombre,Descripcion,Precio,CantidadDisponible,Estado")] Paquete paquete)
         {
+            String correo = Usuario.SeccionActual;
+            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            ViewBag.Usuario = _usuario;
             if (ModelState.IsValid)
             {
                 _context.Add(paquete);
@@ -82,6 +88,9 @@ namespace duendeMakeApp.Controllers
         // GET: Paquetes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            String correo = Usuario.SeccionActual;
+            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            ViewBag.Usuario = _usuario;
             if (id == null || _context.Paquetes == null)
             {
                 return NotFound();
@@ -133,6 +142,9 @@ namespace duendeMakeApp.Controllers
         // GET: Paquetes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            String correo = Usuario.SeccionActual;
+            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            ViewBag.Usuario = _usuario;
             if (id == null || _context.Paquetes == null)
             {
                 return NotFound();
@@ -153,6 +165,9 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            String correo = Usuario.SeccionActual;
+            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            ViewBag.Usuario = _usuario;
             if (_context.Paquetes == null)
             {
                 return Problem("Entity set 'DuendeappContext.Paquetes'  is null.");

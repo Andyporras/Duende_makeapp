@@ -53,16 +53,16 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label">Seleccionar paquetes:</label>
-                        @foreach (var paquetes in ViewBag.paquetes)
+                        @foreach (Paquete paquete in ViewBag.paquetes)
                         {
                             <label class="btn sbtn-secondary">
-                                @if (Model.Productos.Contains(paquetes))
+                                @if (Model.Paquetes.Contains(paquete))
                                 {
-                                    <input type="checkbox" name="PaquetesIds" value="@paquetes.ProductoId" checked> @paquetes.Nombre
+                                    <input type="checkbox" name="PaquetesIds" value="@paquete.PaqueteId" checked> @paquete.Nombre
                                 }
                                 else
                                 {
-                                    <input type="checkbox" name="PaquetesIds" value="@paquetes.ProductoId"> @paquetes.Nombre
+                                    <input type="checkbox" name="PaquetesIds" value="@paquete.PaqueteId"> @paquete.Nombre
                                 }
                             </label>
                         }

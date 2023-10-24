@@ -96,7 +96,10 @@ namespace duendeMakeApp.Controllers
                 return NotFound();
             }
 
-            var paquete = await _context.Paquetes.FindAsync(id);
+            var paquete = await _context.Paquetes
+                .Include(p => p.Productos)
+                .FirstOrDefaultAsync(p => p.PaqueteId == id);
+            ViewBag.productos = _context.Productos;
             if (paquete == null)
             {
                 return NotFound();
@@ -109,9 +112,12 @@ namespace duendeMakeApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PaqueteId,Nombre,Descripcion,Precio,CantidadDisponible,Estado")] Paquete paquete)
+        public async Task<IActionResult> Edit(int PaqueteId, [Bind("PaqueteId,Nombre,Descripcion,Precio,CantidadDisponible,Estado")] Paquete paquete, List<int> ProductosIds)
         {
-            if (id != paquete.PaqueteId)
+            String correo = Usuario.SeccionActual;
+            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            ViewBag.Usuario = _usuario;
+            if (PaqueteId != paquete.PaqueteId)
             {
                 return NotFound();
             }
@@ -120,7 +126,41 @@ namespace duendeMakeApp.Controllers
             {
                 try
                 {
-                    _context.Update(paquete);
+                    //_context.Update(paquete);
+                    //await _context.SaveChangesAsync();
+                    Paquete? paqueteRegistrado = await _context.Paquetes
+                        .Include(c => c.Productos)
+                        .FirstOrDefaultAsync(c => c.PaqueteId == PaqueteId);
+                    
+                    paqueteRegistrado.Nombre = paquete.Nombre;
+                    paqueteRegistrado.Descripcion = paquete.Descripcion;
+                    paqueteRegistrado.Precio = paquete.Precio;
+                    paqueteRegistrado.CantidadDisponible = paquete.CantidadDisponible;
+                    paqueteRegistrado.Estado = paquete.Estado;
+
+                    if(paqueteRegistrado != null)
+                    {
+                        //hacer copias de las lista de productos y paquetes
+                        List<Producto> productosACopiar = paqueteRegistrado.Productos.ToList();
+
+                        // Iterar sobre las copias de las listas y eliminar los elementos de las listas copiadas
+                        foreach (Producto producto in productosACopiar)
+                        {
+                            paqueteRegistrado.Productos.Remove(producto);
+                        }
+                    }
+                    await _context.SaveChangesAsync();
+
+                    // Asociar los productos 
+                    foreach(int id in ProductosIds)
+                    {
+                        Producto? producto = _context.Productos.Find(id);
+                        if(producto != null)
+                        {
+                            paqueteRegistrado.Productos.Add(producto);
+                        }
+                    }
+                    _context.Update(paqueteRegistrado);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

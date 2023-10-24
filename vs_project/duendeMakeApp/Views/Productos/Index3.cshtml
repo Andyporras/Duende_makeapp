@@ -21,7 +21,9 @@
                             </tr>
                         </thead>
                         <tbody>
-
+                            @{
+                                decimal precioTotal = 0;
+                            }
                             @foreach (var item in Model)
                             {
                                 <tr>
@@ -53,7 +55,14 @@
                                         <a class="btn btn-outline-danger" asp-action="eliminarDelCarrrito" asp-route-id="@item.ProductoId">❌</a>
 
                                     </td>
+                                    @{
+                                        decimal precioProducto = Convert.ToDecimal(item.Precio * item.Cantidad);
+                                        precioTotal += precioProducto;
+                                    }
                                 </tr>
+
+                                <!-- Calcula el precio total para el producto actual y agrégalo al precioTotal -->
+                                
                       
                             }
                             
@@ -61,7 +70,64 @@
                             
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-primary btn-lg">Checkout</button>
+                    <div class="card shadow-2-strong mb-5 mb-lg-0" style="border-radius: 16px;">
+                        <div class="card-body p-4">
+
+                            <div class="row">
+                                
+                                <div class="col-md-6 col-lg-4 col-xl-6">
+                                    <div class="row">
+                                        <div class="col-12 col-xl-6">
+                                            <div class="form-outline mb-4 mb-xl-5">
+                                                <label class="form-label">Código postal</label>
+                                                <input type="text" id="typeName" class="form-control form-control-lg" siez="17"
+                                                       placeholder="Name" />
+                                                
+                                            </div>
+
+                                            <div class="form-outline mb-4 mb-xl-5">
+                                                <label class="form-label">Dirección</label>
+                                                <input type="text" id="typeExp" class="form-control form-control-lg" placeholder="MM/YY"
+                                                       size="7" id="exp" minlength="7" maxlength="7" />
+                                            </div>
+                                            <div class="form-outline mb-4 mb-xl-5">
+                                                <label for="imageFile" class="control-label">Selecciona una imagen</label>
+                                                <input class="form-control" type="file" id="imageFile" name="imageFile" />
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-xl-6">
+                                            <div class="form-outline mb-4 mb-xl-5">
+                                                <label class="form-label">Provincia</label>
+                                                <input type="text" id="typeText" class="form-control form-control-lg" siez="17"
+                                                       minlength="19" maxlength="19" placeholder="Provincia"/>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-xl-3"></div>
+
+                                <div class="col-lg-4 col-xl-3">
+                                    <div class="d-flex justify-content-between" style="font-weight: 500;">
+                                        <p class="mb-2">Subtotal</p>
+                                        <p class="mb-2">₡@precioTotal</p>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <button type="button" class="btn btn-primary btn-block btn-lg">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Checkout</span>
+                                            
+                                        </div>
+                                    </button>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
 
 </section>

@@ -237,8 +237,8 @@ CREATE TABLE ProductosXCarrito (
     CONSTRAINT fk_productosXcarrito_producto FOREIGN KEY (ProductoID) REFERENCES Producto(ProductoID),
     CONSTRAINT fk_productosXcarrito_carrito FOREIGN KEY (CarritoID) REFERENCES Carrito(CarritoID)
 );    
-ALTER TABLE ProductosXCarrito
-ADD Cantidad int;
+--ALTER TABLE ProductosXCarrito
+--ADD Cantidad int;
 
 
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='ProductosXCatalogo' AND xtype='U')

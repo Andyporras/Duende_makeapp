@@ -194,13 +194,13 @@ namespace duendeMakeApp.Controllers
         {
 
             var oLista = new List<Producto>();
-            using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
+            using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP_2023V2\\SQLEXPRESS; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
 
             {
                 conexion.Open();
                 SqlCommand cmd = new SqlCommand("ObtenerProductosEnCarrito", conexion);
-                cmd.Parameters.AddWithValue("@CarritoID", 2);
-                cmd.Parameters.AddWithValue("@UsuarioID", 1);
+                cmd.Parameters.AddWithValue("@CarritoID", 1);
+                cmd.Parameters.AddWithValue("@UsuarioID", 2);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 using (var dr = cmd.ExecuteReader())
@@ -239,7 +239,7 @@ namespace duendeMakeApp.Controllers
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
+                using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP_2023V2\\SQLEXPRESS; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
                 {
                     conexion.Open();
 
@@ -247,8 +247,8 @@ namespace duendeMakeApp.Controllers
 
 
                     cmd.Parameters.AddWithValue("@idProducto", id);
-                    cmd.Parameters.AddWithValue("@idCarrito", 2);
-                    cmd.Parameters.AddWithValue("@idCliente", 1);
+                    cmd.Parameters.AddWithValue("@idCarrito", 1);
+                    cmd.Parameters.AddWithValue("@idCliente", 2);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.ExecuteNonQuery();
 
@@ -273,7 +273,7 @@ namespace duendeMakeApp.Controllers
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
+                using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP_2023V2\\SQLEXPRESS; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
                 {
                     conexion.Open();
 
@@ -281,7 +281,7 @@ namespace duendeMakeApp.Controllers
 
 
                     cmd.Parameters.AddWithValue("@IDProducto", id);
-                    cmd.Parameters.AddWithValue("@IDCarrito", 2);
+                    cmd.Parameters.AddWithValue("@IDCarrito", 1);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.ExecuteNonQuery();
 
@@ -306,7 +306,7 @@ namespace duendeMakeApp.Controllers
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
+                using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP_2023V2\\SQLEXPRESS; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
                 {
                     conexion.Open();
 
@@ -314,7 +314,7 @@ namespace duendeMakeApp.Controllers
 
 
                     cmd.Parameters.AddWithValue("@IDProducto", id);
-                    cmd.Parameters.AddWithValue("@IDCarrito", 2);
+                    cmd.Parameters.AddWithValue("@IDCarrito", 1);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.ExecuteNonQuery();
 
@@ -337,7 +337,7 @@ namespace duendeMakeApp.Controllers
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
+                using (SqlConnection conexion = new SqlConnection("Data Source=DESKTOP_2023V2\\SQLEXPRESS; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;"))
                 {
                     conexion.Open();
 
@@ -345,7 +345,7 @@ namespace duendeMakeApp.Controllers
 
 
                     cmd.Parameters.AddWithValue("@IDProducto", id);
-                    cmd.Parameters.AddWithValue("@IDCarrito", 2);
+                    cmd.Parameters.AddWithValue("@IDCarrito", 1);
                     cmd.Parameters.AddWithValue("@cantFinal", 1);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.ExecuteNonQuery();

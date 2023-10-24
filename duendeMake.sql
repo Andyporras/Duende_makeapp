@@ -274,7 +274,7 @@ CREATE TABLE PaqueteXCarrito (
     CONSTRAINT fk_paqueteXcarrito_paquete FOREIGN KEY (PaqueteID) REFERENCES Paquete(PaqueteID),
     CONSTRAINT fk_paqueteXcarrito_carrito FOREIGN KEY (CarritoID) REFERENCES Carrito(CarritoID)
 );
-GO;
+GO
 
 ----------------------------------------------------------------- PROCEDIMIENTOS ALMACENADOS
 go
@@ -730,3 +730,16 @@ BEGIN
 END;
 
 
+select * from usuario
+
+insert into Usuario(Nombre, Apellido, Correo, Usuario, clave, TipoID)
+values ('Kevin1', 'Salazar1', 'ksalaz1032019@gmail.com', 'localhostasdf', '12345', 2)
+update usuario set TipoID=2 where UsuarioID=2
+select * from Usuario
+select * from carrito
+insert into carrito (UsuarioID) values (2)
+select * from ProductosXCarrito
+delete from ProductosXCarrito
+
+select * from imagen
+insert into imagen(Nombre, Descripcion, Url) values ('si', 'si', '#')

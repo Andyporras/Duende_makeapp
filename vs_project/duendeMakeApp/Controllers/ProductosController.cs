@@ -332,6 +332,38 @@ namespace duendeMakeApp.Controllers
         }
 
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Checkout(string codPostal, string provincia, string dir, string imageFile)
+        {
+
+            //Usuario usuario = new Usuario();
+            //usuario = _context.Usuarios.Where(item => item.Correo == correo && item.Clave == clave).FirstOrDefault();
+            //if (usuario == null)
+            //{
+            //    TempData["Mensaje"] = "El correo o la contraseña son incorrectos.";
+            //    return RedirectToAction("Index", "Maquillajes");
+            //}
+            //// sacamos el tipo de usuario
+            //int tipo = usuario.TipoId.GetValueOrDefault();
+            //TipoUsuario tipoUsuario = _context.TipoUsuarios.Where(item => item.TipoUsarioId == tipo).FirstOrDefault();
+            //// guardamos el tipo de usuario en la sesion
+
+            ////TempData["Usuario"] = usuario;
+            //// cambiar el valor de inicio de seccion en Usuario
+            //Usuario.SeccionActual = correo;
+            ////TempData["Mensaje"] = "Bienvenido " + usuario.Nombre + " " + usuario.Apellido + " al sistema de Duende MakeApp";
+            Console.WriteLine(codPostal);
+            Console.WriteLine(provincia);
+            Console.WriteLine(imageFile);
+            Console.WriteLine(dir);
+            return RedirectToAction("Index", "Productos");
+        }
+
+
+
+
         public IActionResult RestarProducto(int id)
         {
 

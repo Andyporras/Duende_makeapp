@@ -43,9 +43,10 @@
                                     <td class="align-middle">
                                         <div class="d-flex flex-row">
 
-                                            <input id="form1" min="0" name="quantity" value="@item.Cantidad" type="number"
-                                                   class="form-control form-control-sm" style="width: 50px;" disabled />
                                             <a class="btn btn-outline-primary" asp-action="SumarProducto" asp-route-id="@item.ProductoId">➕</a>
+                                            <input id="form1" min="0" name="quantity" value="@item.Cantidad" type="number"
+                                                   class="form-control form-control-sm" style="width: 80px; text-align: center; margin: 0" disabled />
+
                                             <a class="btn btn-outline-primary" asp-action="RestarProducto" asp-route-id="@item.ProductoId">➖</a>                                            
                                            
 
@@ -70,60 +71,62 @@
                             
                         </tbody>
                     </table>
-                    <div class="card shadow-2-strong mb-5 mb-lg-0" style="border-radius: 18px;border-color: green">
+                    <div class="card shadow-2-strong mb-5 mb-lg-0" style="border-radius: 18px;">
                         <div class="card-body p-4">
-                            <div class="row">
-                                <div class="col-md-6 col-lg-4 col-xl-6">
-                                    <div class="row">
-                                        <div class="col-12 col-xl-6">
-                                            <div class="form-outline mb-4 mb-xl-5">
-                                                <input type="text" id="typeName" class="form-control form-control-lg" siez="17"
-                                                       placeholder="Ej: 70202" />
-                                                <label class="form-label" for="typeName">Código Postal</label>
-                                            </div>
+                            <form asp-controller="Productos" asp-action="Checkout" method="post">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-4 col-xl-6">
+                                        <div class="row">
+                                            <div class="col-12 col-xl-6">
+                                                <div class="form-outline mb-4 mb-xl-5">
+                                                    <input type="text" id="typeName" name ="codPostal" class="form-control form-control-lg" siez="17"
+                                                           placeholder="Ej: 70202" required/>
+                                                    <label class="form-label" for="typeName">Código Postal</label>
+                                                </div>
 
-                                            <div class="form-outline mb-4 mb-xl-5">
-                                                <input type="text" id="typeExp" class="form-control form-control-lg" placeholder="Provincia"
-                                                       size="7" id="exp" minlength="7" maxlength="7" />
-                                                <label class="form-label" for="typeExp">Provincia</label>
+                                                <div class="form-outline mb-4 mb-xl-5">
+                                                    <input type="text" id="typeExp" class="form-control form-control-lg" name = "provincia" placeholder="Provincia"
+                                                           size="7" id="exp" required/>
+                                                    <label class="form-label" for="typeExp">Provincia</label>
+                                                </div>
+                                                <div class="form-outline mb-4 mb-xl-5">
+                                                    <input type="text" id="typeExp" class="form-control form-control-lg" name = "dir" placeholder="Dirección"
+                                                           size="7" id="exp" required />
+                                                    <label class="form-label" for="typeExp">Dirección</label>
+                                                </div>
                                             </div>
-                                            <div class="form-outline mb-4 mb-xl-5">
-                                                <input type="text" id="typeExp" class="form-control form-control-lg" placeholder="Dirección"
-                                                       size="7" id="exp" minlength="7" maxlength="7" />
-                                                <label class="form-label" for="typeExp">Dirección</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-xl-6">
-                                            <div class="form-outline mb-4 mb-xl-5">
-                                                <label for="imageFile" class="control-label">Adjunte su comprobante</label>
-                                                <input class="form-control" type="file" id="imageFile" name="imageFile" accept="image/*" />
+                                            <div class="col-12 col-xl-6">
+                                                <div class="form-outline mb-4 mb-xl-5">
+                                                    <label for="imageFile" class="control-label">Adjunte su comprobante</label>
+                                                    <input class="form-control" required type="file" id="imageFile" name="imageFile" accept="image/*" />
 
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-4 col-xl-3"></div>
-                                <div class="col-lg-4 col-xl-3">
-                                    <div class="d-flex justify-content-between" style="font-weight: 500;">
-                                        <p class="mb-2">Subtotal</p>
-                                        <p class="mb-2">₡@precioTotal</p>
+                                    <div class="col-lg-4 col-xl-3"></div>
+                                    <div class="col-lg-4 col-xl-3">
+                                        <div class="d-flex justify-content-between" style="font-weight: 500;">
+                                            <p class="mb-2">Subtotal</p>
+                                            <p class="mb-2">₡@precioTotal</p>
+                                        </div>
+
+                                        <hr class="my-4">
+
+                                        <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                            <div class="d-flex justify-content-center">
+                                                <span>Checkout</span>
+                                            </div>
+                                        </button>
+                                        <a class="btn btn-outline-danger btn-primary btn-block btn-lg" asp-controller="Productos" asp-action="Index">
+                                            <div class="d-flex justify-content-center">
+                                                <span>Seguir comprando</span>
+                                            </div>
+                                        </a>
+
                                     </div>
-
-                                    <hr class="my-4">
-
-                                    <button type="button" class="btn btn-primary btn-block btn-lg">
-                                        <div class="d-flex justify-content-center">
-                                            <span>Checkout</span>
-                                        </div>
-                                    </button>
-                                    <a class="btn btn-outline-danger btn-primary btn-block btn-lg" asp-controller="Productos" asp-action="Index">
-                                        <div class="d-flex justify-content-center">
-                                            <span>Seguir comprando</span>
-                                        </div>
-                                    </a>
-
                                 </div>
-                            </div>
+                            </form>
 
                         </div>
                     </div>

@@ -274,6 +274,7 @@ CREATE TABLE PaqueteXCarrito (
     CONSTRAINT fk_paqueteXcarrito_paquete FOREIGN KEY (PaqueteID) REFERENCES Paquete(PaqueteID),
     CONSTRAINT fk_paqueteXcarrito_carrito FOREIGN KEY (CarritoID) REFERENCES Carrito(CarritoID)
 );
+GO;
 
 ----------------------------------------------------------------- PROCEDIMIENTOS ALMACENADOS
 go

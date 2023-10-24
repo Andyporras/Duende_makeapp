@@ -198,10 +198,16 @@ namespace duendeMakeApp.Controllers
             usuario.Correo = correo;
             usuario.Usuario1 = usuario1;
             usuario.Clave = clave;
-            usuario.TipoId = 1;
+            usuario.TipoId = 2;
 
             //guardar el nuevo usuario en la base de datos
             _context.Add(usuario);
+            await _context.SaveChangesAsync();
+
+            // crear un carrito para el usuario
+            Carrito carrito = new Carrito();
+            carrito.UsuarioId = usuario.UsuarioId;
+            _context.Add(carrito);
             await _context.SaveChangesAsync();
             TempData["Mensaje"] = "El usuario se ha creado exitosamente";
 

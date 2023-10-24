@@ -23,17 +23,12 @@ namespace duendeMakeApp.Controllers
         // GET: Tags
         public async Task<IActionResult> Index()
         {
-            String correo = Usuario.SeccionActual;
-            if(correo != null)
-            {
-                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            }
-   
-            ViewBag.Usuario = _usuario;
-            ViewBag.Tags = _context.Tags;
-              return _context.Tags != null ? 
-                          View(await _context.Tags.ToListAsync()) :
-                          Problem("Entity set 'DuendeappContext.Tags'  is null.");
+
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Tags = _context.Tags.Include(t => t.Imagens).ToList();
+            return _context.Tags != null ?
+                        View(await _context.Tags.ToListAsync()) :
+                        Problem("Entity set 'DuendeappContext.Tags'  is null.");
         }
 
         // GET: Tags/Details/5
@@ -44,8 +39,9 @@ namespace duendeMakeApp.Controllers
                 return NotFound();
             }
 
-            var tag = await _context.Tags
+            var tag = await _context.Tags.Include(t => t.Imagens)
                 .FirstOrDefaultAsync(m => m.TagId == id);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
             if (tag == null)
             {
                 return NotFound();
@@ -85,6 +81,7 @@ namespace duendeMakeApp.Controllers
             }
 
             var tag = await _context.Tags.FindAsync(id);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
             if (tag == null)
             {
                 return NotFound();
@@ -137,6 +134,7 @@ namespace duendeMakeApp.Controllers
 
             var tag = await _context.Tags
                 .FirstOrDefaultAsync(m => m.TagId == id);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
             if (tag == null)
             {
                 return NotFound();
@@ -154,19 +152,26 @@ namespace duendeMakeApp.Controllers
             {
                 return Problem("Entity set 'DuendeappContext.Tags'  is null.");
             }
-            var tag = await _context.Tags.FindAsync(id);
+            var tag = await _context.Tags.Include(t => t.Imagens).FirstOrDefaultAsync(t => t.TagId == id);
             if (tag != null)
             {
+                // quitar las imagenes asociadas al tag pero no eliminarlas de la base de datos
+                foreach (Imagen imagen in tag.Imagens)
+                {
+                    imagen.Tags.Remove(tag);
+                }
                 _context.Tags.Remove(tag);
-            }
-            
+                }
+
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool TagExists(int id)
         {
-          return (_context.Tags?.Any(e => e.TagId == id)).GetValueOrDefault();
+            return (_context.Tags?.Any(e => e.TagId == id)).GetValueOrDefault();
         }
     }
 }

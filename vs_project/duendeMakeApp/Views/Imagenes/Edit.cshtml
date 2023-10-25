@@ -1,12 +1,12 @@
 ﻿@model duendeMakeApp.Models.Imagen
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar imagen";
 }
 
-<h1>Edit</h1>
+<h1>Editar imagen</h1>
 
-<h4>Imagen</h4>
+<h4>Imagen @Model.ImagenId</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -23,52 +23,57 @@
                 <input asp-for="Descripcion" class="form-control" />
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
             </div>
-                @if (Model.Venta.Count() == 1)
-                {
-                    //badge
-                    <span class="badge badge-light">Los comprobante de venta no se pueden asociar a un producto o maquillaje.</span>
-                }
-                else
-                {
-                    <div class="form-group">
-                        <label class="control-label">Seleccionar tags:</label>
-                        @foreach (Tag tag in ViewBag.Tags)
-                        {
-                            <label class="btn btn-secondary">
-                                @if (Model.Tags.Contains(tag)) {
-                                        <input type="checkbox" name="TagsIds" value="@tag.TagId" checked="checked" />
-                                }
-                                else
-                                {
-                                        <input type="checkbox" name="TagsIds" value="@tag.TagId" />
-                                }
-                            @tag.Nombre
-                            </label>
-                        }
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label">Seleccionar maquillajes:
-                        @foreach (Maquillaje maquillaje in ViewBag.Maquillajes)
-                        {
-                            <label class="btn btn-secondary">
-                            @if (Model.Maquillajes.Contains(maquillaje))
+            @if (Model.Venta.Count() == 1)
+            {
+                //badge
+                <span class="badge badge-light">Los comprobante de venta no se pueden asociar a un producto o maquillaje.</span>
+            }
+            else
+            {
+                <div class="form-group">
+                    <label class="control-label">Seleccionar tags:</label>
+                    @foreach (Tag tag in ViewBag.Tags)
+                    {
+                        <label class="btn btn-secondary">
+                            @if (Model.Tags.Contains(tag))
                             {
-                                <input type="checkbox" name="MaquillajesIds" value="@maquillaje.MaquillajeId" checked="checked" />
+                                <input type="checkbox" name="TagsIds" value="@tag.TagId" checked="checked" />
+                                @tag.Nombre
                             }
                             else
                             {
-                                    <input type="checkbox" name="MaquillajesIds" value="@maquillaje.MaquillajeId" />
+                                <input type="checkbox" name="TagsIds" value="@tag.TagId" />
+                                @tag.Nombre
                             }
-                                @maquillaje.Nombre
+                        </label>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">
+                        Seleccionar maquillajes:
+                        @foreach (Maquillaje maquillaje in ViewBag.Maquillajes)
+                        {
+                            <label class="btn btn-secondary">
+                                @if (Model.Maquillajes.Contains(maquillaje))
+                                {
+                                    <input type="checkbox" name="MaquillajesIds" value="@maquillaje.MaquillajeId" checked="checked" />
+                                    @maquillaje.Nombre
+                                }
+                                else
+                                {
+                                    <input type="checkbox" name="MaquillajesIds" value="@maquillaje.MaquillajeId" />
+                                    @maquillaje.Nombre
+                                }
                             </label>
                         }
-                        </label>
-                    </div>
+                    </label>
+                </div>
 
 
-                    <div class="form-group">
-                        <label class="control-label">Seleccionar productos:
+                <div class="form-group">
+                    <label class="control-label">
+                        Seleccionar productos:
                         @foreach (Producto producto in ViewBag.Productos)
                         {
                             <label class="btn btn-secondary">
@@ -78,27 +83,24 @@
                                 }
                                 else
                                 {
-                                        <input type="checkbox" name="ProductosIds" value="@producto.ProductoId" />
+                                    <input type="checkbox" name="ProductosIds" value="@producto.ProductoId" />
+                                    @producto.Nombre
                                 }
-                                @producto.Nombre
                             </label>
                         }
-                        </label>
-                    </div>
-                }
+                    </label>
+                </div>
+            }
             <div class="form-group">
-                <input type="hidden" asp-for="Url"/>
+                <input type="hidden" asp-for="Url" />
                 <a class="btn btn-outline-danger" asp-action="Details" asp-route-id="@Model.ImagenId">Regresar</a>
                 <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

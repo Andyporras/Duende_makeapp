@@ -19,9 +19,10 @@ namespace duendeMakeApp.Controllers
         // GET: Imagenes
         public async Task<IActionResult> Index()
         {
-              return _context.Imagens != null ? 
-                          View(await _context.Imagens.ToListAsync()) :
-                          Problem("Entity set 'DuendeappContext.Imagens'  is null.");
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            return _context.Imagens.Include(i => i.Tags).ToList() != null ?
+                View(await _context.Imagens.ToListAsync()) :
+                Problem("Entity set 'DuendeappContext.Imagens'  is null.");
         }
 
         // GET: Imagenes/Details/5
@@ -32,7 +33,11 @@ namespace duendeMakeApp.Controllers
                 return NotFound();
             }
 
-            var imagen = await _context.Imagens
+            Imagen imagen = await _context.Imagens
+                .Include(i => i.Tags)
+                .Include(i => i.Productos)
+                .Include(i => i.Venta)
+                .Include(i => i.Maquillajes)
                 .FirstOrDefaultAsync(m => m.ImagenId == id);
             if (imagen == null)
             {
@@ -93,7 +98,18 @@ namespace duendeMakeApp.Controllers
                 return NotFound();
             }
 
-            var imagen = await _context.Imagens.FindAsync(id);
+            var imagen = await _context.Imagens
+                .Include(i => i.Maquillajes)
+                .Include(i => i.Productos)
+                .Include(i => i.Tags)
+                .Include(i => i.Venta)
+                .FirstOrDefaultAsync(m => m.ImagenId == id);
+
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Productos = _context.Productos.ToList();
+            ViewBag.Maquillajes = _context.Maquillajes.ToList();
+            ViewBag.Tags = _context.Tags.ToList();
+
             if (imagen == null)
             {
                 return NotFound();
@@ -106,8 +122,13 @@ namespace duendeMakeApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ImagenId,Nombre,Descripcion,Url")] Imagen imagen)
+        public async Task<IActionResult> Edit(int ImagenId, [Bind("ImagenId,Nombre,Descripcion,Url")] Imagen imagen, List<int> TagsIds, List<int> MaquillajesIds, List<int> ProductosIds)
         {
+            if (ImagenId != imagen.ImagenId)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -153,7 +174,7 @@ namespace duendeMakeApp.Controllers
                             }
                         }
 
-                        // Actualiza la relación con productos (un producto solo puede tener una imagen, pero una misma imagen puede estar en varios productos)
+                        // Actualiza la relación con productos (un producto solo puede tener una imagen, pero la imagen puede estar en varios productos)
                         if (ProductosIds != null && ProductosIds.Count > 0)
                         {
                             foreach (var productoId in ProductosIds)
@@ -196,10 +217,13 @@ namespace duendeMakeApp.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(imagen);
         }
+
 
         // GET: Imagenes/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -218,6 +242,7 @@ namespace duendeMakeApp.Controllers
 
             return View(imagen);
         }
+
 
         // POST: Imagenes/Delete/5
         [HttpPost, ActionName("Delete")]

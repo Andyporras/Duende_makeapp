@@ -1,18 +1,18 @@
 ﻿@model IEnumerable<duendeMakeApp.Models.Imagen>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Imágenes";
 }
 
-<h1>Index</h1>
+<h1>Imágenes</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-primary" asp-action="Create">Agregar imagen</a>
 </p>
 
 <input class="form-control" id="myInput" type="text" placeholder="Buscar..">
 <dl id="myDIV" class="row">
-    @foreach(Imagen img in Model)
+    @foreach (Imagen img in Model)
     {
         <div id="content" class="card mb-3" style="max-width: 540px;">
             <div class="row g-0">
@@ -24,19 +24,20 @@
                     <div class="card-body">
                         <h5 class="card-title">@img.Nombre</h5>
                         <p class="card-text">
-                            <p>
+                        <p>
                                 @img.Descripcion
-                            </p>
-                            @foreach(Tag tag in img.Tags)
+                        </p>
+                        <p>
+                            @foreach (Tag tag in img.Tags)
                             {
-                                <span class="badge badge-success">@tag.Nombre</span>
+                            <span class="badge badge-success">@tag.Nombre</span>
                             }
-                            @if(img.Venta.Count() != 0)
+                            @if (img.Venta.Count() != 0)
                             {
-                                <span class="badge badge-info">Comprobante de venta</span>
+                            <span class="badge badge-info">Comprobante de venta</span>
                             }
-                            <br />
-                            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@img.ImagenId">Detalles</a>
+                        <br />
+                        <a class="btn btn-secondary" asp-action="Details" asp-route-id="@img.ImagenId">Detalles</a>
                         </p>
                     </div>
                 </div>

@@ -278,3 +278,8 @@ CREATE TABLE PaqueteXCarrito (
     CONSTRAINT fk_paqueteXcarrito_carrito FOREIGN KEY (CarritoID) REFERENCES Carrito(CarritoID)
 );
 
+
+-- modificacion de la tabla carrito
+alter table carrito add estado bit
+
+select * from productosxCarrito;

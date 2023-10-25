@@ -9,6 +9,8 @@ public partial class Carrito
 
     public int? UsuarioId { get; set; }
 
+    public bool estado { get; set;}
+
     public virtual ICollection<Envio> Envios { get; set; } = new List<Envio>();
 
     public virtual Usuario? Usuario { get; set; }

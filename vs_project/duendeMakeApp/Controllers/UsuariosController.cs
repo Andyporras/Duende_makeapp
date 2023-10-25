@@ -207,6 +207,7 @@ namespace duendeMakeApp.Controllers
             // crear un carrito para el usuario
             Carrito carrito = new Carrito();
             carrito.UsuarioId = usuario.UsuarioId;
+            carrito.estado = true;
             _context.Add(carrito);
             await _context.SaveChangesAsync();
             TempData["Mensaje"] = "El usuario se ha creado exitosamente";

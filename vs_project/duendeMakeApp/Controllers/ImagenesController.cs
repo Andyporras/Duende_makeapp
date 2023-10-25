@@ -19,9 +19,10 @@ namespace duendeMakeApp.Controllers
         // GET: Imagenes
         public async Task<IActionResult> Index()
         {
-              return _context.Imagens != null ? 
-                          View(await _context.Imagens.ToListAsync()) :
-                          Problem("Entity set 'DuendeappContext.Imagens'  is null.");
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            return _context.Imagens.Include(i => i.Tags).ToList() != null ? 
+                View(await _context.Imagens.ToListAsync()) :
+                Problem("Entity set 'DuendeappContext.Imagens'  is null.");
         }
 
         // GET: Imagenes/Details/5

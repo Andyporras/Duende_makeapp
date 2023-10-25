@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using duendeMakeApp.Models;
-using System.Configuration;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using duendeMakeApp.DAO;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-
 builder.Services.AddDbContext<DuendeappContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("conexion")));
+//que la conexion a la base de datos sea singleton
+builder.Services.AddDbContext<DuendeappContext>(ServiceLifetime.Singleton);
+//builder.Services.AddIdentity<Usuario, IdentityRole>()
+//    .AddEntityFrameworkStores<DuendeappContext>()
+//    .AddDefaultTokenProviders();
+
 
 // Agregar el servicio de HttpClientFactory
 builder.Services.AddHttpClient();

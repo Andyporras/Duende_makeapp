@@ -1,48 +1,43 @@
 ﻿@model IEnumerable<duendeMakeApp.Models.Imagen>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Imágenes";
 }
 
-<h1>Index</h1>
+<h1>Imágenes</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-primary" asp-action="Create">Agregar imagen</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descripcion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Url)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descripcion)
-            </td>
-            <td>
-                <img src="@item.Url">
-                @Html.DisplayFor(modelItem => item.Url)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ImagenId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ImagenId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ImagenId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<input class="form-control" id="myInput" type="text" placeholder="Buscar..">
+<dl id="myDIV" class="row">
+    @foreach(Imagen img in Model)
+    {
+        <div id="content" class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="@img.Url"
+                         class="rounded-start" />
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">@img.Nombre</h5>
+                        <p class="card-text">
+                            <p>
+                                @img.Descripcion
+                            </p>
+                            @foreach(Tag tag in img.Tags)
+                            {
+                                <h5><span class="badge badge-success">@tag.Nombre</span></h5>
+                            }
+                            @*<a class="btn btn-secondary" asp-action="Edit" asp-route-id="@img.ImagenId">Editar</a>*@
+                            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@img.ImagenId">Detalles</a>
+                            @*<a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@img.ImagenId">Eliminar</a>W*@
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</dl>

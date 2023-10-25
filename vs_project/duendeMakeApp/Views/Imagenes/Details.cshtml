@@ -28,6 +28,40 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Url)
         </dd>
+        <dt class="col-sm-2">
+            Tags
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (Tag item in Model.Tags)
+            {
+                <a asp-controller="Tags" asp-route-id="@item.TagId">
+                    <span class="badge badge-success">@item.Nombre</span>
+                </a>
+            }
+        </dd>
+        <dt class="col-sm-2">
+            Maquillajes
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (Maquillaje item in Model.Maquillajes)
+            {
+                <a asp-controller="Maquillajes" asp-route-id="@item.MaquillajeId">
+                    <span class="badge badge-info">@item.Nombre</span>
+                </a>
+            }
+        </dd>
+        <dt class="col-sm-2">
+            Productos
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (Producto item in Model.Productos)
+            {
+                <a asp-controller="Productos" asp-route-id="@item.ProductoId">
+                    <span class="badge badge-info">@item.Nombre</span>
+                </a>
+            }
+        </dd>
+        
     </dl>
 </div>
 <div>

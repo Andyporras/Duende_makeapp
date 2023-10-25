@@ -112,8 +112,78 @@ namespace duendeMakeApp.Controllers
             {
                 try
                 {
-                    _context.Update(imagen);
-                    await _context.SaveChangesAsync();
+                    // Obtener la imagen existente desde la base de datos (incluyendo relaciones)
+                    var imagenExistente = _context.Imagens
+                        .Include(i => i.Tags)
+                        .Include(i => i.Maquillajes)
+                        .Include(i => i.Productos)
+                        .FirstOrDefault(i => i.ImagenId == ImagenId);
+
+                    if (imagenExistente != null)
+                    {
+                        // Actualiza las propiedades de la imagen
+                        imagenExistente.Nombre = imagen.Nombre;
+                        imagenExistente.Descripcion = imagen.Descripcion;
+
+                        // Actualiza las relaciones con tags
+                        imagenExistente.Tags.Clear();
+                        if (TagsIds != null)
+                        {
+                            foreach (var tagId in TagsIds)
+                            {
+                                var tag = _context.Tags.Find(tagId);
+                                if (tag != null)
+                                {
+                                    imagenExistente.Tags.Add(tag);
+                                }
+                            }
+                        }
+
+                        // Actualiza las relaciones con maquillajes
+                        imagenExistente.Maquillajes.Clear();
+                        if (MaquillajesIds != null)
+                        {
+                            foreach (var maquillajeId in MaquillajesIds)
+                            {
+                                var maquillaje = _context.Maquillajes.Find(maquillajeId);
+                                if (maquillaje != null)
+                                {
+                                    imagenExistente.Maquillajes.Add(maquillaje);
+                                }
+                            }
+                        }
+
+                        // Actualiza la relación con productos (un producto solo puede tener una imagen, pero una misma imagen puede estar en varios productos)
+                        if (ProductosIds != null && ProductosIds.Count > 0)
+                        {
+                            foreach (var productoId in ProductosIds)
+                            {
+                                var producto = _context.Productos.Find(productoId);
+                                if (producto != null)
+                                {
+                                    producto.Imagen = imagenExistente;
+                                    producto.ImagenId = imagenExistente.ImagenId;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Si no se selecciona un producto, desvincula la imagen de cualquier producto existente
+                            var productos = _context.Productos.Where(p => p.ImagenId == imagenExistente.ImagenId);
+                            foreach (var producto in productos)
+                            {
+                                producto.Imagen = null;
+                                producto.ImagenId = null;
+                            }
+                        }
+
+                        // Guarda los cambios en la base de datos
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -159,9 +229,22 @@ namespace duendeMakeApp.Controllers
                 return Problem("Entity set 'DuendeappContext.Imagens'  is null.");
             }
             Console.WriteLine("DeleteConfirmed: ", id);
-            var imagen = await _context.Imagens.FindAsync(id);
+            var imagen = await _context.Imagens
+                .Include(i => i.Tags)
+                .Include(i => i.Maquillajes)
+                .Include(i => i.Productos)
+                .FirstOrDefaultAsync(m => m.ImagenId == id);
             if (imagen != null)
             {
+                //se eliminan las relaciones con tags
+                imagen.Tags.Clear();
+                await _context.SaveChangesAsync();
+                //se eliminan las relaciones con maquillajes
+                imagen.Maquillajes.Clear();
+                await _context.SaveChangesAsync();
+                //se eliminan las relaciones con productos
+                imagen.Productos.Clear();
+                //se elimina la imagen
                 _context.Imagens.Remove(imagen);
             }
             

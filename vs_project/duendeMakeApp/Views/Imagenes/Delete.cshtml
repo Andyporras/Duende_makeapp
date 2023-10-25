@@ -1,14 +1,14 @@
 ﻿@model duendeMakeApp.Models.Imagen
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar imagen";
 }
 
-<h1>Delete</h1>
+<h1>Eliminar</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>¿Estás segura que deseas eliminar la imagen?</h3>
 <div>
-    <h4>Imagen</h4>
+    <h4>Imagen @Model.ImagenId</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -33,8 +33,8 @@
     
     <form asp-action="Delete">
         <input type="hidden" name="id" asp-for="ImagenId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input class="btn btn-danger" type="submit" value="Eliminar" />
+        <a class="btn btn-primary" asp-action="Details" asp-route-id="@Model.ImagenId">Regresar</a>
     </form>
 
 </div>

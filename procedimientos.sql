@@ -545,3 +545,16 @@ begin
 	where ProductoID = @IDProducto and CarritoID = @IDCarrito
 END;
 
+go
+CREATE or alter FUNCTION ObtenerCarritoPorUsuarioID (@UsuarioID INT)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @CarritoID INT
+
+    SELECT @CarritoID = CarritoID
+    FROM Carrito
+    WHERE UsuarioID = @UsuarioID
+
+    RETURN @CarritoID
+END;

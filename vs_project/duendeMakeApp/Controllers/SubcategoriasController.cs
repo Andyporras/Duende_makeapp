@@ -194,7 +194,7 @@ namespace duendeMakeApp.Controllers
             {
                 _context.Subcategoria.Remove(subcategoria);
             }
-            
+            ViewBag.Usuario = _usuario;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

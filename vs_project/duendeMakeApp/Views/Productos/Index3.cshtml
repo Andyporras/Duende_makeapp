@@ -121,7 +121,7 @@
 
                                         <hr class="my-4">
 
-                                        <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                        <button type="submit" class="btn btn-primary btn-block btn-lg" @(precioTotal == 0 ? "disabled" : "")>
                                             <div class="d-flex justify-content-center">
                                                 <span>Checkout</span>
                                             </div>

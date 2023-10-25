@@ -566,8 +566,6 @@ ADD CONSTRAINT SinRepeticiones UNIQUE (Nombre);
 insert into provincia (Nombre) values 
 ('San Jose'), ('Alajuela'), ('Cartago'), ('Heredia'), ('Guanacaste'), ('Puntarenas'), ('Limon') --ids del 1 al 7
 insert into EstadoEnvio (Estado) values ('En ruta'), ('Entregado') -- ids 1 y 2
-select * from carrito
-select * from usuario
 
 go
 CREATE OR ALTER PROCEDURE concretarVenta (
@@ -610,3 +608,59 @@ BEGIN
 		RETURN;
 	END
 END;
+
+-- funcion para el envio del correo
+go
+CREATE OR ALTER FUNCTION ObtenerDetalle(@carritoID INT)
+RETURNS VARCHAR(200)
+AS
+BEGIN
+    DECLARE @detalle VARCHAR(200) = '';
+
+    -- Declarar una variable para mantener el detalle
+    DECLARE @detalleCompra VARCHAR(MAX) = '';
+
+    -- Declarar una variable para el subtotal
+    DECLARE @subtotal DECIMAL(10, 2) = 0;
+
+    -- Utilizar un cursor para iterar a través de los productos en el carrito
+    DECLARE @productoID INT;
+    DECLARE @cantidad INT;
+    DECLARE @precio DECIMAL(10, 2);
+    
+    DECLARE carrito_cursor CURSOR FOR
+    SELECT pc.productoID, pc.cantidad, p.precio
+    FROM productosxcarrito pc
+    JOIN Producto p ON pc.productoID = p.productoID
+    WHERE pc.carritoID = @carritoID;
+
+    OPEN carrito_cursor;
+
+    FETCH NEXT FROM carrito_cursor INTO @productoID, @cantidad, @precio;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        -- Agregar detalles al detalle de compra
+        SET @detalleCompra = @detalleCompra + 
+            'Producto: ' + CAST((select nombre from producto where productoID = @productoID) AS VARCHAR) + ', ' +
+            'Precio: ' + CAST(@precio AS VARCHAR) + ', ' +
+            'Cantidad: ' + CAST(@cantidad AS VARCHAR) + char(10);
+
+        -- Calcular subtotal
+        SET @subtotal = @subtotal + (@precio * @cantidad);
+
+        FETCH NEXT FROM carrito_cursor INTO @productoID, @cantidad, @precio;
+    END;
+
+    CLOSE carrito_cursor;
+    DEALLOCATE carrito_cursor;
+
+    -- Agregar el subtotal al detalle de compra
+    SET @detalle = @detalleCompra + 'Subtotal: ' + CAST(@subtotal AS VARCHAR) + char(10);
+
+    -- Retornar el detalle
+    RETURN @detalle;
+END;
+go
+
+select dbo.ObtenerDetalle(1)

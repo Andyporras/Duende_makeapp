@@ -10,6 +10,7 @@ using System.ComponentModel;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Drawing;
+using duendeMakeApp.DAO;
 
 namespace duendeMakeApp.Controllers
 {
@@ -375,14 +376,10 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout(string codPostal, int provincia, string dir, string imageFile)
         {
-
-
             _usuario = UsuariosController.GetSessionUser(_context);
-
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
 
-            try
-            {
+            try {
                 using (SqlConnection conexion = new SqlConnection(conecction))
                 {
                     conexion.Open();
@@ -406,11 +403,8 @@ namespace duendeMakeApp.Controllers
                     cmd.Parameters.AddWithValue("@provincia", provincia);
                     cmd.Parameters.AddWithValue("@imagen", imageFile);
 
-
-
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.ExecuteNonQuery();
-
                 }
             }
             catch (Exception e)
@@ -421,12 +415,77 @@ namespace duendeMakeApp.Controllers
                 return RedirectToAction("index3", "Productos");
 
             }
-            
+            //envio de factura
+            EmailSenderDAO emailSenderDAO = EmailSenderDAO.GetInstance();
+
+
+            string mensaje = $"------------------------- FACTURA -------------------------\n" +
+                $"Código Postal: {codPostal}\n" +
+                $"Provincia: {ObtenerProvincia(provincia)}\n" +
+                $"Dirección: {dir}\n" +
+                $"Comprobante: {imageFile}\n" +
+                $"Fecha: {DateTime.Now.ToShortDateString()}\n" +
+                $"------------------------- DETALLE -------------------------\n" +
+                ObtenerDetalle(carrito) +
+                $"------------------------- ¡Gracias por su compra! -------------------------";
+
+
+            await emailSenderDAO.SendEmailAsync(_usuario.Correo, "Factura - Duende MakeApp", mensaje);
+
             return RedirectToAction("Index", "Productos");
         }
 
+        public string ObtenerProvincia(int p)
+        {
+            string provincia = string.Empty;
+            switch (p)
+            {
+                case 1:
+                    provincia = "San José";
+                    break;
+                case 2:
+                    provincia = "Alajuela";
+                    break;
+                case 3:
+                    provincia = "Cartago";
+                    break;
+                case 4:
+                    provincia = "Heredia";
+                    break;
+                case 5:
+                    provincia = "Guanacaste";
+                    break;
+                case 6:
+                    provincia = "Puntarenas";
+                    break;
+                case 7:
+                    provincia = "Limón";
+                    break;
+                default:
+                    provincia = "Provincia Desconocida";
+                    break;
+            }
+            return provincia;
+        }
 
+        public string ObtenerDetalle(int carrito)
+        {
+            _usuario = UsuariosController.GetSessionUser(_context);
+            string detalle = "";
+            using (SqlConnection connection = new SqlConnection(conecction))
+            {
+                connection.Open();
 
+                using (SqlCommand command = new SqlCommand("SELECT dbo.ObtenerDetalle(@carritoID)", connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@carritoID", SqlDbType.Int) { Value = carrito });
+                    detalle = (string)command.ExecuteScalar();
+                }
+            }
+
+            return detalle;
+        }
 
         public IActionResult RestarProducto(int id)
         {

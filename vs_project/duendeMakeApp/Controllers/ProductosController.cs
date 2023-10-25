@@ -19,7 +19,7 @@ namespace duendeMakeApp.Controllers
         private List<Producto> productosCarrito = new List<Producto>();
         private static Usuario? _usuario;
 
-        private static string conecction = "Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
+        private static string conecction = "Data Source=DESKTOP_2023V2\\SQLEXPRESS; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
 
         public ProductosController(DuendeappContext context, Usuario usuario)
         {
@@ -198,9 +198,10 @@ namespace duendeMakeApp.Controllers
             _usuario = UsuariosController.GetSessionUser(_context);
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
             var oLista = new List<Producto>();
-            using (SqlConnection conexion = new SqlConnection(conecction))
 
-                
+            Console.WriteLine(carrito);
+            using (SqlConnection conexion = new SqlConnection(conecction))
+    
 
             {
                 conexion.Open();
@@ -372,29 +373,55 @@ namespace duendeMakeApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Checkout(string codPostal, string provincia, string dir, string imageFile)
+        public async Task<IActionResult> Checkout(string codPostal, int provincia, string dir, string imageFile)
         {
 
-            //Usuario usuario = new Usuario();
-            //usuario = _context.Usuarios.Where(item => item.Correo == correo && item.Clave == clave).FirstOrDefault();
-            //if (usuario == null)
-            //{
-            //    TempData["Mensaje"] = "El correo o la contraseña son incorrectos.";
-            //    return RedirectToAction("Index", "Maquillajes");
-            //}
-            //// sacamos el tipo de usuario
-            //int tipo = usuario.TipoId.GetValueOrDefault();
-            //TipoUsuario tipoUsuario = _context.TipoUsuarios.Where(item => item.TipoUsarioId == tipo).FirstOrDefault();
-            //// guardamos el tipo de usuario en la sesion
 
-            ////TempData["Usuario"] = usuario;
-            //// cambiar el valor de inicio de seccion en Usuario
-            //Usuario.SeccionActual = correo;
-            ////TempData["Mensaje"] = "Bienvenido " + usuario.Nombre + " " + usuario.Apellido + " al sistema de Duende MakeApp";
-            Console.WriteLine(codPostal);
-            Console.WriteLine(provincia);
-            Console.WriteLine(imageFile);
-            Console.WriteLine(dir);
+            _usuario = UsuariosController.GetSessionUser(_context);
+
+            int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
+
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection(conecction))
+                {
+                    conexion.Open();
+
+                    SqlCommand cmd = new SqlCommand("concretarVenta", conexion);
+                    int codigo;
+                    if (int.TryParse(codPostal, out codigo))
+                    {
+                        Console.WriteLine(codigo);
+                    }
+                    else
+                    {
+                        TempData["mensaje"] = "Ha ingresado un valor no numérico";
+                        return RedirectToAction("index3", "Productos");
+                    }
+
+                    cmd.Parameters.AddWithValue("@usuario", _usuario.UsuarioId);
+                    cmd.Parameters.AddWithValue("@carrito", carrito);
+                    cmd.Parameters.AddWithValue("@codPostal", codigo);
+                    cmd.Parameters.AddWithValue("@direccion", dir);
+                    cmd.Parameters.AddWithValue("@provincia", provincia);
+                    cmd.Parameters.AddWithValue("@imagen", imageFile);
+
+
+
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.ExecuteNonQuery();
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                string error = e.Message;
+                TempData["mensaje"] = "Ha sucedido un error inesperado";
+                return RedirectToAction("index3", "Productos");
+
+            }
+            
             return RedirectToAction("Index", "Productos");
         }
 

@@ -554,6 +554,7 @@ BEGIN
     SELECT @CarritoID = CarritoID
     FROM Carrito
     WHERE UsuarioID = @UsuarioID
+	AND estado = 1
 
     RETURN @CarritoID
 END;
@@ -565,36 +566,47 @@ ADD CONSTRAINT SinRepeticiones UNIQUE (Nombre);
 insert into provincia (Nombre) values 
 ('San Jose'), ('Alajuela'), ('Cartago'), ('Heredia'), ('Guanacaste'), ('Puntarenas'), ('Limon') --ids del 1 al 7
 insert into EstadoEnvio (Estado) values ('En ruta'), ('Entregado') -- ids 1 y 2
+select * from carrito
+select * from usuario
 
-GO
+go
 CREATE OR ALTER PROCEDURE concretarVenta (
 @usuario int,
 @carrito int,
-
 @codPostal int,
 @direccion VARCHAR(100),
 @provincia int,
-
 @imagen VARCHAR(50)
 )
 AS
 BEGIN
-	UPDATE carrito SET estado = 0 where CarritoID=@carrito -- Deshabilitar el carrito del usuario
-	INSERT INTO CARRITO (UsuarioID, estado) VALUES (@usuario, 1) -- Crear un nuevo carrito para el usuario
+	-- Validar que productosxcarrito no esté vacío
+	DECLARE @carritoCount INT;
+	SELECT @carritoCount = COUNT(*) FROM ProductosXCarrito WHERE CarritoID = @carrito;
+	IF @carritoCount > 0
+	BEGIN
+		-- Continuar con el resto del procedimiento
+		UPDATE carrito SET estado = 0 WHERE CarritoID = @carrito; -- Deshabilitar el carrito del usuario
+		INSERT INTO CARRITO (UsuarioID, estado) VALUES (@usuario, 1); -- Crear un nuevo carrito para el usuario
 
-	-- Creacion de la direccion
-	INSERT INTO Direccion (CodigoPostal, Detalle, ProvinciaID) VALUES (@codPostal, @direccion, @provincia)
-	DECLARE @DireccionID int;
-	SELECT @DireccionID = SCOPE_IDENTITY(); -- Reservar el id de la direccion para mas adelante
+		-- Creación de la dirección
+		INSERT INTO Direccion (CodigoPostal, Detalle, ProvinciaID) VALUES (@codPostal, @direccion, @provincia);
+		DECLARE @DireccionID int;
+		SELECT @DireccionID = SCOPE_IDENTITY(); -- Reservar el id de la dirección para más adelante
 
-	-- Creacion de la venta
-	INSERT INTO Venta (imgComprobante, CarritoID) VALUES (null, @carrito) --por el momento la imagen es null
+		-- Creación de la venta
+		INSERT INTO Venta (imgComprobante, CarritoID) VALUES (null, @carrito); -- Por el momento la imagen es null
 
-	-- Creación del envío
-	DECLARE @FechaEntrega date;
-	SELECT @FechaEntrega = DATEADD(day, 3, CONVERT(date, GETDATE()));
-	
-	INSERT INTO Envio(FechaPedido, FechaEntrega, EstadoID, CarritoID, DireccionID)
-	VALUES (CONVERT(date, GETDATE()), @FechaEntrega, 1, @carrito, @DireccionID);
+		-- Creación del envío
+		DECLARE @FechaEntrega date;
+		SELECT @FechaEntrega = DATEADD(day, 3, CONVERT(date, GETDATE())); --3 dias despues de la venta (fecha estimada)
+		
+		INSERT INTO Envio(FechaPedido, FechaEntrega, EstadoID, CarritoID, DireccionID)
+		VALUES (CONVERT(date, GETDATE()), @FechaEntrega, 1, @carrito, @DireccionID);
+	END
+	ELSE
+	BEGIN
+		-- Terminar el procedimiento si el carrito está vacío
+		RETURN;
+	END
 END;
-GO

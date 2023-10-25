@@ -32,7 +32,7 @@ namespace duendeMakeApp.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
             Imagen imagen = await _context.Imagens
                 .Include(i => i.Tags)
                 .Include(i => i.Productos)
@@ -50,6 +50,7 @@ namespace duendeMakeApp.Controllers
         // GET: Imagenes/Create
         public IActionResult Create()
         {
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
             return View();
         }
 
@@ -232,7 +233,7 @@ namespace duendeMakeApp.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
             var imagen = await _context.Imagens
                 .FirstOrDefaultAsync(m => m.ImagenId == id);
             if (imagen == null)

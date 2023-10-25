@@ -4,44 +4,59 @@
     ViewData["Title"] = "Imágenes";
 }
 
-<h1>Imágenes</h1>
-
-<p>
-    <a class="btn btn-primary" asp-action="Create">Agregar imagen</a>
-</p>
-
-<input class="form-control" id="myInput" type="text" placeholder="Buscar..">
-<dl id="myDIV" class="row">
-    @foreach (Imagen img in Model)
+@try
+{
+    @if (ViewBag.Usuario.Tipo.Tipo == "admin")
     {
-        <div id="content" class="card mb-3" style="max-width: 540px;">
-            <div class="row g-0">
-                <div class="col-md-4">
-                    <img src="@img.Url"
-                         class="rounded-start" />
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">@img.Nombre</h5>
-                        <p class="card-text">
-                        <p>
-                                @img.Descripcion
-                        </p>
-                        <p>
-                            @foreach (Tag tag in img.Tags)
-                            {
-                            <span class="badge badge-success">@tag.Nombre</span>
-                            }
-                            @if (img.Venta.Count() != 0)
-                            {
-                            <span class="badge badge-info">Comprobante de venta</span>
-                            }
-                        <br />
-                        <a class="btn btn-secondary" asp-action="Details" asp-route-id="@img.ImagenId">Detalles</a>
-                        </p>
+
+        <h1>Imágenes</h1>
+
+        <p>
+            <a class="btn btn-primary" asp-action="Create">Agregar imagen</a>
+        </p>
+
+        <input class="form-control" id="myInput" type="text" placeholder="Buscar..">
+        <dl id="myDIV" class="row">
+            @foreach (Imagen img in Model)
+            {
+                <div id="content" class="card mb-3" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="@img.Url"
+                                 class="rounded-start" />
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">@img.Nombre</h5>
+                                <p class="card-text">
+                                <p>
+                                        @img.Descripcion
+                                </p>
+                                <p>
+                                    @foreach (Tag tag in img.Tags)
+                                    {
+                                    <span class="badge badge-success">@tag.Nombre</span>
+                                    }
+                                    @if (img.Venta.Count() != 0)
+                                    {
+                                    <span class="badge badge-info">Comprobante de venta</span>
+                                    }
+                                <br />
+                                <a class="btn btn-secondary" asp-action="Details" asp-route-id="@img.ImagenId">Detalles</a>
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            }
+        </dl>
     }
-</dl>
+    else
+    {
+        <div class="alert alert-danger">Acceso denegado.</div>
+    }
+}
+catch (Exception)
+{
+    <div class="alert alert-danger">Acceso denegado.</div>
+}

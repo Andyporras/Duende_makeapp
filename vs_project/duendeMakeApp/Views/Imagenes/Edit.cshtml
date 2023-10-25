@@ -4,101 +4,117 @@
     ViewData["Title"] = "Editar imagen";
 }
 
-<h1>Editar imagen</h1>
+@try
+{
+    @if (ViewBag.Usuario.Tipo.Tipo == "admin")
+    {
+        <h1>Editar imagen</h1>
 
-<h4>Imagen @Model.ImagenId</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ImagenId" />
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
-            @if (Model.Venta.Count() == 1)
-            {
-                //badge
-                <span class="badge badge-light">Los comprobante de venta no se pueden asociar a un producto o maquillaje.</span>
-            }
-            else
-            {
-                <div class="form-group">
-                    <label class="control-label">Seleccionar tags:</label>
-                    @foreach (Tag tag in ViewBag.Tags)
+        <h4>Imagen @Model.ImagenId</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="ImagenId" />
+                    <div class="form-group">
+                        <label asp-for="Nombre" class="control-label"></label>
+                        <input asp-for="Nombre" class="form-control" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Descripcion" class="control-label"></label>
+                        <input asp-for="Descripcion" class="form-control" />
+                        <span asp-validation-for="Descripcion" class="text-danger"></span>
+                    </div>
+                    @if (Model.Venta.Count() == 1)
                     {
-                        <label class="btn btn-secondary">
-                            @if (Model.Tags.Contains(tag))
-                            {
-                                <input type="checkbox" name="TagsIds" value="@tag.TagId" checked="checked" />
-                                @tag.Nombre
-                            }
-                            else
-                            {
-                                <input type="checkbox" name="TagsIds" value="@tag.TagId" />
-                                @tag.Nombre
-                            }
-                        </label>
+                        //badge
+                        <span class="badge badge-light">Los comprobante de venta no se pueden asociar a un producto o maquillaje.</span>
                     }
-                </div>
+                    else
+                    {
+                        <div class="form-group">
+                            <label class="control-label">Seleccionar tags:</label>
+                            @foreach (Tag tag in ViewBag.Tags)
+                            {
+                                <label class="btn btn-secondary">
+                                    @if (Model.Tags.Contains(tag))
+                                    {
+                                        <input type="checkbox" name="TagsIds" value="@tag.TagId" checked="checked" />
+                                        @tag.Nombre
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" name="TagsIds" value="@tag.TagId" />
+                                        @tag.Nombre
+                                    }
+                                </label>
+                            }
+                        </div>
 
-                <div class="form-group">
-                    <label class="control-label">
-                        Seleccionar maquillajes:
-                        @foreach (Maquillaje maquillaje in ViewBag.Maquillajes)
-                        {
-                            <label class="btn btn-secondary">
-                                @if (Model.Maquillajes.Contains(maquillaje))
+                        <div class="form-group">
+                            <label class="control-label">
+                                Seleccionar maquillajes:
+                                @foreach (Maquillaje maquillaje in ViewBag.Maquillajes)
                                 {
-                                    <input type="checkbox" name="MaquillajesIds" value="@maquillaje.MaquillajeId" checked="checked" />
-                                    @maquillaje.Nombre
-                                }
-                                else
-                                {
-                                    <input type="checkbox" name="MaquillajesIds" value="@maquillaje.MaquillajeId" />
-                                    @maquillaje.Nombre
+                                    <label class="btn btn-secondary">
+                                        @if (Model.Maquillajes.Contains(maquillaje))
+                                        {
+                                            <input type="checkbox" name="MaquillajesIds" value="@maquillaje.MaquillajeId" checked="checked" />
+                                            @maquillaje.Nombre
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" name="MaquillajesIds" value="@maquillaje.MaquillajeId" />
+                                            @maquillaje.Nombre
+                                        }
+                                    </label>
                                 }
                             </label>
-                        }
-                    </label>
-                </div>
+                        </div>
 
 
-                <div class="form-group">
-                    <label class="control-label">
-                        Seleccionar productos:
-                        @foreach (Producto producto in ViewBag.Productos)
-                        {
-                            <label class="btn btn-secondary">
-                                @if (Model.Productos.Contains(producto))
+                        <div class="form-group">
+                            <label class="control-label">
+                                Seleccionar productos:
+                                @foreach (Producto producto in ViewBag.Productos)
                                 {
-                                    <input type="checkbox" name="ProductosIds" value="@producto.ProductoId" checked="checked" />
-                                }
-                                else
-                                {
-                                    <input type="checkbox" name="ProductosIds" value="@producto.ProductoId" />
-                                    @producto.Nombre
+                                    <label class="btn btn-secondary">
+                                        @if (Model.Productos.Contains(producto))
+                                        {
+                                            <input type="checkbox" name="ProductosIds" value="@producto.ProductoId" checked="checked" />
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" name="ProductosIds" value="@producto.ProductoId" />
+                                            @producto.Nombre
+                                        }
+                                    </label>
                                 }
                             </label>
-                        }
-                    </label>
-                </div>
-            }
-            <div class="form-group">
-                <input type="hidden" asp-for="Url" />
-                <a class="btn btn-outline-danger" asp-action="Details" asp-route-id="@Model.ImagenId">Regresar</a>
-                <input type="submit" value="Guardar" class="btn btn-primary" />
+                        </div>
+                    }
+                    <div class="form-group">
+                        <input type="hidden" asp-for="Url" />
+                        <a class="btn btn-outline-danger" asp-action="Details" asp-route-id="@Model.ImagenId">Regresar</a>
+                        <input type="submit" value="Guardar" class="btn btn-primary" />
+                    </div>
+                </form>
             </div>
-        </form>
-    </div>
-</div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">Acceso denegado.</div>
+    }
+}
+catch (Exception)
+{
+    <div class="alert alert-danger">Acceso denegado.</div>
+}
+
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

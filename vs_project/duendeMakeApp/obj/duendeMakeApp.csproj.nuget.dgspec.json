@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ksala\\OneDrive\\Escritorio\\Duende_makeapp\\vs_project\\duendeMakeApp\\duendeMakeApp.csproj": {}
+    "C:\\Users\\Innovation Computers\\OneDrive - Estudiantes ITCR\\Documentos\\GitHub\\Duende_makeapp\\vs_project\\duendeMakeApp\\duendeMakeApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ksala\\OneDrive\\Escritorio\\Duende_makeapp\\vs_project\\duendeMakeApp\\duendeMakeApp.csproj": {
+    "C:\\Users\\Innovation Computers\\OneDrive - Estudiantes ITCR\\Documentos\\GitHub\\Duende_makeapp\\vs_project\\duendeMakeApp\\duendeMakeApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ksala\\OneDrive\\Escritorio\\Duende_makeapp\\vs_project\\duendeMakeApp\\duendeMakeApp.csproj",
+        "projectUniqueName": "C:\\Users\\Innovation Computers\\OneDrive - Estudiantes ITCR\\Documentos\\GitHub\\Duende_makeapp\\vs_project\\duendeMakeApp\\duendeMakeApp.csproj",
         "projectName": "duendeMakeApp",
-        "projectPath": "C:\\Users\\ksala\\OneDrive\\Escritorio\\Duende_makeapp\\vs_project\\duendeMakeApp\\duendeMakeApp.csproj",
-        "packagesPath": "C:\\Users\\ksala\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ksala\\OneDrive\\Escritorio\\Duende_makeapp\\vs_project\\duendeMakeApp\\obj\\",
+        "projectPath": "C:\\Users\\Innovation Computers\\OneDrive - Estudiantes ITCR\\Documentos\\GitHub\\Duende_makeapp\\vs_project\\duendeMakeApp\\duendeMakeApp.csproj",
+        "packagesPath": "C:\\Users\\Innovation Computers\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Innovation Computers\\OneDrive - Estudiantes ITCR\\Documentos\\GitHub\\Duende_makeapp\\vs_project\\duendeMakeApp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ksala\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Innovation Computers\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -75,24 +75,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[6.0.20, 6.0.20]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[6.0.20, 6.0.20]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[6.0.20, 6.0.20]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[6.0.20, 6.0.20]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"

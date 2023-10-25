@@ -123,10 +123,10 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CategoriaId,Nombre")] Categoria categoria)
         {
-            if (id != categoria.CategoriaId)
-            {
-                return NotFound();
-            }
+            //if (id != categoria.CategoriaId)
+            //{
+            //    return NotFound();
+            //}
 
             if (ModelState.IsValid)
             {

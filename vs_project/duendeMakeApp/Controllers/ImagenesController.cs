@@ -33,7 +33,11 @@ namespace duendeMakeApp.Controllers
                 return NotFound();
             }
 
-            var imagen = await _context.Imagens
+            Imagen imagen = await _context.Imagens
+                .Include(i => i.Tags)
+                .Include(i => i.Productos)
+                .Include(i => i.Venta)
+                .Include(i => i.Maquillajes)
                 .FirstOrDefaultAsync(m => m.ImagenId == id);
             if (imagen == null)
             {
@@ -94,7 +98,18 @@ namespace duendeMakeApp.Controllers
                 return NotFound();
             }
 
-            var imagen = await _context.Imagens.FindAsync(id);
+            var imagen = await _context.Imagens
+                .Include(i => i.Maquillajes)
+                .Include(i => i.Productos)
+                .Include(i => i.Tags)
+                .Include(i => i.Venta)
+                .FirstOrDefaultAsync(m => m.ImagenId == id);
+
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Productos = _context.Productos.ToList();
+            ViewBag.Maquillajes = _context.Maquillajes.ToList();
+            ViewBag.Tags = _context.Tags.ToList();
+
             if (imagen == null)
             {
                 return NotFound();
@@ -107,14 +122,83 @@ namespace duendeMakeApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ImagenId,Nombre,Descripcion,Url")] Imagen imagen)
+        public async Task<IActionResult> Edit(int ImagenId, [Bind("ImagenId,Nombre,Descripcion,Url")] Imagen imagen, List<int> TagsIds, List<int> MaquillajesIds, List<int> ProductosIds)
         {
+            if (ImagenId != imagen.ImagenId)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(imagen);
-                    await _context.SaveChangesAsync();
+                    // Obtener la imagen existente desde la base de datos (incluyendo relaciones)
+                    var imagenExistente = _context.Imagens
+                        .Include(i => i.Tags)
+                        .Include(i => i.Maquillajes)
+                        .Include(i => i.Productos)
+                        .FirstOrDefault(i => i.ImagenId == ImagenId);
+
+                    if (imagenExistente != null)
+                    {
+                        // Actualiza las propiedades de la imagen
+                        imagenExistente.Nombre = imagen.Nombre;
+                        imagenExistente.Descripcion = imagen.Descripcion;
+
+                        // Actualiza las relaciones con tags
+                        imagenExistente.Tags.Clear();
+                        if (TagsIds != null)
+                        {
+                            foreach (var tagId in TagsIds)
+                            {
+                                var tag = _context.Tags.Find(tagId);
+                                if (tag != null)
+                                {
+                                    imagenExistente.Tags.Add(tag);
+                                }
+                            }
+                        }
+
+                        // Actualiza las relaciones con maquillajes
+                        imagenExistente.Maquillajes.Clear();
+                        if (MaquillajesIds != null)
+                        {
+                            foreach (var maquillajeId in MaquillajesIds)
+                            {
+                                var maquillaje = _context.Maquillajes.Find(maquillajeId);
+                                if (maquillaje != null)
+                                {
+                                    imagenExistente.Maquillajes.Add(maquillaje);
+                                }
+                            }
+                        }
+
+                        // Actualiza la relación con productos (un producto solo puede tener una imagen)
+                        if (ProductosIds != null && ProductosIds.Count > 0)
+                        {
+                            var producto = _context.Productos.Find(ProductosIds.First());
+                            if (producto != null)
+                            {
+                                producto.Imagen = imagenExistente;
+                            }
+                        }
+                        else
+                        {
+                            // Si no se selecciona un producto, desvincula la imagen de cualquier producto existente
+                            if (imagenExistente.Productos != null)
+                            {
+                                imagenExistente.Productos = null;
+                            }
+                        }
+
+                        // Guarda los cambios en la base de datos
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -127,10 +211,13 @@ namespace duendeMakeApp.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(imagen);
         }
+
 
         // GET: Imagenes/Delete/5
         public async Task<IActionResult> Delete(int? id)

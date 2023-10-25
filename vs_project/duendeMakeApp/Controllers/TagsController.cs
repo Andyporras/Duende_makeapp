@@ -53,6 +53,7 @@ namespace duendeMakeApp.Controllers
         // GET: Tags/Create
         public IActionResult Create()
         {
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
             return View();
         }
 

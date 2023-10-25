@@ -31,9 +31,11 @@
                             {
                                 <h5><span class="badge badge-success">@tag.Nombre</span></h5>
                             }
-                            @*<a class="btn btn-secondary" asp-action="Edit" asp-route-id="@img.ImagenId">Editar</a>*@
+                            @if(img.Venta.Count() != 0)
+                            {
+                                <h5><span class="badge badge-info">Comprobante de venta</span></h5>
+                            }
                             <a class="btn btn-secondary" asp-action="Details" asp-route-id="@img.ImagenId">Detalles</a>
-                            @*<a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@img.ImagenId">Eliminar</a>W*@
                         </p>
                     </div>
                 </div>

@@ -1,10 +1,10 @@
 ﻿@model duendeMakeApp.Models.Imagen
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Agregar imagen";
 }
 
-<h1>Create</h1>
+<h1>Agregar imagen</h1>
 
 <h4>Imagen</h4>
 <hr />
@@ -29,14 +29,11 @@
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <a class="btn btn-secondary" asp-action="Index">Ver lista de imágenes</a>
+                <input type="submit" value="Agregar" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

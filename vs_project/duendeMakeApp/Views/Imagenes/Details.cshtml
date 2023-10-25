@@ -1,13 +1,16 @@
 ﻿@model duendeMakeApp.Models.Imagen
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles de imagen";
 }
 
-<h1>Details</h1>
+<h1>Detalles</h1>
 
 <div>
-    <h4>Imagen</h4>
+    <h4>Imagen @Model.ImagenId</h4>
+    <div class="col-md-6">
+        <img class="border border-success" src="@Model.Url" />
+    </div>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -28,9 +31,44 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Url)
         </dd>
+        <dt class="col-sm-2">
+            Tags
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (Tag item in Model.Tags)
+            {
+                <a asp-controller="Tags" asp-route-id="@item.TagId">
+                    <h5><span class="badge badge-success">@item.Nombre</span></h5>
+                </a>
+            }
+        </dd>
+        <dt class="col-sm-2">
+            Maquillajes
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (Maquillaje item in Model.Maquillajes)
+            {
+                <a asp-controller="Maquillajes" asp-route-id="@item.MaquillajeId">
+                    <h5><span class="badge badge-info">@item.Nombre</span></h5>
+                </a>
+            }
+        </dd>
+        <dt class="col-sm-2">
+            Productos
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (Producto item in Model.Productos)
+            {
+                <a asp-controller="Productos" asp-route-id="@item.ProductoId">
+                    <h5><span class="badge badge-info">@item.Nombre</span></h5>
+                </a>
+            }
+        </dd>
+        
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ImagenId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-primary" asp-action="Index">Regresar</a>
+    <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model?.ImagenId">Editar</a>
+    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model?.ImagenId">Eliminar</a>
 </div>

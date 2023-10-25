@@ -123,10 +123,11 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("SubcategoriaId,Nombre")] Subcategoria subcategoria)
         {
-            if (id != subcategoria.SubcategoriaId)
-            {
-                return NotFound();
-            }
+
+            //if (id != subcategoria.SubcategoriaId)
+            //{
+            //    return NotFound();
+            //}
 
             if (ModelState.IsValid)
             {
@@ -154,6 +155,16 @@ namespace duendeMakeApp.Controllers
         // GET: Subcategorias/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            String correo = Usuario.SeccionActual;
+            if (correo != "")
+            {
+                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
+            }
+            else
+            {
+                _usuario = null;
+            }
+            ViewBag.Usuario = _usuario;
             if (id == null || _context.Subcategoria == null)
             {
                 return NotFound();

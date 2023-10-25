@@ -71,7 +71,7 @@
                             
                         </tbody>
                     </table>
-                    <div class="card shadow-2-strong mb-5 mb-lg-0" style="border-radius: 18px;">
+                    <div class="card shadow-2-strong mb-5 mb-lg-0" style="border: 1px solid blue; border-radius: 10px;">
                         <div class="card-body p-4">
                             <form asp-controller="Productos" asp-action="Checkout" method="post">
                                 <div class="row">
@@ -79,26 +79,34 @@
                                         <div class="row">
                                             <div class="col-12 col-xl-6">
                                                 <div class="form-outline mb-4 mb-xl-5">
-                                                    <input type="text" id="typeName" name ="codPostal" class="form-control form-control-lg" siez="17"
+                                                    <label class="form-label">Código Postal</label>
+                                                    <input type="text" id="typeName" name="codPostal" class="form-control form-control-lg" siez="17" style="border: 1px solid blue; border-radius: 10px;"
                                                            placeholder="Ej: 70202" required/>
-                                                    <label class="form-label" for="typeName">Código Postal</label>
+                                                    
                                                 </div>
 
                                                 <div class="form-outline mb-4 mb-xl-5">
-                                                    <input type="text" id="typeExp" class="form-control form-control-lg" name = "provincia" placeholder="Provincia"
-                                                           size="7" id="exp" required/>
-                                                    <label class="form-label" for="typeExp">Provincia</label>
+                                                    <label class="form-label">Provincia</label>
+                                                    <select name="provincia" class="form-control form-control-lg" style="border: 1px solid blue; border-radius: 10px;">
+                                                        <option value="1">San José</option>
+                                                        <option value="2">Alajuela</option>
+                                                        <option value="3">Cartago</option>
+                                                        <option value="4">Heredia</option>
+                                                        <option value="5">Guanacaste</option>
+                                                        <option value="6">Puntarenas</option>
+                                                        <option value="7">Limón</option>
+                                                    </select>
                                                 </div>
                                                 <div class="form-outline mb-4 mb-xl-5">
-                                                    <input type="text" id="typeExp" class="form-control form-control-lg" name = "dir" placeholder="Dirección"
-                                                           size="7" id="exp" required />
-                                                    <label class="form-label" for="typeExp">Dirección</label>
+                                                    <label class="form-label">Dirección</label>
+                                                    <input type="text" id="typeExp" class="form-control form-control-lg" name="dir" placeholder="Dirección" style="border: 1px solid blue; border-radius: 10px;"
+                                                           size="7" required />
                                                 </div>
                                             </div>
                                             <div class="col-12 col-xl-6">
                                                 <div class="form-outline mb-4 mb-xl-5">
                                                     <label for="imageFile" class="control-label">Adjunte su comprobante</label>
-                                                    <input class="form-control" required type="file" id="imageFile" name="imageFile" accept="image/*" />
+                                                    <input class="form-control" required type="file" id="imageFile" name="imageFile" accept="image/*" style="border: 1px solid blue; border-radius: 10px;" />
 
                                                 </div>
                                             </div>

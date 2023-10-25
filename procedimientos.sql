@@ -544,7 +544,6 @@ begin
 	delete ProductosXCarrito
 	where ProductoID = @IDProducto and CarritoID = @IDCarrito
 END;
-
 go
 CREATE or alter FUNCTION ObtenerCarritoPorUsuarioID (@UsuarioID INT)
 RETURNS INT
@@ -558,3 +557,44 @@ BEGIN
 
     RETURN @CarritoID
 END;
+go
+
+----------------------PREPARACION DE SP PARA CHECKOUT------------------------
+ALTER TABLE Provincia
+ADD CONSTRAINT SinRepeticiones UNIQUE (Nombre);
+insert into provincia (Nombre) values 
+('San Jose'), ('Alajuela'), ('Cartago'), ('Heredia'), ('Guanacaste'), ('Puntarenas'), ('Limon') --ids del 1 al 7
+insert into EstadoEnvio (Estado) values ('En ruta'), ('Entregado') -- ids 1 y 2
+
+GO
+CREATE OR ALTER PROCEDURE concretarVenta (
+@usuario int,
+@carrito int,
+
+@codPostal int,
+@direccion VARCHAR(100),
+@provincia int,
+
+@imagen VARCHAR(50)
+)
+AS
+BEGIN
+	UPDATE carrito SET estado = 0 where CarritoID=@carrito -- Deshabilitar el carrito del usuario
+	INSERT INTO CARRITO (UsuarioID, estado) VALUES (@usuario, 1) -- Crear un nuevo carrito para el usuario
+
+	-- Creacion de la direccion
+	INSERT INTO Direccion (CodigoPostal, Detalle, ProvinciaID) VALUES (@codPostal, @direccion, @provincia)
+	DECLARE @DireccionID int;
+	SELECT @DireccionID = SCOPE_IDENTITY(); -- Reservar el id de la direccion para mas adelante
+
+	-- Creacion de la venta
+	INSERT INTO Venta (imgComprobante, CarritoID) VALUES (null, @carrito) --por el momento la imagen es null
+
+	-- Creación del envío
+	DECLARE @FechaEntrega date;
+	SELECT @FechaEntrega = DATEADD(day, 3, CONVERT(date, GETDATE()));
+	
+	INSERT INTO Envio(FechaPedido, FechaEntrega, EstadoID, CarritoID, DireccionID)
+	VALUES (CONVERT(date, GETDATE()), @FechaEntrega, 1, @carrito, @DireccionID);
+END;
+GO

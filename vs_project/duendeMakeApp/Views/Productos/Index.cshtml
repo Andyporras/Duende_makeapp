@@ -3,6 +3,18 @@
 @{
     ViewData["Title"] = "Index";
 }
+@if (!string.IsNullOrEmpty(TempData["mensaje"] as string))
+{
+    <div class="alert alert-info" id="mensajeDiv">@TempData["mensaje"]</div>
+    TempData.Remove("mensaje");
+    <script>
+        // JavaScript para ocultar el mensaje después de 3 segundos
+        setTimeout(function () {
+            var mensajeDiv = document.getElementById('mensajeDiv');
+            mensajeDiv.style.display = 'none';
+        }, 3000); // 3000 milisegundos = 3 segundos
+    </script>
+}
 
 <div class="container">
     <h1>Productos</h1>

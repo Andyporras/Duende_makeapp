@@ -4,7 +4,7 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Editar</h1>
 
 <h4>Usuario</h4>
 <hr />
@@ -44,14 +44,17 @@
                 <span asp-validation-for="TipoId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                @*Deberia hacer  <input type="submit" value="Save" class="btn btn-primary" />
+                    Pero al parecer no sirve como se espera
+                *@
+                <button asp-controller="Maquillajes" asp-action="Index" class="btn btn-primary" style="width:200px">Guardar</button>
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-outline-danger btn-primary btn-block btn-lg" style="width:200px" asp-controller="Maquillajes" asp-action="Index">Volver a inicio</a>
 </div>
 
 @section Scripts {

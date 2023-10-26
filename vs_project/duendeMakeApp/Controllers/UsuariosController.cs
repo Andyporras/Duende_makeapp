@@ -16,9 +16,11 @@ namespace duendeMakeApp.Controllers
     public class UsuariosController : Controller
     {
         private readonly DuendeappContext _context;
+        private static Usuario? _usuario;
 
-        public UsuariosController(DuendeappContext context)
+        public UsuariosController(DuendeappContext context, Usuario usuario)
         {
+            _usuario = usuario;
             _context = context;
         }
 
@@ -26,6 +28,8 @@ namespace duendeMakeApp.Controllers
         public async Task<IActionResult> Index()
         {
             var duendeappContext = _context.Usuarios.Include(u => u.Tipo);
+            _usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = _usuario;
             return View(await duendeappContext.ToListAsync());
         }
 
@@ -44,7 +48,8 @@ namespace duendeMakeApp.Controllers
             {
                 return NotFound();
             }
-
+            _usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = _usuario;
             return View(usuario);
         }
 
@@ -68,6 +73,8 @@ namespace duendeMakeApp.Controllers
             {
                 return NotFound();
             }
+            _usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = _usuario;
             ViewData["TipoId"] = new SelectList(_context.TipoUsuarios, "TipoUsarioId", "TipoUsarioId", usuario.TipoId);
             return View(usuario);
         }

@@ -11,8 +11,10 @@
         <h1>Usuarios</h1>
 
         <p>
-            <a asp-action="Create">Crear Usuario</a>
+            <a class="btn btn-primary" asp-action="Create">Agregar administrador</a>
         </p>
+
+        <input class="form-control" id="myInput" type="text" placeholder="Buscar..">
         <table class="table">
             <thead>
                 <tr>
@@ -26,16 +28,18 @@
                         @Html.DisplayNameFor(model => model.Correo)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Usuario1)
+                        Usuario
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Tipo)
                     </th>
+                    <th>Compras totales</th>
+                    <th>Ganancias generadas</th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach (var item in Model)
+            <tbody id="myTable">
+                @foreach (Usuario item in Model)
                 {
                     <tr>
                         <td>
@@ -45,18 +49,59 @@
                             @Html.DisplayFor(modelItem => item.Apellido)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Correo)
+                            <a href="mailto:@item.Correo">@item.Correo</a> <br />
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Usuario1)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Tipo.Tipo)
+                            <h5><span class="badge @if(item.TipoId == 1) { @Html.Raw("badge-success") } else { @Html.Raw("badge-info") }">
+                                @Html.DisplayFor(modelItem => item.Tipo.Tipo)
+                            </span></h5>
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.UsuarioId">Editar</a> |
-                            <a asp-action="Details" asp-route-id="@item.UsuarioId">Detalles</a> |
-                            <a asp-action="Delete" asp-route-id="@item.UsuarioId">Eliminar</a>
+                                    @* Compras totales *@
+                            @{
+                                int total = 0;
+                                foreach (Carrito carrito in item.Carritos)
+                                {
+                                    try
+                                    {
+                                        total += ((IEnumerable<Venta>) ViewBag.Ventas).Count(v => v.Carrito.CarritoId == carrito.CarritoId);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        0.ToString();
+                                    }
+                                }
+                                        @total
+                            }
+                            </td>
+
+                            <td>
+                                ₡
+                                @{
+                                    decimal? gananciasGeneradas = 0;
+                                    foreach (Carrito carrito in item.Carritos)
+                                    {
+                                        try
+                                        { //venta > carrito > precio productos * cantidad
+                                            gananciasGeneradas += ((IEnumerable<Venta>) ViewBag.Ventas)
+                                            .Where(v => v.Carrito.CarritoId == carrito.CarritoId)
+                                            .Sum(v => v.Carrito.Productos.Sum(p => p.Precio * p.Cantidad));
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            0.ToString();
+                                        }
+                                    }
+                                    @gananciasGeneradas
+                                }
+                            </td>
+                        <td>
+                            @*<a asp-action="Edit" asp-route-id="@item.UsuarioId">Editar</a> |*@
+                            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@item.UsuarioId">Detalles</a>
+                            @*<a asp-action="Delete" asp-route-id="@item.UsuarioId">Eliminar</a>*@
                         </td>
                     </tr>
                 }

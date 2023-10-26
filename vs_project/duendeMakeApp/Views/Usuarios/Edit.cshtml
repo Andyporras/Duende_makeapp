@@ -38,16 +38,14 @@
                 <input asp-for="Clave" class="form-control" />
                 <span asp-validation-for="Clave" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="TipoId" class="control-label"></label>
                 <select asp-for="TipoId" class="form-control" asp-items="ViewBag.TipoId"></select>
                 <span asp-validation-for="TipoId" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
-                @*Deberia hacer  <input type="submit" value="Save" class="btn btn-primary" />
-                    Pero al parecer no sirve como se espera
-                *@
-                <button asp-controller="Maquillajes" asp-action="Index" class="btn btn-primary" style="width:200px">Guardar</button>
+                <input class="btn btn-primary" type="submit" value="Actualizar" asp-route-id="@Model.UsuarioId"/>
+                @*<input class="btn btn-primary" type="submit" value="Eliminar perfil" asp-route-id="@Model.UsuarioId" />*@
             </div>
         </form>
     </div>

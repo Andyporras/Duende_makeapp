@@ -27,7 +27,17 @@ namespace duendeMakeApp.Controllers
         // GET: Usuarios
         public async Task<IActionResult> Index()
         {
-            var duendeappContext = _context.Usuarios.Include(u => u.Tipo);
+            var duendeappContext = _context.Usuarios
+                .Include(u => u.Tipo)
+                .Include(u => u.Carritos)
+                .ThenInclude(c => c.Paquetes)
+                .ThenInclude(p => p.Productos);
+
+            ViewBag.Ventas = _context.Venta
+                .Include(v => v.Carrito)
+                .ThenInclude(c => c.Paquetes)
+                .ThenInclude(p => p.Productos)
+                .ToList();
             _usuario = UsuariosController.GetSessionUser(_context);
             ViewBag.Usuario = _usuario;
             return View(await duendeappContext.ToListAsync());
@@ -95,6 +105,10 @@ namespace duendeMakeApp.Controllers
             {
                 try
                 {
+                    Usuario? usuarioActual = _context.Usuarios.Find(id);
+                    usuario.TipoId = usuarioActual.TipoId;
+                    _context.Entry(usuarioActual).State = EntityState.Detached;
+                    _context.Entry(usuario).State = EntityState.Modified;
                     _context.Update(usuario);
                     await _context.SaveChangesAsync();
                 }
@@ -112,7 +126,8 @@ namespace duendeMakeApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["TipoId"] = new SelectList(_context.TipoUsuarios, "TipoUsarioId", "TipoUsarioId", usuario.TipoId);
-            return View(usuario);
+
+            return RedirectToAction("Index", "Maquillajes");
         }
 
         // GET: Usuarios/Delete/5
@@ -217,6 +232,53 @@ namespace duendeMakeApp.Controllers
             carrito.estado = true;
             _context.Add(carrito);
             await _context.SaveChangesAsync();
+            TempData["Mensaje"] = "El usuario se ha creado exitosamente";
+
+            return RedirectToAction("Index", "Maquillajes");
+        }
+
+        public string claveRandom()
+        {
+            //generar una clave aleatoria con letras y numeros
+            string clave = "";
+            Random random = new Random();
+            for (int i = 0; i < 8; i++)
+            {
+                int numero = random.Next(0, 9);
+                int letra = random.Next(65, 90);
+                char caracter = (char)letra;
+                clave += numero.ToString() + caracter.ToString();
+            }
+            return clave;
+        }
+
+        [HttpPost, ActionName("RegistraAdmin")]
+        [ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("UsuarioId,Nombre,Apellido,Correo,Usuario1,Clave,TipoId")] Usuario usuario)
+        public async Task<IActionResult> RegistraAdmin([Bind("UsuarioId,Nombre,Apellido,Correo,Usuario1,Clave,TipoId")] Usuario usuario)
+        {
+            if (UsuarioExists(usuario.Correo))
+            {
+                TempData["Mensaje"] = "El correo ya existe";
+                return RedirectToAction("Index", "Maquillajes");
+            }
+
+            usuario.Clave = claveRandom();
+            usuario.TipoId = 1;
+
+            //enviar correo con la clave
+            string mensaje = "Bienvenido " + usuario.Nombre + " " + usuario.Apellido + " al sistema de Duende MakeApp.\n\n Su clave es: " + usuario.Clave;
+            string asunto = "Bienvenido al sistema de Duende MakeApp";
+            string correo = usuario.Correo;
+
+            EmailSenderDAO emailSenderDAO = EmailSenderDAO.GetInstance();
+            await emailSenderDAO.SendEmailAsync(correo, asunto, mensaje);
+
+
+            //guardar el nuevo usuario en la base de datos
+            _context.Add(usuario);
+            await _context.SaveChangesAsync();
+
             TempData["Mensaje"] = "El usuario se ha creado exitosamente";
 
             return RedirectToAction("Index", "Maquillajes");

@@ -4,18 +4,30 @@
     ViewData["Title"] = "Index";
 }
 
+<style>
+    .fade-in {
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .fade-out {
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+    }
+</style>
+
 @if (!string.IsNullOrEmpty(TempData["mensaje"] as string))
 {
-    <div class="alert alert-info" id="mensajeDiv">@TempData["mensaje"]</div>
+    <div class="alert alert-info fade-in" id="mensajeDiv">@TempData["mensaje"]</div>
     TempData.Remove("mensaje");
     <script>
         // JavaScript para ocultar el mensaje después de 3 segundos
         setTimeout(function () {
             var mensajeDiv = document.getElementById('mensajeDiv');
-            mensajeDiv.style.display = 'none';
+            mensajeDiv.classList.remove('fade-in');
+            mensajeDiv.classList.add('fade-out');
         }, 3000); // 3000 milisegundos = 3 segundos
     </script>
-
 }
 
 @try

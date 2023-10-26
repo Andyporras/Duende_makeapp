@@ -3,144 +3,157 @@
 @{
     ViewData["Title"] = "Index";
 }
+@try
+{
+    @if(ViewBag.Usuario.TipoId == 2)
+    {
+        <section class="h-100 h-custom">
 
-<section class="h-100 h-custom">
-    
-    <div class="container h-100 py-5">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col">
-                <h1>Carrito de compras</h1>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="h4">Producto</th>
-                                <th scope="col" class="h4">Precio</th>
-                                <th scope="col" class="h4">Cantidad</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @{
-                                decimal precioTotal = 0;
-                            }
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <th scope="row">
-                                        <div class="d-flex align-items-center">
-                                            <img src="https://i.imgur.com/2DsA49b.webp" class="img-fluid rounded-3"
-                                                 style="width: 120px;" alt="Book">
-                                            <div class="flex-column ms-4">
-                                                <p class="h5">@item.Nombre</p>
-                                                <p class="h7">@item.Descripcion</p>
-                                            </div>
-                                        </div>
-                                    </th>
-                                    <td class="align-middle">
-                                        <p class="mb-0" style="font-weight: 500;">₡@item.Precio</p>
-                                    </td>
-                                    <td class="align-middle">
-                                        <div class="d-flex flex-row">
-
-                                            <a class="btn btn-outline-primary" asp-action="SumarProducto" asp-route-id="@item.ProductoId">➕</a>
-                                            <input id="form1" min="0" name="quantity" value="@item.Cantidad" type="number"
-                                                   class="form-control form-control-sm" style="width: 80px; text-align: center; margin: 0" disabled />
-
-                                            <a class="btn btn-outline-primary" asp-action="RestarProducto" asp-route-id="@item.ProductoId">➖</a>                                            
-                                           
-
-                                        </div>
-                                    </td>
-                                    <td class="align-middle">
-                                        <a class="btn btn-outline-danger" asp-action="eliminarDelCarrrito" asp-route-id="@item.ProductoId">❌</a>
-
-                                    </td>
+            <div class="container h-100 py-5">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col">
+                        <h1>Carrito de compras</h1>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="h4">Producto</th>
+                                        <th scope="col" class="h4">Precio</th>
+                                        <th scope="col" class="h4">Cantidad</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     @{
-                                        decimal precioProducto = Convert.ToDecimal(item.Precio * item.Cantidad);
-                                        precioTotal += precioProducto;
+                                        decimal precioTotal = 0;
                                     }
-                                </tr>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <th scope="row">
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://i.imgur.com/2DsA49b.webp" class="img-fluid rounded-3"
+                                                    style="width: 120px;" alt="Book">
+                                                    <div class="flex-column ms-4">
+                                                        <p class="h5">@item.Nombre</p>
+                                                        <p class="h7">@item.Descripcion</p>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                            <td class="align-middle">
+                                                <p class="mb-0" style="font-weight: 500;">₡@item.Precio</p>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="d-flex flex-row">
 
-                                <!-- Calcula el precio total para el producto actual y agrégalo al precioTotal -->
-                                
-                      
-                            }
-                            
+                                                    <a class="btn btn-outline-primary" asp-action="SumarProducto" asp-route-id="@item.ProductoId">➕</a>
+                                                    <input id="form1" min="0" name="quantity" value="@item.Cantidad" type="number"
+                                                    class="form-control form-control-sm" style="width: 80px; text-align: center; margin: 0" disabled />
+
+                                                    <a class="btn btn-outline-primary" asp-action="RestarProducto" asp-route-id="@item.ProductoId">➖</a>                                            
+
+
+                                                </div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <a class="btn btn-outline-danger" asp-action="eliminarDelCarrrito" asp-route-id="@item.ProductoId">❌</a>
+
+                                            </td>
+                                            @{
+                                                decimal precioProducto = Convert.ToDecimal(item.Precio * item.Cantidad);
+                                                precioTotal += precioProducto;
+                                            }
+                                        </tr>
+
+                                        <!-- Calcula el precio total para el producto actual y agrégalo al precioTotal -->
+
+
+                                    }
+
 
                             
-                        </tbody>
-                    </table>
-                    <div class="card shadow-2-strong mb-5 mb-lg-0" style="border: 1px solid blue; border-radius: 10px;">
-                        <div class="card-body p-4">
-                            <form asp-controller="Productos" asp-action="Checkout" method="post">
-                                <div class="row">
-                                    <div class="col-md-6 col-lg-4 col-xl-6">
-                                        <div class="row">
-                                            <div class="col-12 col-xl-6">
-                                                <div class="form-outline mb-4 mb-xl-5">
-                                                    <label class="form-label">Código Postal</label>
-                                                    <input type="text" id="typeName" name="codPostal" minlength="5" maxlength="5" class="form-control form-control-lg" siez="17" style="border: 1px solid blue; border-radius: 10px;"
-                                                           placeholder="Ej: 70202" required/>
+                                    </tbody>
+                                </table>
+                                <div class="card shadow-2-strong mb-5 mb-lg-0" style="border: 1px solid blue; border-radius: 10px;">
+                                    <div class="card-body p-4">
+                                        <form asp-controller="Productos" asp-action="Checkout" method="post">
+                                            <div class="row">
+                                                <div class="col-md-6 col-lg-4 col-xl-6">
+                                                    <div class="row">
+                                                        <div class="col-12 col-xl-6">
+                                                            <div class="form-outline mb-4 mb-xl-5">
+                                                                <label class="form-label">Código Postal</label>
+                                                                <input type="text" id="typeName" name="codPostal" minlength="5" maxlength="5" class="form-control form-control-lg" siez="17" style="border: 1px solid blue; border-radius: 10px;"
+                                                                       placeholder="Ej: 70202" required/>
                                                     
-                                                </div>
+                                                            </div>
 
-                                                <div class="form-outline mb-4 mb-xl-5">
-                                                    <label class="form-label">Provincia</label>
-                                                    <select name="provincia" class="form-control form-control-lg" style="border: 1px solid blue; border-radius: 10px;">
-                                                        <option value=1>San José</option>
-                                                        <option value=2>Alajuela</option>
-                                                        <option value=3>Cartago</option>
-                                                        <option value=4>Heredia</option>
-                                                        <option value=5>Guanacaste</option>
-                                                        <option value=6>Puntarenas</option>
-                                                        <option value=7>Limón</option>
-                                                    </select>
+                                                            <div class="form-outline mb-4 mb-xl-5">
+                                                                <label class="form-label">Provincia</label>
+                                                                <select name="provincia" class="form-control form-control-lg" style="border: 1px solid blue; border-radius: 10px;">
+                                                                    <option value=1>San José</option>
+                                                                    <option value=2>Alajuela</option>
+                                                                    <option value=3>Cartago</option>
+                                                                    <option value=4>Heredia</option>
+                                                                    <option value=5>Guanacaste</option>
+                                                                    <option value=6>Puntarenas</option>
+                                                                    <option value=7>Limón</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-outline mb-4 mb-xl-5">
+                                                                <label class="form-label">Dirección</label>
+                                                                <input type="text" id="typeExp" class="form-control form-control-lg" name="dir" placeholder="Dirección" style="border: 1px solid blue; border-radius: 10px;"
+                                                                       size="7" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 col-xl-6">
+                                                            <div class="form-outline mb-4 mb-xl-5">
+                                                                <label for="imageFile" class="control-label">Adjunte su comprobante</label>
+                                                                <input class="form-control" required type="file" id="imageFile" name="imageFile" accept="image/*" style="border: 1px solid blue; border-radius: 10px;" />
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="form-outline mb-4 mb-xl-5">
-                                                    <label class="form-label">Dirección</label>
-                                                    <input type="text" id="typeExp" class="form-control form-control-lg" name="dir" placeholder="Dirección" style="border: 1px solid blue; border-radius: 10px;"
-                                                           size="7" required />
+                                                <div class="col-lg-4 col-xl-3"></div>
+                                                <div class="col-lg-4 col-xl-3">
+                                                    <div class="d-flex justify-content-between" style="font-weight: 500;">
+                                                        <p class="mb-2">Subtotal</p>
+                                                        <p class="mb-2">₡@precioTotal</p>
+                                                    </div>
+
+                                                    <hr class="my-4">
+
+                                                    <button type="submit" class="btn btn-primary btn-block btn-lg" @(precioTotal == 0 ? "disabled" : "")>
+                                                        <div class="d-flex justify-content-center">
+                                                            <span>Checkout</span>
+                                                        </div>
+                                                    </button>
+                                                    <a class="btn btn-outline-danger btn-primary btn-block btn-lg" asp-controller="Productos" asp-action="Index">
+                                                        <div class="d-flex justify-content-center">
+                                                            <span>Seguir comprando</span>
+                                                        </div>
+                                                    </a>
+
                                                 </div>
                                             </div>
-                                            <div class="col-12 col-xl-6">
-                                                <div class="form-outline mb-4 mb-xl-5">
-                                                    <label for="imageFile" class="control-label">Adjunte su comprobante</label>
-                                                    <input class="form-control" required type="file" id="imageFile" name="imageFile" accept="image/*" style="border: 1px solid blue; border-radius: 10px;" />
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-xl-3"></div>
-                                    <div class="col-lg-4 col-xl-3">
-                                        <div class="d-flex justify-content-between" style="font-weight: 500;">
-                                            <p class="mb-2">Subtotal</p>
-                                            <p class="mb-2">₡@precioTotal</p>
-                                        </div>
-
-                                        <hr class="my-4">
-
-                                        <button type="submit" class="btn btn-primary btn-block btn-lg" @(precioTotal == 0 ? "disabled" : "")>
-                                            <div class="d-flex justify-content-center">
-                                                <span>Checkout</span>
-                                            </div>
-                                        </button>
-                                        <a class="btn btn-outline-danger btn-primary btn-block btn-lg" asp-controller="Productos" asp-action="Index">
-                                            <div class="d-flex justify-content-center">
-                                                <span>Seguir comprando</span>
-                                            </div>
-                                        </a>
+                                        </form>
 
                                     </div>
                                 </div>
-                            </form>
-
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-</section>
+        </section>
+    }
+    else
+    {
+        <div class="alert alert-danger">Acceso denegado</div>
+    }
+
+}catch (Exception ex)
+{
+    <div class="alert alert-danger">Acceso denegado.</div>
+}

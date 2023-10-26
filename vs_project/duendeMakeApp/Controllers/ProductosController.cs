@@ -20,7 +20,7 @@ namespace duendeMakeApp.Controllers
         private List<Producto> productosCarrito = new List<Producto>();
         private static Usuario? _usuario;
 
-        private static string conecction = "Data Source=DESKTOP_2023V2\\SQLEXPRESS; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
+        private static string conecction = "Data Source=localhost; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
 
         public ProductosController(DuendeappContext context, Usuario usuario)
         {
@@ -197,6 +197,7 @@ namespace duendeMakeApp.Controllers
         public IActionResult index3()
         {
             _usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = _usuario;
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
             var oLista = new List<ProductoCarrito>();
 

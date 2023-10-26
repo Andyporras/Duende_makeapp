@@ -20,12 +20,15 @@ namespace duendeMakeApp.Controllers
         private List<Producto> productosCarrito = new List<Producto>();
         private static Usuario? _usuario;
 
+        private readonly IHttpClientFactory _clientFactory;
+
         private static string conecction = "Data Source=DESKTOP_2023V2\\SQLEXPRESS; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
 
-        public ProductosController(DuendeappContext context, Usuario usuario)
+        public ProductosController(DuendeappContext context, Usuario usuario, IHttpClientFactory clientFactory)
         {
             _usuario = usuario;
             _context = context;
+            _clientFactory = clientFactory;
         }
 
         // GET: Productos
@@ -376,10 +379,18 @@ namespace duendeMakeApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Checkout(string codPostal, int provincia, string dir, string imageFile)
+        public async Task<IActionResult> Checkout(string codPostal, int provincia, string dir, IFormFile imageFile)
         {
             _usuario = UsuariosController.GetSessionUser(_context);
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
+
+            Imagen imagen = new Imagen();
+            imagen.Nombre = "comprobante";
+            imagen.Descripcion = dir;
+
+            int idComprobante = imagen.ImagenId;
+            ImgurController imgurController = ImgurController.GetInstance(_clientFactory);
+            string imgurImageUrl = await imgurController.SubirImagen(imageFile);
 
             try {
                 using (SqlConnection conexion = new SqlConnection(conecction))

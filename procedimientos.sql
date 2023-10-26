@@ -575,11 +575,11 @@ CREATE OR ALTER PROCEDURE concretarVenta (
 @codPostal int,
 @direccion VARCHAR(100),
 @provincia int,
-@imagen VARCHAR(50)
+@imagenID int
 )
 AS
 BEGIN
-	-- Validar que productosxcarrito no esté vacío
+	-- Validar que productosxcarrito no estï¿½ vacï¿½o
 	DECLARE @carritoCount INT;
 	SELECT @carritoCount = COUNT(*) FROM ProductosXCarrito WHERE CarritoID = @carrito;
 	IF @carritoCount > 0
@@ -588,15 +588,15 @@ BEGIN
 		UPDATE carrito SET estado = 0 WHERE CarritoID = @carrito; -- Deshabilitar el carrito del usuario
 		INSERT INTO CARRITO (UsuarioID, estado) VALUES (@usuario, 1); -- Crear un nuevo carrito para el usuario
 
-		-- Creación de la dirección
+		-- Creaciï¿½n de la direcciï¿½n
 		INSERT INTO Direccion (CodigoPostal, Detalle, ProvinciaID) VALUES (@codPostal, @direccion, @provincia);
 		DECLARE @DireccionID int;
-		SELECT @DireccionID = SCOPE_IDENTITY(); -- Reservar el id de la dirección para más adelante
+		SELECT @DireccionID = SCOPE_IDENTITY(); -- Reservar el id de la direcciï¿½n para mï¿½s adelante
 
-		-- Creación de la venta
-		INSERT INTO Venta (imgComprobante, CarritoID) VALUES (null, @carrito); -- Por el momento la imagen es null
+		-- Creaciï¿½n de la venta
+		INSERT INTO Venta (imgComprobante, CarritoID) VALUES (@imagenID, @carrito); -- Por el momento la imagen es null
 
-		-- Creación del envío
+		-- Creaciï¿½n del envï¿½o
 		DECLARE @FechaEntrega date;
 		SELECT @FechaEntrega = DATEADD(day, 3, CONVERT(date, GETDATE())); --3 dias despues de la venta (fecha estimada)
 		
@@ -605,7 +605,7 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		-- Terminar el procedimiento si el carrito está vacío
+		-- Terminar el procedimiento si el carrito estï¿½ vacï¿½o
 		RETURN;
 	END
 END;
@@ -624,7 +624,7 @@ BEGIN
     -- Declarar una variable para el subtotal
     DECLARE @subtotal DECIMAL(10, 2) = 0;
 
-    -- Utilizar un cursor para iterar a través de los productos en el carrito
+    -- Utilizar un cursor para iterar a travï¿½s de los productos en el carrito
     DECLARE @productoID INT;
     DECLARE @cantidad INT;
     DECLARE @precio DECIMAL(10, 2);

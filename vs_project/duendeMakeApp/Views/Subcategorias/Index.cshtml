@@ -31,9 +31,9 @@
                             @Html.DisplayFor(modelItem => item.Nombre)
                         </td>
                         <td>
-                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.SubcategoriaId">Edit</a> |
+                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.SubcategoriaId">Editar</a> |
                             @* <a asp-action="Details" asp-route-id="@item.SubcategoriaId">Details</a> | *@
-                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.SubcategoriaId">Delete</a>
+                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.SubcategoriaId">Eliminar</a>
                         </td>
                     </tr>
                 }
@@ -48,5 +48,5 @@
 }
 catch (Exception ex)
 {
-    <div class="alert alert-danger">Acceso ddenegado.</div>
+    <div class="alert alert-danger">Acceso denegado.</div>
 }

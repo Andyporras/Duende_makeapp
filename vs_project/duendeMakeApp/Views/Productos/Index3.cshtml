@@ -1,4 +1,4 @@
-﻿@model IEnumerable<duendeMakeApp.Models.Producto>
+﻿@model List<ProductoCarrito>
 
 @{
     ViewData["Title"] = "Index";
@@ -32,8 +32,8 @@
                                         <tr>
                                             <th scope="row">
                                                 <div class="d-flex align-items-center">
-                                                    <img src="https://i.imgur.com/2DsA49b.webp" class="img-fluid rounded-3"
-                                                    style="width: 120px;" alt="Book">
+                                                    <img src=@item.url class="img-fluid rounded-3"
+                                                    style="width: 120px;" alt="Libro"/>
                                                     <div class="flex-column ms-4">
                                                         <p class="h5">@item.Nombre</p>
                                                         <p class="h7">@item.Descripcion</p>

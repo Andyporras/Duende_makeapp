@@ -484,11 +484,12 @@ CREATE or alter PROCEDURE ObtenerProductosEnCarrito
     @CarritoID INT
 AS
 BEGIN
-    SELECT p.ProductoID, p.Nombre, p.Descripcion, p.Precio, ProductosXCarrito.Cantidad, p.CategoriaID, p.Estado, p.ImagenID
+    SELECT p.ProductoID, p.Nombre, p.Descripcion, p.Precio, ProductosXCarrito.Cantidad, p.CategoriaID, p.Estado, p.ImagenID, Imagen.Url
     FROM ProductosXCarrito
     INNER JOIN Carrito ON ProductosXCarrito.CarritoID = Carrito.CarritoID
     INNER JOIN Producto p ON ProductosXCarrito.ProductoID = p.ProductoID
     INNER JOIN Usuario ON Carrito.UsuarioID = Usuario.UsuarioID
+	INNER JOIN Imagen on p.ImagenID = Imagen.ImagenID
     WHERE Usuario.UsuarioID = @UsuarioID AND Carrito.CarritoID = @CarritoID;
 END;
 

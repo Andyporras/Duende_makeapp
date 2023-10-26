@@ -198,7 +198,7 @@ namespace duendeMakeApp.Controllers
         {
             _usuario = UsuariosController.GetSessionUser(_context);
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
-            var oLista = new List<Producto>();
+            var oLista = new List<ProductoCarrito>();
 
             Console.WriteLine(carrito);
             using (SqlConnection conexion = new SqlConnection(conecction))
@@ -216,7 +216,7 @@ namespace duendeMakeApp.Controllers
 
                     while (dr.Read())
                     {
-                        oLista.Add(new Producto()
+                        oLista.Add(new ProductoCarrito()
                         {
                             ProductoId = (int)dr["ProductoID"]
 ,
@@ -232,6 +232,7 @@ namespace duendeMakeApp.Controllers
                             Estado = true,
                             ImagenId = (int)dr["ImagenID"],
 
+                            url = (string)dr["Url"],
                         });
 
                     }

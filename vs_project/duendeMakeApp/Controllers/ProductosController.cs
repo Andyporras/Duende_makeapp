@@ -22,7 +22,7 @@ namespace duendeMakeApp.Controllers
 
         private readonly IHttpClientFactory _clientFactory;
 
-        private static string conecction = "Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
+        private static string conecction = "Data Source=DESKTOP_2023V2\\SQLEXPRESS; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
 
         public ProductosController(DuendeappContext context, Usuario usuario, IHttpClientFactory clientFactory)
         {
@@ -464,7 +464,7 @@ namespace duendeMakeApp.Controllers
                 $"Código Postal: {codPostal}\n" +
                 $"Provincia: {ObtenerProvincia(provincia)}\n" +
                 $"Dirección: {dir}\n" +
-                $"Comprobante: {imageFile}\n" +
+                $"Comprobante:{imagen.Url}\n" +
                 $"Fecha: {DateTime.Now.ToShortDateString()}\n" +
                 $"------------------------- DETALLE -------------------------\n" +
                 ObtenerDetalle(carrito) +
@@ -472,7 +472,7 @@ namespace duendeMakeApp.Controllers
 
 
             await emailSenderDAO.SendEmailAsync(_usuario.Correo, "Factura - Duende MakeApp", mensaje);
-
+            TempData["mensaje"] = "Su compra se ha realizado exitosamente";
             return RedirectToAction("Index", "Productos");
         }
 

@@ -377,7 +377,6 @@ namespace duendeMakeApp.Controllers
 
 
 
-        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout(string codPostal, int provincia, string dir, IFormFile imageFile)
         {
@@ -390,7 +389,18 @@ namespace duendeMakeApp.Controllers
 
             int idComprobante = imagen.ImagenId;
             ImgurController imgurController = ImgurController.GetInstance(_clientFactory);
+            
             string imgurImageUrl = await imgurController.SubirImagen(imageFile);
+            if (!string.IsNullOrEmpty(imgurImageUrl))
+            {
+                imagen.Url = imgurImageUrl;
+
+                if (ModelState.IsValid)
+                {
+                    _context.Add(imagen);
+                    await _context.SaveChangesAsync();
+                }
+            }
 
             try {
                 using (SqlConnection conexion = new SqlConnection(conecction))
@@ -414,7 +424,7 @@ namespace duendeMakeApp.Controllers
                     cmd.Parameters.AddWithValue("@codPostal", codigo);
                     cmd.Parameters.AddWithValue("@direccion", dir);
                     cmd.Parameters.AddWithValue("@provincia", provincia);
-                    cmd.Parameters.AddWithValue("@imagen", imageFile);
+                    cmd.Parameters.AddWithValue("@imagenID", imagen.ImagenId);
 
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.ExecuteNonQuery();

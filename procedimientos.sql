@@ -594,7 +594,7 @@ BEGIN
 		SELECT @DireccionID = SCOPE_IDENTITY(); -- Reservar el id de la direcci�n para m�s adelante
 
 		-- Creaci�n de la venta
-		INSERT INTO Venta (imgComprobante, CarritoID) VALUES (@imagenID, @carrito); -- Por el momento la imagen es null
+		INSERT INTO Venta (imgComprobante, CarritoID) VALUES (@imagenID, @carrito);
 
 		-- Creaci�n del env�o
 		DECLARE @FechaEntrega date;
@@ -664,4 +664,5 @@ BEGIN
 END;
 go
 
-select dbo.ObtenerDetalle(1)
+select * from carrito
+select * from venta

@@ -37,17 +37,23 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Categorías
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" asp-area="" asp-controller="Labilaes" asp-action="Index">Tags</a>
-                        <a class="dropdown-item" asp-area="" asp-controller="Maquillaje" asp-action="Index">Catálogos</a>
-                        <a class="dropdown-item" asp-area="" asp-controller="Ropa" asp-action="Index">Paquetes</a>
-                        <a class="dropdown-item" asp-area="" asp-controller="Marcas" asp-action="Index">Categorías</a>
-                        <a class="dropdown-item" asp-area="" asp-controller="Cosas" asp-action="Index">Sub-categorías</a>
-                    </div>
+                <li class="nav-item">
+                    <form asp-controller="Productos" asp-action="Index" method="get" class="form-inline">
+                        <div class="form-group">
+                            <select class="form-control" id="categoriaId" name="categoriaId">
+
+
+                                <option value="">Todas las categorías</option>
+                                @foreach (Categoria cat in ViewBag.categorias)
+                                {
+
+                                    <option value="@cat.CategoriaId">@cat.Nombre</option>
+                                }
+
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary ml-2">Filtrar</button>
+                    </form>
                 </li>
             </ul>
                 
@@ -67,12 +73,21 @@
         </div>
     </nav>
 
-    <br></br>
+    <br>
 
     <div class="row">
         @foreach (var producto in Model)
         {
             <div class="col-md-4">
+                @if (producto.Estado == false || producto.Cantidad < 1)
+                {
+                    <p class="text-danger">Sin stock</p>
+                }
+                else
+                {
+                    <p class="text-success">En stock</p>
+
+                }
                 <div class="card mb-4 box-shadow">
                     <img class="card-img-top" alt="Thumbnail [100%x225]"
                             style="height: 225px; width: 100%; display: block; object-fit:cover;" src=@producto.Imagen.Url data-holder-rendered="true">
@@ -85,8 +100,12 @@
                                 @if (ViewBag.Usuario.TipoId == 2)
                                 {
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-success" data-toggle="modal" data-target="#@producto.ProductoId">Detalle</button>
-                                        <a class="btn btn-outline-warning" asp-action="agregarAlCarrito" asp-route-id="@producto.ProductoId">Agregar al carrito</a>
+                                        @if (producto.Estado == true && producto.Cantidad > 1)
+                                        {
+                                            <a class="btn btn-secondary" asp-action="agregarAlCarrito" asp-route-id="@producto.ProductoId">Agregar al carrito</a>
+                                        }
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#@producto.ProductoId">Ver</button>
+
                                     </div>        
                                 }
                                 

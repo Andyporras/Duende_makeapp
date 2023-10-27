@@ -22,7 +22,7 @@ namespace duendeMakeApp.Controllers
 
         private readonly IHttpClientFactory _clientFactory;
 
-        private static string conecction = "Data Source=DESKTOP_2023V2\\SQLEXPRESS; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
+        private static string conecction = "Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
 
         public ProductosController(DuendeappContext context, Usuario usuario, IHttpClientFactory clientFactory)
         {
@@ -32,7 +32,7 @@ namespace duendeMakeApp.Controllers
         }
 
         // GET: Productos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? categoriaId)
         {
             String correo = Usuario.SeccionActual;
             if (correo != "")
@@ -44,8 +44,17 @@ namespace duendeMakeApp.Controllers
                 _usuario = null;
             }
 
+
             ViewBag.Usuario = _usuario;
-            var duendeappContext = _context.Productos.Include(p => p.Categoria).Include(p => p.Imagen);
+            ViewBag.categorias = _context.Categoria;
+            IQueryable<Producto> duendeappContext = _context.Productos;
+
+
+            if (categoriaId.HasValue)
+            {
+                duendeappContext = duendeappContext.Where(p => p.CategoriaId == categoriaId);
+            }
+
             return View(await duendeappContext.ToListAsync());
         }
 

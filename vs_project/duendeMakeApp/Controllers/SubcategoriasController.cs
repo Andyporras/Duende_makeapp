@@ -13,27 +13,20 @@ namespace duendeMakeApp.Controllers
     {
         private readonly DuendeappContext _context;
         private static Usuario? _usuario;
+        //_httpContextAccessor
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public SubcategoriasController(DuendeappContext context, Usuario usuario)
+        public SubcategoriasController(DuendeappContext context, Usuario usuario, IHttpContextAccessor httpContextAccessor)
         {
             _usuario = usuario;
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: Subcategorias
         public async Task<IActionResult> Index()
         {
-            String correo = Usuario.SeccionActual;
-            if (correo != "")
-            {
-                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            }
-            else
-            {
-                _usuario = null;
-            }
-
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return _context.Subcategoria != null ? 
                           View(await _context.Subcategoria.ToListAsync()) :
                           Problem("Entity set 'DuendeappContext.Subcategoria'  is null.");
@@ -60,16 +53,7 @@ namespace duendeMakeApp.Controllers
         // GET: Subcategorias/Create
         public IActionResult Create()
         {
-            String correo = Usuario.SeccionActual;
-            if (correo != "")
-            {
-                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            }
-            else
-            {
-                _usuario = null;
-            }
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return View();
         }
 
@@ -80,7 +64,7 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("SubcategoriaId,Nombre")] Subcategoria subcategoria)
         {
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             if (ModelState.IsValid)
             {
                 _context.Add(subcategoria);
@@ -93,16 +77,7 @@ namespace duendeMakeApp.Controllers
         // GET: Subcategorias/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            String correo = Usuario.SeccionActual;
-            if (correo != "")
-            {
-                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            }
-            else
-            {
-                _usuario = null;
-            }
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             if (id == null || _context.Subcategoria == null)
             {
                 return NotFound();
@@ -155,16 +130,7 @@ namespace duendeMakeApp.Controllers
         // GET: Subcategorias/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            String correo = Usuario.SeccionActual;
-            if (correo != "")
-            {
-                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            }
-            else
-            {
-                _usuario = null;
-            }
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             if (id == null || _context.Subcategoria == null)
             {
                 return NotFound();
@@ -194,7 +160,7 @@ namespace duendeMakeApp.Controllers
             {
                 _context.Subcategoria.Remove(subcategoria);
             }
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

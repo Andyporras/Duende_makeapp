@@ -9,17 +9,20 @@ namespace duendeMakeApp.Controllers
     {
         private readonly DuendeappContext _context;
         private readonly IHttpClientFactory _clientFactory;
+        //_httpContextAccessor
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ImagenesController(DuendeappContext context, IHttpClientFactory clientFactory)
+        public ImagenesController(DuendeappContext context, IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _clientFactory = clientFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: Imagenes
         public async Task<IActionResult> Index()
         {
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return _context.Imagens.Include(i => i.Tags).ToList() != null ?
                 View(await _context.Imagens.ToListAsync()) :
                 Problem("Entity set 'DuendeappContext.Imagens'  is null.");
@@ -32,7 +35,7 @@ namespace duendeMakeApp.Controllers
             {
                 return NotFound();
             }
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             Imagen imagen = await _context.Imagens
                 .Include(i => i.Tags)
                 .Include(i => i.Productos)
@@ -50,7 +53,7 @@ namespace duendeMakeApp.Controllers
         // GET: Imagenes/Create
         public IActionResult Create()
         {
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return View();
         }
 
@@ -106,7 +109,7 @@ namespace duendeMakeApp.Controllers
                 .Include(i => i.Venta)
                 .FirstOrDefaultAsync(m => m.ImagenId == id);
 
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             ViewBag.Productos = _context.Productos.ToList();
             ViewBag.Maquillajes = _context.Maquillajes.ToList();
             ViewBag.Tags = _context.Tags.ToList();
@@ -233,7 +236,7 @@ namespace duendeMakeApp.Controllers
             {
                 return NotFound();
             }
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             var imagen = await _context.Imagens
                 .FirstOrDefaultAsync(m => m.ImagenId == id);
             if (imagen == null)

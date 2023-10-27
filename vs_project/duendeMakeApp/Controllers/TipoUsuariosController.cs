@@ -13,26 +13,20 @@ namespace duendeMakeApp.Controllers
     {
         private readonly DuendeappContext _context;
         private static Usuario? _usuario;
+        //_httpContextAccessor
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public TipoUsuariosController(DuendeappContext context, Usuario usuario)
+        public TipoUsuariosController(DuendeappContext context, Usuario usuario, IHttpContextAccessor httpContextAccessor)
         {
             _usuario = usuario;
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: TipoUsuarios
         public async Task<IActionResult> Index()
         {
-            String correo = Usuario.SeccionActual;
-            if (correo != "")
-            {
-                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            }
-            else
-            {
-                _usuario = null;
-            }
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return _context.TipoUsuarios != null ? 
                           View(await _context.TipoUsuarios.ToListAsync()) :
                           Problem("Entity set 'DuendeappContext.TipoUsuarios'  is null.");

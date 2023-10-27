@@ -10,6 +10,11 @@ using duendeMakeApp.DAO;
 using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
 using Microsoft.Data.SqlClient;
 using System.Drawing;
+using Newtonsoft.Json;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 
 namespace duendeMakeApp.Controllers
 {
@@ -17,11 +22,14 @@ namespace duendeMakeApp.Controllers
     {
         private readonly DuendeappContext _context;
         private static Usuario? _usuario;
+        //_httpContextAccessor
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UsuariosController(DuendeappContext context, Usuario usuario)
+        public UsuariosController(DuendeappContext context, Usuario usuario, IHttpContextAccessor httpContextAccessor)
         {
             _usuario = usuario;
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: Usuarios
@@ -38,8 +46,7 @@ namespace duendeMakeApp.Controllers
                 .ThenInclude(c => c.Paquetes)
                 .ThenInclude(p => p.Productos)
                 .ToList();
-            _usuario = UsuariosController.GetSessionUser(_context);
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return View(await duendeappContext.ToListAsync());
         }
 
@@ -58,8 +65,7 @@ namespace duendeMakeApp.Controllers
             {
                 return NotFound();
             }
-            _usuario = UsuariosController.GetSessionUser(_context);
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return View(usuario);
         }
 
@@ -83,8 +89,7 @@ namespace duendeMakeApp.Controllers
             {
                 return NotFound();
             }
-            _usuario = UsuariosController.GetSessionUser(_context);
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             ViewData["TipoId"] = new SelectList(_context.TipoUsuarios, "TipoUsarioId", "TipoUsarioId", usuario.TipoId);
             return View(usuario);
         }
@@ -167,34 +172,38 @@ namespace duendeMakeApp.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> IniciarSeccion(string correo, string clave)
         {
             if (correo == null || clave == null)
             {
-                // mensaje que indique que no ingreso la contraseña o correo 
+                // Mensaje que indica que no se ingresó la contraseña o el correo
                 TempData["Mensaje"] = "No se ha ingresado la contraseña o el correo.";
-                return RedirectToAction("Index", "Maquillajes"); // Retorna la vista actual ; // Retorna la vista actual
+                return RedirectToAction("Index", "Maquillajes");
             }
-            Usuario usuario = new Usuario();
-            usuario = _context.Usuarios.Where(item => item.Correo == correo && item.Clave == clave).FirstOrDefault();
+
+            Usuario usuario = _context.Usuarios.FirstOrDefault(item => item.Correo == correo && item.Clave == clave);
+
             if (usuario == null)
             {
                 TempData["Mensaje"] = "El correo o la contraseña son incorrectos.";
                 return RedirectToAction("Index", "Maquillajes");
             }
-            // sacamos el tipo de usuario
-            int tipo = usuario.TipoId.GetValueOrDefault();
-            TipoUsuario tipoUsuario = _context.TipoUsuarios.Where(item => item.TipoUsarioId == tipo).FirstOrDefault();
-            // guardamos el tipo de usuario en la sesion
 
-            //TempData["Usuario"] = usuario;
-            // cambiar el valor de inicio de seccion en Usuario
-            Usuario.SeccionActual = correo;
-            //TempData["Mensaje"] = "Bienvenido " + usuario.Nombre + " " + usuario.Apellido + " al sistema de Duende MakeApp";
-            return RedirectToAction("Index", "Maquillajes", usuario);
+            // Guardar la información del usuario en una cookie
+            var usuarioJson = JsonConvert.SerializeObject(usuario);
+            var cookieOptions = new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddHours(1), // Define la expiración
+                IsEssential = true // Marcar como esencial
+            };
+            Response.Cookies.Append("UsuarioCookie", usuarioJson, cookieOptions);
+
+            return RedirectToAction("Index", "Maquillajes");
         }
+
 
         // POST: Usuarios/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -329,10 +338,16 @@ namespace duendeMakeApp.Controllers
 
         public async Task<IActionResult> CerrarSesion()
         {
-            TempData["Usuario"] = null;
-            Usuario.SeccionActual = "";
+            // Elimina la cookie de usuario
+            Response.Cookies.Delete("UsuarioCookie");
+
+            // Limpia cualquier información relacionada con la sesión
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Redirige al inicio o a la página de inicio de sesión
             return RedirectToAction("Index", "Maquillajes");
         }
+
 
         //una funcion estatica para obtener el objeto de un Usuario que se busca por id
         public static Usuario? GetUsuario(int id, DuendeappContext context)
@@ -341,12 +356,28 @@ namespace duendeMakeApp.Controllers
             return usuario;
         }
 
-        public static Usuario? GetSessionUser(DuendeappContext _context)
+        public static Usuario? GetSessionUser(IHttpContextAccessor httpContextAccessor, DuendeappContext _context)
         {
-            String correo = Usuario.SeccionActual;
-            Usuario? usuario = _context.Usuarios.Where(u => u.Correo == correo).Include(u => u.Tipo).FirstOrDefault();
+            var httpContext = httpContextAccessor.HttpContext;
 
-            return usuario;
+            if (httpContext.Request.Cookies.TryGetValue("UsuarioCookie", out string usuarioJson))
+            {
+                Usuario? usuario = JsonConvert.DeserializeObject<Usuario>(usuarioJson);
+
+                // Carga completamente la entidad Usuario desde la base de datos
+                Usuario? usuarioCompleto = _context.Usuarios
+                    .Include(u => u.Tipo)
+                    .Include(u => u.Carritos)
+                    .FirstOrDefault(u => u.UsuarioId == usuario.UsuarioId);
+
+                if (usuarioCompleto != null)
+                {
+                    return usuarioCompleto;
+                }
+            }
+
+            return null;
         }
+
     }
 }

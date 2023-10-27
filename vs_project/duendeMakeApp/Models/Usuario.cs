@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace duendeMakeApp.Models;
 
 public partial class Usuario
 {
-    public static String SeccionActual { get; set; }
+    //public static String SeccionActual { get; set; }
 
     public int UsuarioId { get; set; }
 

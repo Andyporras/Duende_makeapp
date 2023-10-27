@@ -13,18 +13,20 @@ namespace duendeMakeApp.Controllers
     {
         private readonly DuendeappContext _context;
         private static Usuario? _usuario;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public TagsController(DuendeappContext context, Usuario usuario)
+        public TagsController(DuendeappContext context, Usuario usuario, IHttpContextAccessor httpContextAccessor)
         {
             _usuario = usuario;
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: Tags
         public async Task<IActionResult> Index()
         {
 
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             ViewBag.Tags = _context.Tags.Include(t => t.Imagens).ToList();
             return _context.Tags != null ?
                         View(await _context.Tags.ToListAsync()) :
@@ -41,7 +43,7 @@ namespace duendeMakeApp.Controllers
 
             var tag = await _context.Tags.Include(t => t.Imagens)
                 .FirstOrDefaultAsync(m => m.TagId == id);
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             if (tag == null)
             {
                 return NotFound();
@@ -53,7 +55,7 @@ namespace duendeMakeApp.Controllers
         // GET: Tags/Create
         public IActionResult Create()
         {
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return View();
         }
 
@@ -82,7 +84,7 @@ namespace duendeMakeApp.Controllers
             }
 
             var tag = await _context.Tags.FindAsync(id);
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             if (tag == null)
             {
                 return NotFound();
@@ -135,7 +137,7 @@ namespace duendeMakeApp.Controllers
 
             var tag = await _context.Tags
                 .FirstOrDefaultAsync(m => m.TagId == id);
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             if (tag == null)
             {
                 return NotFound();
@@ -164,7 +166,7 @@ namespace duendeMakeApp.Controllers
                 _context.Tags.Remove(tag);
                 }
 
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

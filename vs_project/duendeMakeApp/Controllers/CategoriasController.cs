@@ -13,27 +13,20 @@ namespace duendeMakeApp.Controllers
     {
         private readonly DuendeappContext _context;
         private static Usuario? _usuario;
+        //_httpContextAccessor
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CategoriasController(DuendeappContext context, Usuario usuario)
+        public CategoriasController(DuendeappContext context, Usuario usuario, IHttpContextAccessor httpContextAccessor)
         {
             _usuario = usuario;
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: Categorias
         public async Task<IActionResult> Index()
         {
-            String correo = Usuario.SeccionActual;
-            if (correo != "")
-            {
-                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            }
-            else
-            {
-                _usuario = null;
-            }
-
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return _context.Categoria != null ? 
                           View(await _context.Categoria.ToListAsync()) :
                           Problem("Entity set 'DuendeappContext.Categoria'  is null.");
@@ -60,16 +53,7 @@ namespace duendeMakeApp.Controllers
         // GET: Categorias/Create
         public IActionResult Create()
         {
-            String correo = Usuario.SeccionActual;
-            if (correo != "")
-            {
-                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            }
-            else
-            {
-                _usuario = null;
-            }
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return View();
         }
 
@@ -93,16 +77,8 @@ namespace duendeMakeApp.Controllers
         // GET: Categorias/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            String correo = Usuario.SeccionActual;
-            if (correo != "")
-            {
-                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            }
-            else
-            {
-                _usuario = null;
-            }
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+
             if (id == null || _context.Categoria == null)
             {
                 return NotFound();
@@ -161,7 +137,7 @@ namespace duendeMakeApp.Controllers
 
             var categoria = await _context.Categoria
                 .FirstOrDefaultAsync(m => m.CategoriaId == id);
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             if (categoria == null)
             {
                 return NotFound();
@@ -185,7 +161,7 @@ namespace duendeMakeApp.Controllers
                 _context.Categoria.Remove(categoria);
             }
             
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

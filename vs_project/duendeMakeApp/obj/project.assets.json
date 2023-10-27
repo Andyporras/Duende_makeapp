@@ -11515,19 +11515,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Innovation Computers\\.nuget\\packages\\": {}
+    "C:\\Users\\milto\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Innovation Computers\\OneDrive - Estudiantes ITCR\\Documentos\\GitHub\\Duende_makeapp\\vs_project\\duendeMakeApp\\duendeMakeApp.csproj",
+      "projectUniqueName": "C:\\Users\\milto\\Desktop\\git\\diseno\\Duende_makeapp\\vs_project\\duendeMakeApp\\duendeMakeApp.csproj",
       "projectName": "duendeMakeApp",
-      "projectPath": "C:\\Users\\Innovation Computers\\OneDrive - Estudiantes ITCR\\Documentos\\GitHub\\Duende_makeapp\\vs_project\\duendeMakeApp\\duendeMakeApp.csproj",
-      "packagesPath": "C:\\Users\\Innovation Computers\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Innovation Computers\\OneDrive - Estudiantes ITCR\\Documentos\\GitHub\\Duende_makeapp\\vs_project\\duendeMakeApp\\obj\\",
+      "projectPath": "C:\\Users\\milto\\Desktop\\git\\diseno\\Duende_makeapp\\vs_project\\duendeMakeApp\\duendeMakeApp.csproj",
+      "packagesPath": "C:\\Users\\milto\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\milto\\Desktop\\git\\diseno\\Duende_makeapp\\vs_project\\duendeMakeApp\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Innovation Computers\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\milto\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

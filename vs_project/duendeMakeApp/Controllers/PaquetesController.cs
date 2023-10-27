@@ -13,27 +13,20 @@ namespace duendeMakeApp.Controllers
     {
         private readonly DuendeappContext _context;
         private static Usuario? _usuario;
+        //IHttpContextAccessor
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PaquetesController(DuendeappContext context, Usuario usuario)
+        public PaquetesController(DuendeappContext context, Usuario usuario, IHttpContextAccessor httpContextAccessor)
         {
             _usuario = usuario;
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: Paquetes
         public async Task<IActionResult> Index()
         {
-            String correo = Usuario.SeccionActual;
-            if (correo != "")
-            {
-                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            }
-            else
-            {
-                _usuario = null;
-            }
-
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return _context.Paquetes != null ? 
                           View(await _context.Paquetes.ToListAsync()) :
                           Problem("Entity set 'DuendeappContext.Paquetes'  is null.");
@@ -60,9 +53,7 @@ namespace duendeMakeApp.Controllers
         // GET: Paquetes/Create
         public IActionResult Create()
         {
-            String correo = Usuario.SeccionActual;
-            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return View();
         }
 
@@ -73,9 +64,7 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PaqueteId,Nombre,Descripcion,Precio,CantidadDisponible,Estado")] Paquete paquete)
         {
-            String correo = Usuario.SeccionActual;
-            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             if (ModelState.IsValid)
             {
                 _context.Add(paquete);
@@ -88,9 +77,7 @@ namespace duendeMakeApp.Controllers
         // GET: Paquetes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            String correo = Usuario.SeccionActual;
-            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             if (id == null || _context.Paquetes == null)
             {
                 return NotFound();
@@ -114,9 +101,7 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int PaqueteId, [Bind("PaqueteId,Nombre,Descripcion,Precio,CantidadDisponible,Estado")] Paquete paquete, List<int> ProductosIds)
         {
-            String correo = Usuario.SeccionActual;
-            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             if (PaqueteId != paquete.PaqueteId)
             {
                 return NotFound();
@@ -182,9 +167,7 @@ namespace duendeMakeApp.Controllers
         // GET: Paquetes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            String correo = Usuario.SeccionActual;
-            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             if (id == null || _context.Paquetes == null)
             {
                 return NotFound();
@@ -205,9 +188,7 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            String correo = Usuario.SeccionActual;
-            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             if (_context.Paquetes == null)
             {
                 return Problem("Entity set 'DuendeappContext.Paquetes'  is null.");

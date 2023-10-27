@@ -8,17 +8,19 @@ namespace duendeMakeApp.Controllers
     {
         private readonly DuendeappContext _context;
         private static Usuario? _usuario;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CatalogosController(DuendeappContext context, Usuario usuario)
+        public CatalogosController(DuendeappContext context, Usuario usuario, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _usuario = usuario;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: Catalogos
         public async Task<IActionResult> Index()
         {
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return _context.Catalogos != null ? 
                           View(await _context.Catalogos.ToListAsync()) :
                           Problem("Entity set 'DuendeappContext.Catalogos'  is null.");
@@ -45,7 +47,7 @@ namespace duendeMakeApp.Controllers
         // GET: Catalogos/Create
         public IActionResult Create()
         {
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return View();
         }
 
@@ -62,16 +64,14 @@ namespace duendeMakeApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             return View(catalogo);
         }
 
         // GET: Catalogos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            String correo = Usuario.SeccionActual;
-            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             if (id == null || _context.Catalogos == null)
             {
                 return NotFound();
@@ -99,9 +99,7 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int CatalogoId, [Bind("CatalogoId,Nombre,Descripcion,Estado")] Catalogo catalogo, List<int> ProductosIds, List<int> PaquetesIds)
         {
-            String correo = Usuario.SeccionActual;
-            _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             if (CatalogoId != catalogo.CatalogoId)
             {
                 return NotFound();
@@ -189,7 +187,7 @@ namespace duendeMakeApp.Controllers
 
             var catalogo = await _context.Catalogos
                 .FirstOrDefaultAsync(m => m.CatalogoId == id);
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
 
             if (catalogo == null)
             {

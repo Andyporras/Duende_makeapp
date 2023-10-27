@@ -21,46 +21,41 @@ namespace duendeMakeApp.Controllers
         private static Usuario? _usuario;
 
         private readonly IHttpClientFactory _clientFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private static string conecction = "Data Source=DESKTOP_2023V2\\SQLEXPRESS; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
 
-        public ProductosController(DuendeappContext context, Usuario usuario, IHttpClientFactory clientFactory)
+        public ProductosController(DuendeappContext context, Usuario usuario, IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
         {
             _usuario = usuario;
             _context = context;
             _clientFactory = clientFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: Productos
         public async Task<IActionResult> Index(int? categoriaId, List<int> subcategoriaIds)
         {
-            String correo = Usuario.SeccionActual;
-            if (correo != "")
-            {
-                _usuario = _context.Usuarios.Where(u => u.Correo == correo).FirstOrDefault();
-            }
-            else
-            {
-                _usuario = null;
-            }
-
-            ViewBag.Usuario = _usuario;
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             ViewBag.categorias = _context.Categoria;
             ViewBag.subcategorias = _context.Subcategoria;
 
-            IQueryable<Producto> duendeappContext = _context.Productos;
+            //IQueryable<Producto> duendeappContext = _context.Productos;
 
-            if (categoriaId.HasValue)
-            {
-                duendeappContext = duendeappContext.Where(p => p.CategoriaId == categoriaId);
-            }
+            //if (categoriaId.HasValue)
+            //{
+            //    duendeappContext = duendeappContext.Where(p => p.CategoriaId == categoriaId);
+            //}
 
-            if (subcategoriaIds != null && subcategoriaIds.Count > 0)
-            {
-                duendeappContext = duendeappContext.Where(p => p.Subcategoria.Any(s => subcategoriaIds.Contains(s.SubcategoriaId)));
-            }
+            //if (subcategoriaIds != null && subcategoriaIds.Count > 0)
+            //{
+            //    duendeappContext = duendeappContext.Where(p => p.Subcategoria.Any(s => subcategoriaIds.Contains(s.SubcategoriaId)));
+            //}
 
-            return View(await duendeappContext.ToListAsync());
+            var duendeAppContext = _context.Productos.Include(p => p.Categoria).Include(p => p.Imagen).Include(p => p.Subcategoria);//.Where(p => p.Estado == true);
+
+            //return View(await duendeappContext.ToListAsync());
+            return View(await duendeAppContext.ToListAsync());
         }
 
         // GET: Productos/Details/5
@@ -217,7 +212,7 @@ namespace duendeMakeApp.Controllers
 
         public IActionResult index3()
         {
-            _usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             ViewBag.Usuario = _usuario;
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
             var oLista = new List<ProductoCarrito>();
@@ -267,7 +262,7 @@ namespace duendeMakeApp.Controllers
 
         public IActionResult agregarAlCarrito(int id)
         {
-            _usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
 
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
 
@@ -304,7 +299,7 @@ namespace duendeMakeApp.Controllers
 
         public IActionResult eliminarDelCarrrito(int id)
         {
-            _usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
 
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
 
@@ -339,7 +334,7 @@ namespace duendeMakeApp.Controllers
         public int ObtenerCarritoPorUsuarioID(int usuarioID)
         {
             int carritoID = 0;
-            _usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
 
 
             using (SqlConnection connection = new SqlConnection(conecction))
@@ -362,7 +357,7 @@ namespace duendeMakeApp.Controllers
 
     public IActionResult SumarProducto(int id)
         {
-            _usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
 
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
 
@@ -398,7 +393,7 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout(string codPostal, int provincia, string dir, IFormFile imageFile)
         {
-            _usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
 
             Imagen imagen = new Imagen();
@@ -511,7 +506,7 @@ namespace duendeMakeApp.Controllers
 
         public string ObtenerDetalle(int carrito)
         {
-            _usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             string detalle = "";
             using (SqlConnection connection = new SqlConnection(conecction))
             {
@@ -530,7 +525,7 @@ namespace duendeMakeApp.Controllers
 
         public IActionResult RestarProducto(int id)
         {
-            _usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
 
             try

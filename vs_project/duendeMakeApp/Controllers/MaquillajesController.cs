@@ -10,20 +10,22 @@ namespace duendeMakeApp.Controllers
         private readonly DuendeappContext _context;
         private static Usuario? _usuario;
         private readonly IHttpClientFactory _clientFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
             
-        public MaquillajesController(DuendeappContext context, Usuario usuario, IHttpClientFactory clientFactory)
+        public MaquillajesController(DuendeappContext context, Usuario usuario, IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
         {
             _usuario = usuario;
             _usuario.UsuarioId = 0;
             _usuario.TipoId = 2;
             _context = context;
             _clientFactory = clientFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: Maquillajes
         public async Task<IActionResult> Index(int usuarioId)
         {
-            ViewBag.usuario = UsuariosController.GetSessionUser(_context);
+            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             ViewBag.tags = _context.Tags;
             var maquillajes = _context.Maquillajes.Include(m => m.Imagens).ThenInclude(i => i.Tags).ToList();
             return maquillajes != null ? 

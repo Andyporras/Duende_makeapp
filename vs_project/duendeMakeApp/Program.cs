@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using duendeMakeApp.Models;
-using System.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using duendeMakeApp.DAO;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,13 +13,29 @@ builder.Services.AddRazorPages();
 
 
 builder.Services.AddDbContext<DuendeappContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("conexion")));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("conexion"))
+        );
+//que la coneccion sea singleton
+builder.Services.AddDbContext<DuendeappContext>(ServiceLifetime.Singleton);
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Maquillajes/";
+        //options.LogoutPath = "/";
+        //options.AccessDeniedPath = "/AccessDenied";
+        //options.Cookie.Name = "Duendeapp";
+        //options.Cookie.HttpOnly = true;
+        //options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+        //options.SlidingExpiration = true;
+    });
 
 // Agregar el servicio de HttpClientFactory
 builder.Services.AddHttpClient();
 
 builder.Services.AddTransient<IEmailSender, EmailSenderDAO>();
 builder.Services.AddScoped<Usuario>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

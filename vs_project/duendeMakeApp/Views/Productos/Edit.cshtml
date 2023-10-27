@@ -4,9 +4,7 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>Producto</h4>
+<h1>Editar producto</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -40,7 +38,10 @@
             </div>
             <div class="form-group">
                 <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
+                <select asp-for="Estado" class="form-control">
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
                 <span asp-validation-for="Estado" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -49,14 +50,26 @@
                 <span asp-validation-for="ImagenId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <label class="control-label">Seleccionar subcategorias: </label>
+               <br>
+                @foreach (var subs in ViewBag.Subcategoria)
+                {
+                    <label class="btn btn-secondary">
+                        <input type="checkbox" name="TagIds" value="@subs.SubcategoriaId"> @subs.Nombre
+                    </label>
+                }
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" value="Guardar cambios" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-danger">Volver</a>
 </div>
 
 @section Scripts {

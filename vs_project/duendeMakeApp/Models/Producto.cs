@@ -8,15 +8,21 @@ public partial class Producto
 {
     public int ProductoId { get; set; }
 
+    [Required(ErrorMessage = "El campo Descripcion es obligatorio.")]
     public string? Nombre { get; set; }
 
+    [Required(ErrorMessage = "El campo Descripcion es obligatorio.")]
     public string? Descripcion { get; set; }
 
+    [Required(ErrorMessage = "El campo Descripcion es obligatorio.")]
     public decimal? Precio { get; set; }
 
+    [Required(ErrorMessage = "El campo Descripcion es obligatorio.")]
     public int? Cantidad { get; set; }
 
+    [Required(ErrorMessage = "El campo Descripcion es obligatorio.")]
     public int? CategoriaId { get; set; }
+
 
     public bool? Estado { get; set; }
 

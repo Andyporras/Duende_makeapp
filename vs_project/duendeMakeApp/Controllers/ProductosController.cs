@@ -32,7 +32,7 @@ namespace duendeMakeApp.Controllers
         }
 
         // GET: Productos
-        public async Task<IActionResult> Index(int? categoriaId)
+        public async Task<IActionResult> Index(int? categoriaId, List<int> subcategoriaIds)
         {
             String correo = Usuario.SeccionActual;
             if (correo != "")
@@ -44,15 +44,20 @@ namespace duendeMakeApp.Controllers
                 _usuario = null;
             }
 
-
             ViewBag.Usuario = _usuario;
             ViewBag.categorias = _context.Categoria;
-            IQueryable<Producto> duendeappContext = _context.Productos;
+            ViewBag.subcategorias = _context.Subcategoria;
 
+            IQueryable<Producto> duendeappContext = _context.Productos;
 
             if (categoriaId.HasValue)
             {
                 duendeappContext = duendeappContext.Where(p => p.CategoriaId == categoriaId);
+            }
+
+            if (subcategoriaIds != null && subcategoriaIds.Count > 0)
+            {
+                duendeappContext = duendeappContext.Where(p => p.Subcategoria.Any(s => subcategoriaIds.Contains(s.SubcategoriaId)));
             }
 
             return View(await duendeappContext.ToListAsync());
@@ -81,8 +86,11 @@ namespace duendeMakeApp.Controllers
         // GET: Productos/Create
         public IActionResult Create()
         {
-            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "CategoriaId");
-            ViewData["ImagenId"] = new SelectList(_context.Imagens, "ImagenId", "ImagenId");
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "Nombre");
+            ViewData["ImagenId"] = new SelectList(_context.Imagens, "ImagenId", "Nombre");
+
+            ViewBag.Subcategoria = _context.Subcategoria.ToList();
+                               
             return View();
         }
 
@@ -117,8 +125,9 @@ namespace duendeMakeApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "CategoriaId", producto.CategoriaId);
-            ViewData["ImagenId"] = new SelectList(_context.Imagens, "ImagenId", "ImagenId", producto.ImagenId);
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "Nombre");
+            ViewData["ImagenId"] = new SelectList(_context.Imagens, "ImagenId", "Nombre");
+            ViewBag.Subcategoria = _context.Subcategoria.ToList();
             return View(producto);
         }
 

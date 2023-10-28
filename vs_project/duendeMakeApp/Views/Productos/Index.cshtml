@@ -108,21 +108,19 @@
                         <p class="card-text">@producto.Descripcion</p>
                         <p class="card-text">@producto.Precio ₡</p>
                         <div class="d-flex justify-content-between align-items-center">
-                            @try{
-                                @if (ViewBag.Usuario.TipoId == 2)
-                                {
-                                    <div class="btn-group">
-                                        @if (producto.Estado == true && producto.Cantidad > 1)
-                                        {
-                                            <a class="btn btn-secondary" asp-action="agregarAlCarrito" asp-route-id="@producto.ProductoId">Agregar al carrito</a>
-                                        }
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#@producto.ProductoId">Ver</button>
 
-                                    </div>        
+                                <div class="btn-group">
+                                 @if (producto.Estado == true && producto.Cantidad > 1)
+                                {
+                                    @if (ViewBag.Usuario.TipoId == 2)
+                                    {
+                                        <a class="btn btn-secondary" asp-action="agregarAlCarrito" asp-route-id="@producto.ProductoId">Agregar al carrito</a>
+                                    }
                                 }
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#@producto.ProductoId">Ver</button>
+
+                                  </div>        
                                 
-                            }
-                            catch (Exception e){}
                         </div>
                     </div>
                 </div>
@@ -208,17 +206,15 @@
 
 
                         </div>
-                        @try{
+
                             @if (ViewBag.Usuario.TipoId == 1)
                             {
                                 <div class="modal-footer">
                                     <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@producto.ProductoId">Eliminar</a>
                                     <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@producto.ProductoId">Editar</a>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    
                                 </div>
-                            }
-                        }
-                        catch(Exception e){}
+                            }                   
                     </div>
                 </div>
             </div>

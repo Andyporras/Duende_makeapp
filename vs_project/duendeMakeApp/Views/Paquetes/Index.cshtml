@@ -4,82 +4,194 @@
     ViewData["Title"] = "Index";
 }
 
-@try
-{
-    @if(ViewBag.Usuario.TipoId == 1)
-    {
+<style>
+    .fade-in {
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+    }
 
+    .fade-out {
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+    }
+</style>
+
+@if (!string.IsNullOrEmpty(TempData["mensaje"] as string))
+{
+    <div class="alert alert-info fade-in" id="mensajeDiv">@TempData["mensaje"]</div>
+    TempData.Remove("mensaje");
+    <script>
+        // JavaScript para ocultar el mensaje después de 3 segundos
+        setTimeout(function () {
+            var mensajeDiv = document.getElementById('mensajeDiv');
+            mensajeDiv.classList.remove('fade-in');
+            mensajeDiv.classList.add('fade-out');
+        }, 3000); // 3000 milisegundos = 3 segundos
+    </script>
+}
+
+
+<div class="album py-5 bg-light">
+
+    <div class="container">
         <h1>Paquetes</h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <form class="form-inline my-2 my-lg-0" method="post">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    @try
+                    {
+                        @if (ViewBag.usuario.TipoId == 1)
+                        {
+                            <button type="submit" class="btn btn-primary" asp-action="CreateIndex" asp-route-usuarioId="@ViewBag.usuario.UsuarioId">Agregar paquete</button>
+                        }
+                    }
+                    catch (Exception ex) { }
+                </form>
+            </div>
+        </nav>
 
-        <p>
-            <a class="btn btn-primary" asp-action="Create">Create Nuevo Paquete</a>
-        </p>
-        <input class="form-control" id="myInput" type="text" placeholder="Buscar..">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Nombre)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Descripcion)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Precio)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.CantidadDisponible)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Estado)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="myTable">
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Descripcion)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Precio)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CantidadDisponible)
-                        </td>
-                        <td>
-                            @if (item.Estado == true)
-                            {
-                                <h5><span class="badge badge-success">Activo</span></h5>
-                            }
-                            else
-                            {
-                                <h5><span class="badge badge-danger">Inactivo</span></h5>
-                            }
-                        </td>
-                        <td>
-                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.PaqueteId">Edit</a> |
-                            @* <a class="btn btn-secondary" asp-action="AgregarProducto" asp-route-id="@item.PaqueteId">Agregar Productos</a> *@
-                            @* <a asp-action="Details" asp-route-id="@item.PaqueteId">Details</a> | *@
-                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.PaqueteId">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <div class="alert alert-danger">Acceso ddenegado.</div>
-    }
-}
-catch(Exception ex)
-{
-    <div class="alert alert-danger">Acceso denegado.</div>
-    @ex
-}
+        <div class="row">
+           @foreach (var paquete in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card mb-4 box-shadow">
+                       @*@foreach (var imagen in paquete.Productos)
+                        {
+                            <img class="card-img-top"
+                                 src="@imagen.Imagen.Url"
+                                 data-holder-rendered="true">
+                            break;
+                        }*@
+
+                        <img class="card-img-top"
+                             src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fes.123rf.com%2Fphoto_174037740_ilustraci%25C3%25B3n-de-paquete-postal-de-dibujos-animados-de-dise%25C3%25B1o-plano-publicar-elemento.html&psig=AOvVaw2gA_t2CyPYmOT_NKuO0kMv&ust=1698545801290000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCJDih6fWl4IDFQAAAAAdAAAAABAH"
+                             data-holder-rendered="true">
+                        <div class="card-body">
+                            <p class="card-title"><strong>@paquete.Nombre</strong></p>
+                            <p class="card-text">@paquete.Descripcion</p>
+                            <p class="card-text"> ₡@paquete.Precio</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#@paquete.PaqueteId">Ver detalles</button>
+                                    <a class="btn btn-secondary" asp-action="agregarAlCarrito" asp-route-id="@paquete.PaqueteId">Agregar al carrito</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="@paquete.PaqueteId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">@paquete.Nombre</h5>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Volver</button>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div id="carousel-@paquete.PaqueteId" class="carousel slide" data-ride="carousel">
+                                                        <div class="carousel-inner">
+                                                          @*  @foreach (var imagen in )
+                                                            {
+                                                                <div class="carousel-item @(imagen == maquillaje.Imagens.First() ? "active" : "")">
+                                                                    <a href="@imagen.Url.Replace("m\\/","m/")" target="_blank">
+                                                                        <img class="img-fluid" src="@imagen.Url" data-holder-rendered="true">
+                                                                    </a>
+                                                                </div>
+                                                            }*@
+                                                        </div>
+                                                        <a class="carousel-control-prev" href="#carousel-@paquete.PaqueteId" role="button" data-slide="prev">
+                                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                            <span class="sr-only">Previous</span>
+                                                        </a>
+                                                        <a class="carousel-control-next" href="#carousel-@paquete.PaqueteId" role="button" data-slide="next">
+                                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                            <span class="sr-only">Next</span>
+                                                        </a>
+                                                    </div>
+
+                                                    <div class="modal-footer modal-footer-makeup">
+                                                        @try
+                                                        {
+                                                            if (ViewBag.usuario.TipoId != 1)
+                                                            {
+                                                                if (ViewBag.usuario.UsuarioId == 0)
+                                                                {
+                                                                    <p class="btn btn-primary btn-moddal-makeup-primary" data-bs-toggle="modal" data-bs-target="#loginModal" data-dismiss="modal">Ver detalles</p>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <a asp-action="" asp-route-id="" class="btn btn-primary btn-moddal-makeup-primary">Ver detalles</a>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <a class="btn btn-danger btn-moddal-makeup-secondary" asp-action="Delete" asp-route-id="@paquete.PaqueteId" asp-route-usuarioId="@ViewBag.usuario.UsuarioId">Eliminar</a>
+                                                                <a class="btn btn-info btn-moddal-makeup-secondary" asp-action="Edit" asp-route-id="@paquete.PaqueteId" asp-route-usuarioId="@ViewBag.usuario.UsuarioId">Editar</a>
+                                                            }
+                                                        }
+                                                        catch (Exception ex)
+                                                        {
+                                                            <a class="btn btn-secondary" asp-action="agregarAlCarrito" asp-route-id="@paquete.PaqueteId">Agregar al carrito</a>
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td class="row">
+                                    <dt class="">
+                                                        @Html.DisplayNameFor(paquete => paquete.Nombre)
+                                    </dt>
+                                    <dd class="">
+                                                        @paquete.Nombre
+                                    </dd>
+                                    <dt class="">
+                                                        @Html.DisplayNameFor(paquete => paquete.Descripcion)
+                                    </dt>
+                                    <dd class="">
+                                                        @paquete.Descripcion
+                                    </dd>
+                                    <dt class="">
+                                                        @Html.DisplayNameFor(paquete => paquete.Precio)
+                                    </dt>
+                                    <dd class="">
+                                                        ₡@paquete.Precio
+                                    <dt class="">
+                                                        @Html.DisplayNameFor(paquete => paquete.Productos)
+                                    </dt>
+                                    <dd class="">
+                                        
+                                                        @foreach (var producto in paquete.Productos)
+                                                        {
+                                                            <li>@producto.Nombre</li>
+                                                        }
+                                        
+                                                    
+                                    </dd>
+
+                                    </td>
+                                    </tr>
+                                    </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

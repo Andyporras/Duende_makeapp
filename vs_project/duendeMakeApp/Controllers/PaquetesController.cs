@@ -25,11 +25,11 @@ namespace duendeMakeApp.Controllers
 
         // GET: Paquetes
         public async Task<IActionResult> Index()
+
         {
             ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
-            return _context.Paquetes != null ? 
-                          View(await _context.Paquetes.ToListAsync()) :
-                          Problem("Entity set 'DuendeappContext.Paquetes'  is null.");
+            var duendeAppContext = _context.Paquetes.Include(p => p.Productos);
+            return View(await duendeAppContext.ToListAsync());
         }
 
         // GET: Paquetes/Details/5

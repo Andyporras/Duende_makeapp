@@ -50,19 +50,7 @@
                 <span asp-validation-for="ImagenId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label">Seleccionar subcategorias: </label>
-               <br>
-                @foreach (var subs in ViewBag.Subcategoria)
-                {
-                    <label class="btn btn-secondary">
-                        <input type="checkbox" name="TagIds" value="@subs.SubcategoriaId"> @subs.Nombre
-                    </label>
-                }
-            </div>
-
-
-            <div class="form-group">
-                <input type="submit" value="Guardar cambios" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>

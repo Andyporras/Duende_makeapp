@@ -11,6 +11,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Drawing;
 using duendeMakeApp.DAO;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace duendeMakeApp.Controllers
 {
@@ -23,7 +24,7 @@ namespace duendeMakeApp.Controllers
         private readonly IHttpClientFactory _clientFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        private static string conecction = "Data Source=DESKTOP_2023V2\\SQLEXPRESS; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
+        private static string conecction = "Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
 
         public ProductosController(DuendeappContext context, Usuario usuario, IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
         {
@@ -40,25 +41,22 @@ namespace duendeMakeApp.Controllers
             ViewBag.categorias = _context.Categoria;
             ViewBag.subcategorias = _context.Subcategoria;
 
-            //IQueryable<Producto> duendeappContext = _context.Productos;
+            IQueryable<Producto> duendeappContext = _context.Productos;
 
-            //if (categoriaId.HasValue)
-            //{
-            //    duendeappContext = duendeappContext.Where(p => p.CategoriaId == categoriaId);
-            //}
+            if (categoriaId.HasValue)
+            {
+                duendeappContext = duendeappContext.Where(p => p.CategoriaId == categoriaId);
+            }
 
-            //if (subcategoriaIds != null && subcategoriaIds.Count > 0)
-            //{
-            //    duendeappContext = duendeappContext.Where(p => p.Subcategoria.Any(s => subcategoriaIds.Contains(s.SubcategoriaId)));
-            //}
+            if (subcategoriaIds != null && subcategoriaIds.Count > 0)
+            {
+                duendeappContext = duendeappContext.Where(p => p.Subcategoria.Any(s => subcategoriaIds.Contains(s.SubcategoriaId)));
+            }
 
-            var duendeAppContext = _context.Productos.Include(p => p.Categoria).Include(p => p.Imagen).Include(p => p.Subcategoria);//.Where(p => p.Estado == true);
 
-            //return View(await duendeappContext.ToListAsync());
-            return View(await duendeAppContext.ToListAsync());
+            return View(await duendeappContext.ToListAsync());
         }
 
-        // GET: Productos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Productos == null)
@@ -78,7 +76,6 @@ namespace duendeMakeApp.Controllers
             return View(producto);
         }
 
-        // GET: Productos/Create
         public IActionResult Create()
         {
             ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "Nombre");
@@ -86,19 +83,28 @@ namespace duendeMakeApp.Controllers
 
             ViewBag.Subcategoria = _context.Subcategoria.ToList();
                                
-            return View();
+            return View("Create");
         }
 
-        // POST: Productos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductoId,Nombre,Descripcion,Precio,Cantidad,CategoriaId,Estado,ImagenId")] Producto producto)
+        public async Task<IActionResult> Create([Bind("ProductoId,Nombre,Descripcion,Precio,Cantidad,CategoriaId,Estado,ImagenId")] Producto producto, List<int> SubIds)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(producto);
+                
+
+                foreach (int subId in SubIds)
+                {
+                    Subcategoria sub = _context.Subcategoria.Find(subId);
+                    if (sub != null)
+                    {
+
+                        producto.Subcategoria.Add(sub);
+                    }
+                }
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -126,17 +132,12 @@ namespace duendeMakeApp.Controllers
             return View(producto);
         }
 
-        // POST: Productos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ProductoId,Nombre,Descripcion,Precio,Cantidad,CategoriaId,Estado,ImagenId")] Producto producto)
         {
-            if (id != producto.ProductoId)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -212,8 +213,11 @@ namespace duendeMakeApp.Controllers
 
         public IActionResult index3()
         {
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+
+            
+            _usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context); 
             ViewBag.Usuario = _usuario;
+
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
             var oLista = new List<ProductoCarrito>();
 
@@ -262,7 +266,8 @@ namespace duendeMakeApp.Controllers
 
         public IActionResult agregarAlCarrito(int id)
         {
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+            _usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+            ViewBag.Usuario = _usuario;
 
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
 
@@ -299,7 +304,8 @@ namespace duendeMakeApp.Controllers
 
         public IActionResult eliminarDelCarrrito(int id)
         {
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+            _usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+            ViewBag.Usuario = _usuario;
 
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
 
@@ -357,7 +363,8 @@ namespace duendeMakeApp.Controllers
 
     public IActionResult SumarProducto(int id)
         {
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+            _usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+            ViewBag.Usuario = _usuario;
 
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
 
@@ -525,7 +532,8 @@ namespace duendeMakeApp.Controllers
 
         public IActionResult RestarProducto(int id)
         {
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+            _usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+            ViewBag.Usuario = _usuario;
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
 
             try

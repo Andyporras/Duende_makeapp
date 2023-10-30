@@ -24,7 +24,7 @@ namespace duendeMakeApp.Controllers
         private readonly IHttpClientFactory _clientFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        private static string conecction = "Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
+        //private static string _context.Database.GetDbConnection().ConnectionString;// = "Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
 
         public ProductosController(DuendeappContext context, Usuario usuario, IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
         {
@@ -41,7 +41,7 @@ namespace duendeMakeApp.Controllers
             ViewBag.categorias = _context.Categoria;
             ViewBag.subcategorias = _context.Subcategoria;
 
-            IQueryable<Producto> duendeappContext = _context.Productos;
+            IQueryable<Producto> duendeappContext = _context.Productos.Include(p => p.Imagen);
 
             if (categoriaId.HasValue)
             {
@@ -222,7 +222,7 @@ namespace duendeMakeApp.Controllers
             var oLista = new List<ProductoCarrito>();
 
             Console.WriteLine(carrito);
-            using (SqlConnection conexion = new SqlConnection(conecction))
+            using (SqlConnection conexion = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
     
 
             {
@@ -273,7 +273,7 @@ namespace duendeMakeApp.Controllers
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection(conecction))
+                using (SqlConnection conexion = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
                 {
                     conexion.Open();
 
@@ -311,7 +311,7 @@ namespace duendeMakeApp.Controllers
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection(conecction))
+                using (SqlConnection conexion = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
                 {
                     conexion.Open();
 
@@ -343,7 +343,7 @@ namespace duendeMakeApp.Controllers
             ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
 
 
-            using (SqlConnection connection = new SqlConnection(conecction))
+            using (SqlConnection connection = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
             {
                 connection.Open();
 
@@ -370,7 +370,7 @@ namespace duendeMakeApp.Controllers
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection(conecction))
+                using (SqlConnection conexion = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
                 {
                     conexion.Open();
 
@@ -423,7 +423,7 @@ namespace duendeMakeApp.Controllers
             }
 
             try {
-                using (SqlConnection conexion = new SqlConnection(conecction))
+                using (SqlConnection conexion = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
                 {
                     conexion.Open();
 
@@ -515,7 +515,7 @@ namespace duendeMakeApp.Controllers
         {
             ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             string detalle = "";
-            using (SqlConnection connection = new SqlConnection(conecction))
+            using (SqlConnection connection = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
             {
                 connection.Open();
 
@@ -538,7 +538,7 @@ namespace duendeMakeApp.Controllers
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection(conecction))
+                using (SqlConnection conexion = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
                 {
                     conexion.Open();
 

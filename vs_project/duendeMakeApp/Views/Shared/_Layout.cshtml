@@ -77,9 +77,9 @@
                     <li class="nav-item">
                         <a class="navbar-brand" asp-controller="Productos" asp-action="Index" style="color: #fafafa !important;">Productos</a>
                     </li>
-                    <li class="nav-item">
+                    @*<li class="nav-item">
                         <a class="navbar-brand" asp-controller="Paquetes" asp-action="Index" style="color: #fafafa !important;">Paquetes</a>
-                    </li>
+                    </li>*@
                     @try
                     {
                         @if (ViewBag.usuario.TipoId == 1)
@@ -92,7 +92,7 @@
                                     <a class="dropdown-item" asp-controller="Tags" asp-action="Index">Tags</a>
                                     <a class="dropdown-item" asp-controller="Imagenes" asp-action="Index">Imágenes</a>
                                     <a class="dropdown-item" asp-controller="Catalogos" asp-action="Index">Catálogos</a>
-                                    <a class="dropdown-item" asp-controller="Paquetes" asp-action="Index">Paquetes</a>
+                                    @*<a class="dropdown-item" asp-controller="Paquetes" asp-action="Index">Paquetes</a>*@
                                     <a class="dropdown-item" asp-controller="Categorias" asp-action="Index">Categorías</a>
                                     <a class="dropdown-item" asp-controller="Subcategorias" asp-action="Index">Sub-categorías</a>                                
                                     <a class="dropdown-item" asp-controller="Usuarios" asp-action="Index">Usuarios</a>

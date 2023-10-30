@@ -24,13 +24,30 @@ namespace duendeMakeApp.Controllers
         private readonly IHttpClientFactory _clientFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        //private static string _context.Database.GetDbConnection().ConnectionString;// = "Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
-
+        //private static string conStr;// = "Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
+        private static string? conStr;
         public ProductosController(DuendeappContext context, Usuario usuario, IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
         {
             _usuario = usuario;
             _context = context;
             _clientFactory = clientFactory;
+            var serverName = _context.Database.GetDbConnection().DataSource;
+            var databaseName = _context.Database.GetDbConnection().Database;
+            var integratedSecurity = _context.Database.GetDbConnection().ConnectionString.Contains("Integrated Security=true");
+            var encrypt = _context.Database.GetDbConnection().ConnectionString.Contains("Encrypt=true");
+            var user = _context.Database.GetDbConnection().ConnectionString.Contains("User=");
+            var password = _context.Database.GetDbConnection().ConnectionString.Contains("Password=");
+            var conStrBuilder = new SqlConnectionStringBuilder
+            {
+                DataSource = serverName,
+                InitialCatalog = databaseName,
+                IntegratedSecurity = integratedSecurity,
+                Encrypt = encrypt,
+                UserID = user ? _context.Database.GetDbConnection().ConnectionString.Split("User=")[1].Split(";")[0] : "",
+                Password = password ? _context.Database.GetDbConnection().ConnectionString.Split("Password=")[1].Split(";")[0] : ""
+            };
+            conStr = conStrBuilder.ConnectionString;
+            Console.WriteLine(conStr);
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -226,7 +243,7 @@ namespace duendeMakeApp.Controllers
             var oLista = new List<ProductoCarrito>();
 
             Console.WriteLine(carrito);
-            using (SqlConnection conexion = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
+            using (SqlConnection conexion = new SqlConnection(conStr))
     
 
             {
@@ -277,7 +294,7 @@ namespace duendeMakeApp.Controllers
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
+                using (SqlConnection conexion = new SqlConnection(conStr))
                 {
                     conexion.Open();
 
@@ -315,7 +332,7 @@ namespace duendeMakeApp.Controllers
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
+                using (SqlConnection conexion = new SqlConnection(conStr))
                 {
                     conexion.Open();
 
@@ -347,7 +364,7 @@ namespace duendeMakeApp.Controllers
             ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
 
 
-            using (SqlConnection connection = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
+            using (SqlConnection connection = new SqlConnection(conStr))
             {
                 connection.Open();
 
@@ -374,7 +391,7 @@ namespace duendeMakeApp.Controllers
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
+                using (SqlConnection conexion = new SqlConnection(conStr))
                 {
                     conexion.Open();
 
@@ -427,7 +444,7 @@ namespace duendeMakeApp.Controllers
             }
 
             try {
-                using (SqlConnection conexion = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
+                using (SqlConnection conexion = new SqlConnection(conStr))
                 {
                     conexion.Open();
 
@@ -519,7 +536,7 @@ namespace duendeMakeApp.Controllers
         {
             ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             string detalle = "";
-            using (SqlConnection connection = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
+            using (SqlConnection connection = new SqlConnection(conStr))
             {
                 connection.Open();
 
@@ -542,7 +559,7 @@ namespace duendeMakeApp.Controllers
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection(_context.Database.GetDbConnection().ConnectionString))
+                using (SqlConnection conexion = new SqlConnection(conStr))
                 {
                     conexion.Open();
 

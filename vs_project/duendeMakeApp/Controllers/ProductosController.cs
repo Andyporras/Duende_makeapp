@@ -41,7 +41,11 @@ namespace duendeMakeApp.Controllers
             ViewBag.categorias = _context.Categoria;
             ViewBag.subcategorias = _context.Subcategoria;
 
-            IQueryable<Producto> duendeappContext = _context.Productos.Include(p => p.Imagen);
+            IQueryable<Producto> duendeappContext = _context.Productos
+                .Include(p => p.Imagen)
+                .Include(p => p.Catalogos)
+                .Include(p => p.Categoria)
+                .Include(p => p.Subcategoria);
 
             if (categoriaId.HasValue)
             {

@@ -66,6 +66,7 @@
 
                         <button type="submit" class="btn btn-primary ml-2">Filtrar</button>
                     </form>
+                    <input class="form-control" id="myInput" type="text" placeholder="Buscar..">
                 </li>
             </ul>
                 
@@ -87,17 +88,17 @@
 
     <br>
 
-    <div class="row">
+    <div id="myDIV" class="row">
         @foreach (Producto producto in Model)
         {
-            <div class="col-md-4">
+            <div id="content" class="col-md-4">
                 @if (producto.Estado == false || producto.Cantidad < 1)
                 {
-                    <p class="text-danger">Sin stock</p>
+                    <p class="badge badge-danger">Sin stock</p>
                 }
                 else
                 {
-                    <p class="text-success">En stock</p>
+                    <p class="badge badge-success">En stock</p>
 
                 }
                 <div class="card mb-4 box-shadow">
@@ -105,7 +106,16 @@
                          style="height: 225px; width: 100%; display: block; object-fit:cover;" src= "@producto.Imagen.Url" data-holder-rendered="true">
                     <div class="card-body">
                         <p class="card-title"><strong>@producto.Nombre</strong></p>
-                        <p class="card-text">@producto.Descripcion</p>
+                        <p class="card-text">
+                            @producto.Descripcion
+                            <br />
+                            @foreach (Catalogo catalogo in producto.Catalogos)
+                            {
+                                <span class="badge badge-info">
+                                    @catalogo.Nombre
+                                </span>
+                            }
+                        </p>
                         <p class="card-text">@producto.Precio ₡</p>
                         <div class="d-flex justify-content-between align-items-center">
 

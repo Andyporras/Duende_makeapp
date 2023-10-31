@@ -454,16 +454,6 @@ END;
 --sp para crear carrito si no existe 
 
 go
-create proc crearCarrito(
-@UsuarioID int
-)
-as 
-begin
-	insert into Carrito values (@UsuarioID)
-end
-
-
-go
 create or alter proc AgregarProductoCarrito(
 @idProducto int,
 @idCarrito int,

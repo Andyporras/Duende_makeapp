@@ -159,10 +159,12 @@ CREATE TABLE Producto (
     Cantidad INT,
 	CategoriaID INT,
     Estado bit,
-    Imagen varchar(max),
+    ImagenID INT,
     CONSTRAINT pk_producto PRIMARY KEY (ProductoID),
 	CONSTRAINT fk_categoria FOREIGN KEY (CategoriaID)
-        REFERENCES Categoria(CategoriaID)
+        REFERENCES Categoria(CategoriaID),
+	CONSTRAINT fk_imagen FOREIGN KEY (ImagenID)
+		REFERENCES Imagen(ImagenID)
 );
 
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Venta' AND xtype='U')
@@ -281,7 +283,3 @@ CREATE TABLE PaqueteXCarrito (
 
 -- modificacion de la tabla carrito
 alter table carrito add estado bit
-
-select * from productosxCarrito;
-
-select *from Carrito

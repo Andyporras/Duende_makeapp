@@ -280,6 +280,8 @@ CREATE TABLE PaqueteXCarrito (
     CONSTRAINT fk_paqueteXcarrito_carrito FOREIGN KEY (CarritoID) REFERENCES Carrito(CarritoID)
 );
 
+insert into TipoUsuario values ('admin'), ('cliente');
+INSERT into Usuario values ('admin', 'admin', 'admin@correo.com', 'adminPro', '12345', 1);
 
 -- modificacion de la tabla carrito
 alter table carrito add estado bit

@@ -34,7 +34,6 @@
         --fc-now-indicator-color: red;
     }
 
-    /* Apply styles using the custom root properties */
     body {
         font-size: var(--fc-small-font-size);
         background-color: var(--fc-page-bg-color);
@@ -55,13 +54,55 @@
             background-color: var(--fc-button-active-bg-color);
             border-color: var(--fc-button-active-border-color);
         }
-
-    /* Add more styles based on your customization needs */
 </style>
 <div id='calendar'></div>
 
+<!-- Agrega el siguiente código para el modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">Evento</h3>
+                <button type="button" id ="x"class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="fechaSeleccionada"></p>
+                <form>
+                    <div class="form-group">
+                        <label for="titulo">Título:</label>
+                        <input type="text" class="form-control" id="titulo" placeholder="Ingrese el título">
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción:</label>
+                        <textarea class="form-control" id="descripcion" rows="3" placeholder="Ingrese la descripción"></textarea>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <a id="prueba" class="btn btn-primary" data-dismiss="modal" asp-controller="Maquillajes" asp-action="Index">Guardar</a>
+                <button type="button" id = "cerrarBtn" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script>
+
+    document.getElementById("x").addEventListener("click", function () {
+        $('#titulo').val("");
+        $('#myModal').modal('hide');
+    });
+    document.getElementById("cerrarBtn").addEventListener("click", function () {
+        $('#titulo').val("");
+        $('#myModal').modal('hide');
+    });
 
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
@@ -70,7 +111,7 @@
             initialView: 'dayGridMonth',
             nowIndicator: true,
             headerToolbar: {
-                left: 'prev,next today',
+                left: 'prev,next,today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
             },
@@ -81,13 +122,25 @@
                 day: 'Día',
                 list: 'Agenda'
             },
-            navLinks: true, // can click day/week names to navigate views
+            navLinks: true,
+            dateClick: function (info) {
+                // Acciones cuando se hace clic en una fecha
+                $('#fechaSeleccionada').text('Fecha: ' + info.dateStr);
+                $('#myModal').modal('show');
+            },
+            eventClick: function (info) {
+                // Acciones cuando se hace clic en un evento
+                $('#titulo').val("");
+                $('#titulo').val(info.event.title);
+                $('#myModal').modal('show');
+            },
             editable: false,
             selectable: false,
             selectMirror: false,
-            dayMaxEvents: true, // allow "more" link when too many events
+            dayMaxEvents: true,
 
             eventDidMount: function (info) {
+                // Acciones cuando se monta un evento
                 //alert(info.event.title);
             },
 
@@ -144,13 +197,11 @@
                 },
                 {
                     title: 'Click for Google',
-                    url: 'http://google.com/',// con esto se puede presionar el evento
+                    url: 'http://google.com/',
                     start: '2023-11-28'
                 }
             ]
         });
-
-
 
         calendar.render();
     });

@@ -654,5 +654,57 @@ BEGIN
 END;
 go
 
-select * from carrito
-select * from venta
+----------------------PREPARACION DE SP PARA CHECKOUT------------------------
+
+go
+CREATE or alter proc ObtenerVentas
+AS
+BEGIN
+    SELECT   Usuario.Correo ,VentaID ,monto, fechaPedido, fechaEntrega, direccion, estado, Url
+	from venta 
+    join Imagen on Imagen.ImagenID = Venta.imgComprobante
+	join Carrito on Carrito.CarritoID = Venta.CarritoID
+	join Usuario on Usuario.UsuarioID = Carrito.CarritoID
+END;
+go
+
+go 
+create or alter proc obtenerPedidosClientes
+@usuario int
+as 
+begin
+	SELECT monto, fechaPedido, fechaEntrega, direccion, venta.estado, Url
+	from venta 
+    join Imagen on Imagen.ImagenID = Venta.imgComprobante
+	join Carrito on Carrito.CarritoID = Venta.CarritoID
+	where UsuarioID = @Usuario
+end;
+
+
+
+go
+create or alter proc aprobarVenta
+@idVenta int
+as
+begin
+update venta 
+set estado = 1
+where @idVenta = venta.VentaID
+end;
+
+
+go
+create or alter proc denegarVenta
+@idVenta int
+as
+begin
+update venta 
+set estado = 2
+where @idVenta = venta.VentaID
+end;
+
+
+
+select * from Usuario
+
+

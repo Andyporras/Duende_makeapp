@@ -167,16 +167,27 @@ CREATE TABLE Producto (
 		REFERENCES Imagen(ImagenID)
 );
 
+
+
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Venta' AND xtype='U')
 CREATE TABLE Venta (
     VentaID INT IDENTITY(1,1),
-    imgComprobante int,
+    monto decimal(10,2),
+	imgComprobante int,
     CarritoID INT,
+	codPostal int,
+	fechaEntrega date,
+	fechaPedido date,
+	direccion varchar(500),
+	estado int,
+	ProvinciaID int,
     CONSTRAINT pk_ventaID PRIMARY KEY (VentaID),
     CONSTRAINT fk_carrito FOREIGN KEY (CarritoID)
         REFERENCES Carrito(CarritoID),
 	CONSTRAINT fk_comprobante FOREIGN KEY (imgComprobante)
-		REFERENCES Imagen(ImagenID)
+		REFERENCES Imagen(ImagenID),
+	CONSTRAINT fk_provinciaVenta FOREIGN KEY (ProvinciaID)
+        REFERENCES Provincia(ProvinciaID)
 );
 
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='imagenesXmaquillaje' AND xtype='U')
@@ -285,3 +296,5 @@ INSERT into Usuario values ('admin', 'admin', 'admin@correo.com', 'adminPro', '1
 
 -- modificacion de la tabla carrito
 alter table carrito add estado bit
+
+select * from Venta

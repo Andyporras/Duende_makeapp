@@ -17,7 +17,7 @@ namespace duendeMakeApp.Controllers
         private List<Pedido> productosCarrito = new List<Pedido>();
 
 
-        private readonly string  concStr  = "server=DESKTOP-993UODJ; database=DUENDEAPP; Integrated Security=true; Encrypt=False";
+        private readonly string  concStr  = "server=localhost; database=DUENDEAPP; User=sa; Password=miltonials; TrustServerCertificate=False; Encrypt=False;";
 
         public VentasController(DuendeappContext context)
         {
@@ -49,7 +49,7 @@ namespace duendeMakeApp.Controllers
                         {
                             IdVenta = (int)dr["VentaID"],
 
-                            Cliente = (string)dr["Cliente"],
+                            Cliente = (string)dr["Correo"],
 
                             Monto = (decimal)dr["monto"]
 ,

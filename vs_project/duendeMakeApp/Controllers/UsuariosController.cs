@@ -212,7 +212,6 @@ namespace duendeMakeApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("UsuarioId,Nombre,Apellido,Correo,Usuario1,Clave,TipoId")] Usuario usuario)
         public async Task<IActionResult> Create(string nombre, string apellido, string correo, string usuario1, string clave, string rClave)
         {
             if (clave != rClave)
@@ -265,7 +264,6 @@ namespace duendeMakeApp.Controllers
 
         [HttpPost, ActionName("RegistraAdmin")]
         [ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("UsuarioId,Nombre,Apellido,Correo,Usuario1,Clave,TipoId")] Usuario usuario)
         public async Task<IActionResult> RegistraAdmin([Bind("UsuarioId,Nombre,Apellido,Correo,Usuario1,Clave,TipoId")] Usuario usuario)
         {
             if (UsuarioExists(usuario.Correo))

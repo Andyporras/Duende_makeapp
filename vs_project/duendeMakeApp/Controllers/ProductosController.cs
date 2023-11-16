@@ -421,7 +421,10 @@ namespace duendeMakeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout(string codPostal, int provincia, string dir, IFormFile imageFile)
         {
-            ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+            //ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+            
+            _usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+            ViewBag.Usuario = _usuario;
             int carrito = ObtenerCarritoPorUsuarioID(_usuario.UsuarioId);
 
             Imagen imagen = new Imagen();

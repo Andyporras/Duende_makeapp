@@ -6,23 +6,70 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using duendeMakeApp.Models;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace duendeMakeApp.Controllers
 {
     public class VentasController : Controller
     {
         private readonly DuendeappContext _context;
+        private List<Pedido> productosCarrito = new List<Pedido>();
+
+
+        private readonly string  concStr  = "server=DESKTOP-993UODJ; database=DUENDEAPP; Integrated Security=true; Encrypt=False";
 
         public VentasController(DuendeappContext context)
         {
             _context = context;
         }
 
+
+
         // GET: Ventas
         public async Task<IActionResult> Index()
         {
-            var duendeappContext = _context.Venta.Include(v => v.Carrito).Include(v => v.ImgComprobanteNavigation);
-            return View(await duendeappContext.ToListAsync());
+
+
+            var oLista = new List<Pedido>();
+
+            using (SqlConnection conexion = new SqlConnection(concStr))
+
+            {
+                conexion.Open();
+                SqlCommand cmd = new SqlCommand("ObtenerVentas", conexion);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                using (var dr = cmd.ExecuteReader())
+                {
+
+                    while (dr.Read())
+                    {
+                        oLista.Add(new Pedido()
+                        {
+                            IdVenta = (int)dr["VentaID"],
+
+                            Cliente = (string)dr["Cliente"],
+
+                            Monto = (decimal)dr["monto"]
+,
+                            FechaPedido = (DateTime?)dr["fechaPedido"],
+
+                            FechaEntrega = (DateTime?)dr["fechaEntrega"],
+
+                            Direccion = (string)dr["direccion"],
+
+                            estado = (int)dr["estado"],
+
+                            imagen = (string)dr["Url"],
+
+                        });
+
+                    }
+                }
+            }
+
+            return View(oLista);
         }
 
         // GET: Ventas/Details/5
@@ -88,6 +135,40 @@ namespace duendeMakeApp.Controllers
             ViewData["ImgComprobante"] = new SelectList(_context.Imagens, "ImagenId", "ImagenId", venta.ImgComprobante);
             return View(venta);
         }
+
+
+        public IActionResult aprobar(int id)
+        {
+
+            using (SqlConnection conexion = new SqlConnection(concStr))
+            {
+                conexion.Open();
+                SqlCommand cmd = new SqlCommand("aprobarVenta", conexion);
+                cmd.Parameters.AddWithValue("@idVenta", id);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.ExecuteNonQuery();
+
+            }
+            return RedirectToAction("index", "Ventas");
+        }
+
+
+        public IActionResult denegar(int id)
+        {
+            using (SqlConnection conexion = new SqlConnection(concStr))
+            {
+                conexion.Open();
+                SqlCommand cmd = new SqlCommand("denegarVenta", conexion);
+                cmd.Parameters.AddWithValue("@idVenta", id);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.ExecuteNonQuery();
+
+            }
+            return RedirectToAction("index", "Ventas");
+        }
+
+
+
 
         // POST: Ventas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.

@@ -552,11 +552,11 @@ END;
 go
 
 ----------------------PREPARACION DE SP PARA CHECKOUT------------------------
-ALTER TABLE Provincia
-ADD CONSTRAINT SinRepeticiones UNIQUE (Nombre);
-insert into provincia (Nombre) values 
-('San Jose'), ('Alajuela'), ('Cartago'), ('Heredia'), ('Guanacaste'), ('Puntarenas'), ('Limon') --ids del 1 al 7
-insert into EstadoEnvio (Estado) values ('En ruta'), ('Entregado') -- ids 1 y 2
+--ALTER TABLE Provincia
+--ADD CONSTRAINT SinRepeticiones UNIQUE (Nombre);
+--insert into provincia (Nombre) values 
+--('San Jose'), ('Alajuela'), ('Cartago'), ('Heredia'), ('Guanacaste'), ('Puntarenas'), ('Limon') --ids del 1 al 7
+--insert into EstadoEnvio (Estado) values ('En ruta'), ('Entregado') -- ids 1 y 2
 
 go
 CREATE OR ALTER PROCEDURE concretarVenta (
@@ -582,16 +582,14 @@ BEGIN
 		INSERT INTO Direccion (CodigoPostal, Detalle, ProvinciaID) VALUES (@codPostal, @direccion, @provincia);
 		DECLARE @DireccionID int;
 		SELECT @DireccionID = SCOPE_IDENTITY(); -- Reservar el id de la direcci�n para m�s adelante
-
 		-- Creaci�n de la venta
-		INSERT INTO Venta (imgComprobante, CarritoID) VALUES (@imagenID, @carrito);
+		INSERT INTO Venta (monto, imgComprobante, CarritoID, codPostal, fechaEntrega, fechaPedido, direccion, estado, ProvinciaID) 
+		VALUES (0, @imagenID, @carrito, @codPostal, null, CONVERT(date, GETDATE()), @DireccionID, 1, @provincia);
 
 		-- Creaci�n del env�o
-		DECLARE @FechaEntrega date;
-		SELECT @FechaEntrega = DATEADD(day, 3, CONVERT(date, GETDATE())); --3 dias despues de la venta (fecha estimada)
 		
 		INSERT INTO Envio(FechaPedido, FechaEntrega, EstadoID, CarritoID, DireccionID)
-		VALUES (CONVERT(date, GETDATE()), @FechaEntrega, 1, @carrito, @DireccionID);
+		VALUES (CONVERT(date, GETDATE()), null, 1, @carrito, @DireccionID); -- la fecha de entrega la determina el admin al aprobar
 	END
 	ELSE
 	BEGIN
@@ -660,7 +658,7 @@ go
 CREATE or alter proc ObtenerVentas
 AS
 BEGIN
-    SELECT   Usuario.Correo ,VentaID ,monto, fechaPedido, fechaEntrega, direccion, estado, Url
+    SELECT   Usuario.Correo ,VentaID ,monto, fechaPedido, fechaEntrega, direccion, venta.estado, Url
 	from venta 
     join Imagen on Imagen.ImagenID = Venta.imgComprobante
 	join Carrito on Carrito.CarritoID = Venta.CarritoID

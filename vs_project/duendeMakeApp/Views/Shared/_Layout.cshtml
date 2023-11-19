@@ -13,39 +13,6 @@
 </head>
 <body>
     <header>
-        @*@try {
-            @if (ViewBag.usuario.UsuarioId == null || ViewBag.usuario.UsuarioId == 0 || ViewBag.usuario.TipoUsuario.TipoUsuarioId == 2)
-            {
-                <h1>Soy un cliente default</h1>
-                <p>id: @ViewBag.usuario.UsuarioId</p>
-                <p>nombre: @ViewBag.usuario.Nombre</p>
-                <p>correo: @ViewBag.usuario.Correo</p>
-                <p>tipo: @ViewBag.usuario.TipoId</p>
-            }
-        }
-        catch (Exception ex)
-        {
-            if (ViewBag.usuario == null)
-            {
-                <h1>falta implementar validación de usuario en sesion</h1>
-            }
-            else
-            {
-                if (ViewBag.usuario.TipoId == 1)
-                {
-                    <h1>Soy administrador</h1>
-                }
-                else
-                {
-                    <h1>Soy cliente normal</h1>
-                }
-                <p>id: @ViewBag.usuario.UsuarioId</p>
-                <p>nombre: @ViewBag.usuario.Nombre</p>
-                <p>correo: @ViewBag.usuario.Correo</p>
-                <p>tipo: @ViewBag.usuario.TipoId</p>
-            }
-        }*@
-        
         <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #202124 !important;">
             @if (ViewBag.usuario != null)
             {
@@ -103,6 +70,13 @@
                                     <a class="dropdown-item" asp-controller="Ventas" asp-action="Index">Ventas</a>
                                 </div>
                             </li>
+                        }
+                        if (ViewBag.usuario != null)
+                        {
+                            <h5 class="btn" id="notificationButton" data-toggle="popover" data-placement="bottom">
+                                <span>🔔</span>
+                                <span class="badge badge-danger" id="notificationCount"></span>
+                            </h5>
                         }
                     }
                     catch (Exception ex)
@@ -267,6 +241,64 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    @if (ViewBag.usuario != null)
+    {
+    <script>
+        $(document).ready(function () {
+        // Array de notificaciones de ejemplo
+            var notifications = [
+            @foreach (Notificacion notificacion in ViewBag.usuario.Notificaciones)
+            {
+                <text>
+                        {
+                            id: "@notificacion.NotificacionId",
+                            title: "@notificacion.Titulo",
+                            content: "@notificacion.Mensaje" 
+                        },
+                </text>
+            }
+            ];
+
+
+        // Inicializar el popover para el botón de notificaciones
+        $('#notificationButton').popover({
+            content: formatNotifications(notifications),
+            html: true
+        });
+
+        // Actualizar el número de notificaciones y el contenido del popover
+        updateNotifications();
+
+        function updateNotifications() {
+            var count = notifications.length;
+            $('#notificationCount').html(count);
+            $('#notificationButton').attr('data-content', formatNotifications(notifications));
+        }
+
+
+        // Función para formatear las notificaciones
+        function formatNotifications(notifications) {
+            var content = "<div class='notification-content'><ul class='list-group'>";
+                content = "<a class='btn btn-primary btn-sm' href='/Notificaciones'>Ver todas</a>";
+            notifications.forEach(function (notification, index) {
+                content += "<hr /><li class='list-group-item'>";
+                content += "<h6 class='mb-2'>" + notification.title + "</h6>";
+                content += "<p>" + notification.content + "</p>";
+                content += "<a class='btn btn-secondary btn-sm' href='Notificaciones/Details?id=" + notification.id + "'>Leer</a>"
+                content += "</li>";
+            });
+            content += "</ul></div>";
+            return content;
+        }
+
+        // Agregar una notificación nueva (puedes llamar a esta función cuando recibas una nueva notificación)
+        function addNotification(newNotification) {
+            notifications.push(newNotification);
+            updateNotifications();
+        }
+    });
+    </script>
+    }
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

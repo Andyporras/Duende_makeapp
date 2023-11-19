@@ -44,8 +44,14 @@ public partial class DuendeappContext : DbContext
     public virtual DbSet<TipoUsuario> TipoUsuarios { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
+    
+    public List<IObservable> Subscribers = new List<IObservable>();
+    
 
     public virtual DbSet<Venta> Venta { get; set; }
+
+    public virtual DbSet<Notificacion> Notificaciones { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
         //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
@@ -466,6 +472,29 @@ public partial class DuendeappContext : DbContext
                 .HasForeignKey(d => d.ImgComprobante)
                 .HasConstraintName("fk_comprobante");
         });
+
+        modelBuilder.Entity<Notificacion>(entity =>
+        {
+            entity.HasKey(e => e.NotificacionId).HasName("pk_notificacion");
+
+            entity.ToTable("Notificaciones");
+
+            entity.Property(e => e.NotificacionId).HasColumnName("notificacion_id");
+            entity.Property(e => e.Titulo).HasColumnName("titulo");
+            entity.Property(e => e.Mensaje).HasColumnName("mensaje");
+            entity.Property(e => e.Titulo).HasMaxLength(100).IsUnicode(false);
+            entity.Property(e => e.Mensaje).HasMaxLength(255).IsUnicode(false);
+            entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
+            entity.Property(e => e.FechaEnvio).HasColumnName("fecha_envio");
+            entity.Property(e => e.FechaEnvio).HasColumnType("datetime");
+            entity.Property(e => e.Visto).HasColumnName("visto");
+            entity.Property(e => e.Visto).HasColumnType("bit");
+
+            entity.HasOne(d => d.Usuario).WithMany(p => p.Notificaciones)
+                .HasForeignKey(d => d.UsuarioId)
+                .HasConstraintName("fk_notificacion_usuario");
+        });
+
 
         OnModelCreatingPartial(modelBuilder);
     }

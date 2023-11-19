@@ -1,0 +1,43 @@
+﻿@model duendeMakeApp.Models.Notificacion
+
+@{
+    ViewData["Title"] = "Detalles de la Notificación";
+}
+
+
+@if (ViewBag.Usuario != null)
+{
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h2 class="card-title">@Model.Titulo</h2>
+                        <p class="card-text">@Model.Mensaje</p>
+                        <p class="text-muted">Enviado el: @Model.FechaEnvio.ToString("dd/MM/yyyy HH:mm")</p>
+
+                        <div class="mt-4">
+                            <form asp-action="Delete" method="post">
+                                <a class="btn btn-primary btn-sm" asp-controller="Notificaciones" asp-action="Index">Volver</a>
+                                <input type="hidden" asp-for="NotificacionId" name="id" />
+                                <input type="submit" value="Eliminar notificación" class="btn btn-danger btn-sm" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script>
+            // Puedes agregar scripts específicos de esta vista aquí si es necesario
+        </script>
+    }
+}
+else
+{
+    <div class="text-center mt-5">
+        <p class="lead">No hay usuario autenticado.</p>
+    </div>
+}

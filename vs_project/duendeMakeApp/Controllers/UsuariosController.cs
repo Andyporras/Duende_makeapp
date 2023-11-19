@@ -368,7 +368,10 @@ namespace duendeMakeApp.Controllers
                 Usuario? usuarioCompleto = _context.Usuarios
                     .Include(u => u.Tipo)
                     .Include(u => u.Carritos)
+                    .Include(u => u.Notificaciones)
                     .FirstOrDefault(u => u.UsuarioId == usuario.UsuarioId);
+
+                usuarioCompleto.Notificaciones = usuarioCompleto.Notificaciones.OrderByDescending(n => n.FechaEnvio).ToList();
 
                 if (usuarioCompleto != null)
                 {

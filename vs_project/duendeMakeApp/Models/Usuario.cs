@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿namespace duendeMakeApp.Models;
 
-namespace duendeMakeApp.Models;
-
-public partial class Usuario
+public partial class Usuario : IObservable
 {
     //public static String SeccionActual { get; set; }
 
@@ -25,4 +21,20 @@ public partial class Usuario
     public virtual ICollection<Carrito> Carritos { get; set; } = new List<Carrito>();
 
     public virtual TipoUsuario? Tipo { get; set; }
+
+    public virtual ICollection<Notificacion> Notificaciones { get; set; } = new List<Notificacion>();
+
+    public async void Notificar(DuendeappContext context, string titulo, string mensaje)
+    {
+        Console.WriteLine("Agregando la nueva notificacion\n\n\n\n");
+        Notificacion notificacion = new Notificacion();
+        notificacion.Titulo = titulo;
+        notificacion.Mensaje = mensaje;
+        notificacion.UsuarioId = UsuarioId;
+        notificacion.FechaEnvio = DateTime.Now;
+        notificacion.Visto = false;
+        context.Notificaciones.Add(notificacion);
+        Notificaciones.Add(notificacion);
+        await context.SaveChangesAsync();
+    }
 }

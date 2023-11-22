@@ -565,7 +565,8 @@ CREATE OR ALTER PROCEDURE concretarVenta (
 @codPostal int,
 @direccion VARCHAR(100),
 @provincia int,
-@imagenID int
+@imagenID int,
+@monto int
 )
 AS
 BEGIN
@@ -584,7 +585,7 @@ BEGIN
 		SELECT @DireccionID = SCOPE_IDENTITY(); -- Reservar el id de la direcci�n para m�s adelante
 		-- Creaci�n de la venta
 		INSERT INTO Venta (monto, imgComprobante, CarritoID, codPostal, fechaEntrega, fechaPedido, direccion, estado, ProvinciaID) 
-		VALUES (0, @imagenID, @carrito, @codPostal, null, CONVERT(date, GETDATE()), @DireccionID, 1, @provincia);
+		VALUES (@monto, @imagenID, @carrito, @codPostal, null, CONVERT(date, GETDATE()), @DireccionID, 1, @provincia);
 
 		-- Creaci�n del env�o
 		

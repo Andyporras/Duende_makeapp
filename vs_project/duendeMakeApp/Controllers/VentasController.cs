@@ -168,8 +168,8 @@ namespace duendeMakeApp.Controllers
         }
 
 
-        public IActionResult aprobar(int id)
-        {
+        public IActionResult aprobar(int id){
+            
 
             using (SqlConnection conexion = new SqlConnection(concStr))
             {

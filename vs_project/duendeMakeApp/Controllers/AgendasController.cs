@@ -18,6 +18,8 @@ namespace duendeMakeApp.Controllers
         //private static string conStr;// = "Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
         private static string? conStr;
 
+        private List<AgendaEntry> agendaEntries = new List<AgendaEntry>();
+
         public AgendasController(DuendeappContext context, Usuario usuario, IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
         {
             _usuario = usuario;
@@ -46,6 +48,7 @@ namespace duendeMakeApp.Controllers
         public IActionResult Index()
         {
             ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+            ViewBag.AgendaEntries = new List<AgendaEntry>();  // O carga las entradas reales aquí
             return View();
         }
 
@@ -59,5 +62,15 @@ namespace duendeMakeApp.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public IActionResult AgregarEntrada(AgendaEntry nuevaEntrada)
+        {
+            // Lógica para agregar la nueva entrada a la lista o a la base de datos
+            agendaEntries.Add(nuevaEntrada);
+
+            // Redireccionar o devolver una vista según sea necesario
+            return RedirectToAction("Index");
+        }
+
     }
 }

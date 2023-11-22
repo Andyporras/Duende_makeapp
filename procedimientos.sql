@@ -658,11 +658,11 @@ go
 CREATE or alter proc ObtenerVentas
 AS
 BEGIN
-    SELECT   Usuario.Correo ,VentaID ,monto, fechaPedido, fechaEntrega, direccion, venta.estado, Url
+    SELECT  Usuario.Correo ,VentaID ,monto, fechaPedido, fechaEntrega, direccion, venta.estado, Url
 	from venta 
     join Imagen on Imagen.ImagenID = Venta.imgComprobante
 	join Carrito on Carrito.CarritoID = Venta.CarritoID
-	join Usuario on Usuario.UsuarioID = Carrito.CarritoID
+	join Usuario on Usuario.UsuarioID = Carrito.UsuarioID
 END;
 go
 

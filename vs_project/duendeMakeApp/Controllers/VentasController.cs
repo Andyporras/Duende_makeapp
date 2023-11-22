@@ -17,13 +17,38 @@ namespace duendeMakeApp.Controllers
         private List<Pedido> productosCarrito = new List<Pedido>();
 
 
-        private readonly string  concStr  = "server=localhost; database=DUENDEAPP; User=sa; Password=miltonials; TrustServerCertificate=False; Encrypt=False;";
+        // private readonly string concStr = "server=DESKTOP-993UODJ; database=DUENDEAPP; Integrated Security=true; Encrypt=False";
+        private static Usuario? _usuario;
 
-        public VentasController(DuendeappContext context)
+        private readonly IHttpClientFactory _clientFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private static string? concStr;
+
+
+        public VentasController(DuendeappContext context, Usuario usuario, IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
         {
+            _usuario = usuario;
             _context = context;
+            _clientFactory = clientFactory;
+            var serverName = _context.Database.GetDbConnection().DataSource;
+            var databaseName = _context.Database.GetDbConnection().Database;
+            var integratedSecurity = _context.Database.GetDbConnection().ConnectionString.Contains("Integrated Security=true");
+            var encrypt = _context.Database.GetDbConnection().ConnectionString.Contains("Encrypt=true");
+            var user = _context.Database.GetDbConnection().ConnectionString.Contains("User=");
+            var password = _context.Database.GetDbConnection().ConnectionString.Contains("Password=");
+            var conStrBuilder = new SqlConnectionStringBuilder
+            {
+                DataSource = serverName,
+                InitialCatalog = databaseName,
+                IntegratedSecurity = integratedSecurity,
+                Encrypt = encrypt,
+                UserID = user ? _context.Database.GetDbConnection().ConnectionString.Split("User=")[1].Split(";")[0] : "",
+                Password = password ? _context.Database.GetDbConnection().ConnectionString.Split("Password=")[1].Split(";")[0] : ""
+            };
+            concStr = conStrBuilder.ConnectionString;
+            Console.WriteLine(concStr);
+            _httpContextAccessor = httpContextAccessor;
         }
-
 
 
         // GET: Ventas
@@ -45,27 +70,33 @@ namespace duendeMakeApp.Controllers
 
                     while (dr.Read())
                     {
+                        DateTime? fechaEntrega = null;
+
+                        try
+                        {
+                            if (dr["fechaEntrega"] != DBNull.Value)
+                            {
+                                fechaEntrega = (DateTime?)dr["fechaEntrega"];
+                            }
+                        }
+                        catch (InvalidCastException)
+                        {
+                            fechaEntrega = null;
+                        }
+
                         oLista.Add(new Pedido()
                         {
                             IdVenta = (int)dr["VentaID"],
-
                             Cliente = (string)dr["Correo"],
-
-                            Monto = (decimal)dr["monto"]
-,
+                            Monto = (decimal)dr["monto"],
                             FechaPedido = (DateTime?)dr["fechaPedido"],
-
-                            FechaEntrega = (DateTime?)dr["fechaEntrega"],
-
+                            FechaEntrega = fechaEntrega, // Aquí asignamos el valor después de la conversión o nulo si es DBNull.Value
                             Direccion = (string)dr["direccion"],
-
                             estado = (int)dr["estado"],
-
-                            imagen = (string)dr["Url"],
-
+                            imagen = (string)dr["Url"]
                         });
-
                     }
+
                 }
             }
 
@@ -241,14 +272,14 @@ namespace duendeMakeApp.Controllers
             {
                 _context.Venta.Remove(venta);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool VentaExists(int id)
         {
-          return (_context.Venta?.Any(e => e.VentaId == id)).GetValueOrDefault();
+            return (_context.Venta?.Any(e => e.VentaId == id)).GetValueOrDefault();
         }
     }
 }

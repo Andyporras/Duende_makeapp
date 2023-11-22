@@ -6,6 +6,22 @@
 
 <h1>Pedidos</h1>
 
+<!-- Agrega un modal -->
+<div class="modal fade" id="comprobanteModal" tabindex="-1" role="dialog" aria-labelledby="comprobanteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="comprobanteModalLabel">Comprobante</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img id="comprobanteImagen" src="" alt="Comprobante" style="max-width: 100%; height: auto;">
+            </div>
+        </div>
+    </div>
+</div>
 
 <table class="table">
     <thead>
@@ -13,11 +29,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.IdVenta)
             </th>
-
             <th>
                 @Html.DisplayNameFor(model => model.Cliente)
             </th>
-
             <th>
                 @Html.DisplayNameFor(model => model.Monto)
             </th>
@@ -31,29 +45,38 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdVenta)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cliente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Monto)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaPedido)
-            </td>
-            <td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdVenta)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cliente)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Monto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaPedido)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.estado)
-            </td>
-            <td>
-                <a asp-action="Aprobar" asp-route-id="@item.IdVenta">Aprobar pedido</a> |
-                <a asp-action="Denegar" asp-route-id="@item.IdVenta">Cancelar pedido</a>
-            </td>
-
-        </tr>
-}
+                </td>
+                <td>
+                    <button class="btn btn-primary" onclick="verComprobante('@item.imagen')">Ver Comprobante</button>
+                    <a asp-action="Aprobar" asp-route-id="@item.IdVenta">Aprobar pedido</a> |
+                    <a asp-action="Denegar" asp-route-id="@item.IdVenta">Denegar pedido</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<script>
+    // Función para mostrar la imagen en el modal
+    function verComprobante(imagenUrl) {
+        document.getElementById('comprobanteImagen').src = imagenUrl;
+        $('#comprobanteModal').modal('show'); // Muestra el modal
+    }
+</script>

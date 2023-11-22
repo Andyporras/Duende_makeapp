@@ -558,45 +558,70 @@ go
 --('San Jose'), ('Alajuela'), ('Cartago'), ('Heredia'), ('Guanacaste'), ('Puntarenas'), ('Limon') --ids del 1 al 7
 --insert into EstadoEnvio (Estado) values ('En ruta'), ('Entregado') -- ids 1 y 2
 
-go
 CREATE OR ALTER PROCEDURE concretarVenta (
-@usuario int,
-@carrito int,
-@codPostal int,
-@direccion VARCHAR(100),
-@provincia int,
-@imagenID int,
-@monto int
+    @usuario INT,
+    @carrito INT,
+    @codPostal INT,
+    @direccion VARCHAR(100),
+    @provincia INT,
+    @imagenID INT
 )
 AS
 BEGIN
-	-- Validar que productosxcarrito no est� vac�o
-	DECLARE @carritoCount INT;
-	SELECT @carritoCount = COUNT(*) FROM ProductosXCarrito WHERE CarritoID = @carrito;
-	IF @carritoCount > 0
-	BEGIN
-		-- Continuar con el resto del procedimiento
-		UPDATE carrito SET estado = 0 WHERE CarritoID = @carrito; -- Deshabilitar el carrito del usuario
-		INSERT INTO CARRITO (UsuarioID, estado) VALUES (@usuario, 1); -- Crear un nuevo carrito para el usuario
+    -- Validar que productosxcarrito no esté vacío
+    DECLARE @carritoCount INT;
+    SELECT @carritoCount = COUNT(*) FROM ProductosXCarrito WHERE CarritoID = @carrito;
+    IF @carritoCount > 0
+    BEGIN
+        -- Continuar con el resto del procedimiento
+        UPDATE carrito SET estado = 0 WHERE CarritoID = @carrito; -- Deshabilitar el carrito del usuario
+        INSERT INTO CARRITO (UsuarioID, estado) VALUES (@usuario, 1); -- Crear un nuevo carrito para el usuario
 
-		-- Creaci�n de la direcci�n
-		INSERT INTO Direccion (CodigoPostal, Detalle, ProvinciaID) VALUES (@codPostal, @direccion, @provincia);
-		DECLARE @DireccionID int;
-		SELECT @DireccionID = SCOPE_IDENTITY(); -- Reservar el id de la direcci�n para m�s adelante
-		-- Creaci�n de la venta
-		INSERT INTO Venta (monto, imgComprobante, CarritoID, codPostal, fechaEntrega, fechaPedido, direccion, estado, ProvinciaID) 
-		VALUES (@monto, @imagenID, @carrito, @codPostal, null, CONVERT(date, GETDATE()), @DireccionID, 1, @provincia);
+        -- Creación de la dirección
+        INSERT INTO Direccion (CodigoPostal, Detalle, ProvinciaID) VALUES (@codPostal, @direccion, @provincia);
+        DECLARE @DireccionID INT;
+        SELECT @DireccionID = SCOPE_IDENTITY(); -- Reservar el id de la dirección para más adelante
 
-		-- Creaci�n del env�o
-		
-		INSERT INTO Envio(FechaPedido, FechaEntrega, EstadoID, CarritoID, DireccionID)
-		VALUES (CONVERT(date, GETDATE()), null, 1, @carrito, @DireccionID); -- la fecha de entrega la determina el admin al aprobar
-	END
-	ELSE
-	BEGIN
-		-- Terminar el procedimiento si el carrito est� vac�o
-		RETURN;
-	END
+        -- Calcular el subtotal
+        DECLARE @subtotal DECIMAL(10, 2) = 0;
+        DECLARE @productoID INT;
+        DECLARE @cantidad INT;
+        DECLARE @precio DECIMAL(10, 2);
+
+        DECLARE carrito_cursor CURSOR FOR
+        SELECT pc.productoID, pc.cantidad, p.precio
+        FROM productosxcarrito pc
+        JOIN Producto p ON pc.productoID = p.productoID
+        WHERE pc.carritoID = @carrito;
+
+        OPEN carrito_cursor;
+
+        FETCH NEXT FROM carrito_cursor INTO @productoID, @cantidad, @precio;
+
+        WHILE @@FETCH_STATUS = 0
+        BEGIN
+            -- Calcular subtotal
+            SET @subtotal = @subtotal + (@precio * @cantidad);
+
+            FETCH NEXT FROM carrito_cursor INTO @productoID, @cantidad, @precio;
+        END;
+
+        CLOSE carrito_cursor;
+        DEALLOCATE carrito_cursor;
+
+        -- Creación de la venta
+        INSERT INTO Venta (monto, imgComprobante, CarritoID, codPostal, fechaEntrega, fechaPedido, direccion, estado, ProvinciaID) 
+        VALUES (@subtotal, @imagenID, @carrito, @codPostal, null, CONVERT(date, GETDATE()), @DireccionID, 1, @provincia);
+
+        -- Creación del envío
+        INSERT INTO Envio(FechaPedido, FechaEntrega, EstadoID, CarritoID, DireccionID)
+        VALUES (CONVERT(date, GETDATE()), null, 1, @carrito, @DireccionID); -- la fecha de entrega la determina el admin al aprobar
+    END
+    ELSE
+    BEGIN
+        -- Terminar el procedimiento si el carrito está vacío
+        RETURN;
+    END
 END;
 
 -- funcion para el envio del correo

@@ -87,12 +87,13 @@
 
                                             </td>
                                             @{
-                                                decimal precioProducto = Convert.ToDecimal(item.Precio * item.Cantidad);
+                                                decimal precioProducto = Convert.ToDecimal(@item.Precio * @item.Cantidad);
                                                 precioTotal += precioProducto;
                                             }
                                         </tr>
 
                                         <!-- Calcula el precio total para el producto actual y agrégalo al precioTotal -->
+
 
 
                                     }
@@ -178,7 +179,7 @@
                                                 <div class="col-lg-4 col-xl-3">
                                                     <div class="d-flex justify-content-between" style="font-weight: 500;">
                                                         <p class="mb-2">Subtotal</p>
-                                                        <p class="mb-2">₡@precioTotal</p>
+                                                    <p class="mb-2" name="precioTotal">₡@precioTotal</p>
                                                     </div>
 
                                                     <hr class="my-4">

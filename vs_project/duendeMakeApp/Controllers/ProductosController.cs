@@ -419,7 +419,7 @@ namespace duendeMakeApp.Controllers
 
 
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Checkout(double precioTotal, string codPostal, int provincia, string dir, IFormFile imageFile)
+        public async Task<IActionResult> Checkout(string codPostal, int provincia, string dir, IFormFile imageFile)
         {
             //ViewBag.Usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
             
@@ -469,7 +469,7 @@ namespace duendeMakeApp.Controllers
                     cmd.Parameters.AddWithValue("@direccion", dir);
                     cmd.Parameters.AddWithValue("@provincia", provincia);
                     cmd.Parameters.AddWithValue("@imagenID", imagen.ImagenId);
-                    cmd.Parameters.AddWithValue("@monto", precioTotal);
+                    //cmd.Parameters.AddWithValue("@monto", precioTotal);
 
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.ExecuteNonQuery();

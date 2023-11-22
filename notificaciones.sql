@@ -9,14 +9,16 @@ CREATE TABLE Notificaciones (
 
     CONSTRAINT fk_notificacion_usuario FOREIGN KEY (usuario_id) REFERENCES Usuario(UsuarioId)
 );
+select * from venta
+exec obtenerVentas
 
 -- Insertar notificaciones de prueba asociadas a los usuarios
 INSERT INTO Notificaciones (titulo, mensaje, usuario_id, fecha_envio, visto)
 VALUES
-    ('Notificación 1', 'Mensaje de notificación 1', 2, '2023-11-18 10:00:00', 0),
-    ('Notificación 2', 'Mensaje de notificación 2', 2, '2023-11-18 11:30:00', 0),
-    ('Notificación 3', 'Mensaje de notificación 3', 2, '2023-11-18 12:45:00', 0),
-    ('Notificación 4', 'Mensaje de notificación 4', 2, '2023-11-18 14:15:00', 0);
+    ('Notificación 1', 'Mensaje de notificación 1', 3, '2023-11-18 10:00:00', 0),
+    ('Notificación 2', 'Mensaje de notificación 2', 3, '2023-11-18 11:30:00', 0),
+    ('Notificación 3', 'Mensaje de notificación 3', 3, '2023-11-18 12:45:00', 0),
+    ('Notificación 4', 'Mensaje de notificación 4', 3, '2023-11-18 14:15:00', 0);
 
 SELECT
     Notificaciones.notificacion_id,

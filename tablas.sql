@@ -1,4 +1,4 @@
--- CREACIÓN DE LA BASE DE DATOS EN CASO DE NO EXISTIR
+-- CREACIÃ“N DE LA BASE DE DATOS EN CASO DE NO EXISTIR
 USE master
 GO
 IF NOT EXISTS (
@@ -39,7 +39,7 @@ DROP TABLE ProductosXPaquete;
 DROP TABLE PaqueteXCatalogo;
 DROP TABLE PaqueteXCarrito;
 */
--- CREACIÓN DE TABLAS SI NO EXISTEN
+-- CREACIÃ“N DE TABLAS SI NO EXISTEN
  
 
 
@@ -280,6 +280,18 @@ CREATE TABLE PaqueteXCatalogo (
     CONSTRAINT fk_paquetesXcatalogo_paquete FOREIGN KEY (PaqueteID) REFERENCES Paquete(PaqueteID),
     CONSTRAINT fk_paquetesXcatalogo_catalogo FOREIGN KEY (CatalogoID) REFERENCES Catalogo(CatalogoID)
 );    
+
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Notificaciones' AND xtype='U')
+CREATE TABLE Notificaciones (
+    notificacion_id INT IDENTITY(1,1) PRIMARY KEY,
+    titulo NVARCHAR(100),
+    mensaje NVARCHAR(255),
+    usuario_id INT,
+    fecha_envio DATETIME,
+    visto BIT,  -- Se agrega la columna para rastrear el estado de visualizaciÃ³n
+
+    CONSTRAINT fk_notificacion_usuario FOREIGN KEY (usuario_id) REFERENCES Usuario(UsuarioId)
+);
 
 
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='PaqueteXCarrito' AND xtype='U')

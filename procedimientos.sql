@@ -557,7 +557,7 @@ go
 --insert into provincia (Nombre) values 
 --('San Jose'), ('Alajuela'), ('Cartago'), ('Heredia'), ('Guanacaste'), ('Puntarenas'), ('Limon') --ids del 1 al 7
 --insert into EstadoEnvio (Estado) values ('En ruta'), ('Entregado') -- ids 1 y 2
-
+go
 CREATE OR ALTER PROCEDURE concretarVenta (
     @usuario INT,
     @carrito INT,

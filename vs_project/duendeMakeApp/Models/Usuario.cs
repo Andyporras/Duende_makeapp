@@ -24,6 +24,8 @@ public partial class Usuario : IObservable
 
     public virtual ICollection<Notificacion> Notificaciones { get; set; } = new List<Notificacion>();
 
+    public ICollection<AgendaEntry> Agenda { get; set; }
+
     public async void Notificar(DuendeappContext context, string titulo, string mensaje)
     {
         Console.WriteLine("Agregando la nueva notificacion\n\n\n\n");

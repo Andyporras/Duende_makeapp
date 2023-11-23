@@ -16,9 +16,9 @@ namespace duendeMakeApp.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         //private static string conStr;// = "Data Source=DESKTOP-993UODJ; Initial Catalog=DUENDEAPP; Integrated Security=true; Encrypt=False;";
-        private static string? conStr;
+        private static string? concStr;
 
-        private List<AgendaEntry> agendaEntries = new List<AgendaEntry>();
+        private List<IAgendaEntry> agendaEntries = new List<IAgendaEntry>();
 
         public AgendasController(DuendeappContext context, Usuario usuario, IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
         {
@@ -40,8 +40,8 @@ namespace duendeMakeApp.Controllers
                 UserID = user ? _context.Database.GetDbConnection().ConnectionString.Split("User=")[1].Split(";")[0] : "",
                 Password = password ? _context.Database.GetDbConnection().ConnectionString.Split("Password=")[1].Split(";")[0] : ""
             };
-            conStr = conStrBuilder.ConnectionString;
-            Console.WriteLine(conStr);
+            concStr = conStrBuilder.ConnectionString;
+            Console.WriteLine(concStr);
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -63,14 +63,83 @@ namespace duendeMakeApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public IActionResult AgregarEntrada(AgendaEntry nuevaEntrada)
+        public IActionResult AgregarEntrada(string asunto, int duracion,DateTime date)
         {
-            // Lógica para agregar la nueva entrada a la lista o a la base de datos
-            agendaEntries.Add(nuevaEntrada);
-
+           
             // Redireccionar o devolver una vista según sea necesario
             return RedirectToAction("Index");
         }
+    
+        public ActionResult GetAgendaEvents()
+        {
+            List<IAgendaEntry> agendaEvents = new List<IAgendaEntry>();
 
+            using (SqlConnection conexion = new SqlConnection(concStr))
+            {
+                conexion.Open();
+                SqlCommand cmd = new SqlCommand("SELECT * FROM Agenda", conexion);
+
+                using (var dr = cmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        DateTime? fechaInicio = null;
+
+                        try
+                        {
+                            if (dr["FechaInicio"] != DBNull.Value)
+                            {
+                                fechaInicio = (DateTime?)dr["FechaInicio"];
+                            }
+                        }
+                        catch (InvalidCastException)
+                        {
+                            fechaInicio = null;
+                        }
+
+                        agendaEvents.Add(new AgendaEntry()
+                        {
+                            AgendaID = (int)dr["AgendaID"],
+                            UsuarioID = (int)dr["UsuarioID"],
+                            Asunto = (string)dr["Asunto"],
+                            FechaInicio = fechaInicio,
+                            DuracionMinutos = (int)dr["DuracionMinutos"]
+                            // Agrega otras propiedades según sea necesario
+                        });
+                    }
+                }
+            }
+
+            //return Json(agendaEvents);
+            //var jsonData = new { Events = agendaEvents, PartialView = PartialView("_AgendaPartialView", agendaEvents).ToString() };
+            // cambiar el formato 
+            return formatoJsonEvent(agendaEvents);
+        }
+
+        public ActionResult formatoJsonEvent(List<IAgendaEntry> agendaEvents)
+        {
+            List<AgendaEvent> agendaEvent = new List<AgendaEvent>();
+            foreach (var item in agendaEvents)
+            {
+                agendaEvent.Add(new AgendaEvent()
+                {
+                    id = item.AgendaID,
+                    title = item.Asunto,
+                    start = item.FechaInicio,
+                    end = item.FechaInicio?.AddMinutes(item.DuracionMinutos ?? 0),
+                    allDay = false
+                });
+            }
+            return Json(agendaEvent);
+        }
+
+        private class AgendaEvent
+        {
+            public int? id { get; set; }
+            public string? title { get; set; }
+            public DateTime? start { get; set; }
+            public DateTime? end { get; set; }
+            public bool? allDay { get; set; }   
+        }
     }
 }

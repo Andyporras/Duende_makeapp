@@ -52,6 +52,10 @@ public partial class DuendeappContext : DbContext
 
     public virtual DbSet<Notificacion> Notificaciones { get; set; }
 
+    public virtual DbSet<AgendaEntry> Agenda { get; set; }
+
+    public virtual DbSet<TipoEntradaAgenda> TipoEntradaAgenda { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
         //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
@@ -495,6 +499,37 @@ public partial class DuendeappContext : DbContext
                 .HasConstraintName("fk_notificacion_usuario");
         });
 
+        // Configuración para AgendaEntry
+        modelBuilder.Entity<AgendaEntry>(entity =>
+        {
+            entity.HasKey(e => e.AgendaID).HasName("pk_agenda");
+
+            entity.ToTable("Agenda");
+
+            entity.Property(e => e.AgendaID).HasColumnName("AgendaID");
+            entity.Property(e => e.UsuarioID).HasColumnName("UsuarioID");
+            entity.Property(e => e.Asunto).HasMaxLength(100).IsUnicode(false);
+            entity.Property(e => e.FechaInicio).HasColumnType("datetime");
+            entity.Property(e => e.DuracionMinutos).HasColumnName("DuracionMinutos");
+            entity.Property(e => e.TipoEntrada).HasMaxLength(50).IsUnicode(false);
+
+            // Relación con Usuario
+            entity.HasOne(d => d.Usuario)
+                .WithMany(p => p.Agenda)
+                .HasForeignKey(d => d.UsuarioID)
+                .HasConstraintName("fk_agenda_usuario");
+        });
+
+        // Configuración para TipoEntradaAgenda
+        modelBuilder.Entity<TipoEntradaAgenda>(entity =>
+        {
+            entity.HasKey(e => e.TipoEntrada).HasName("pk_tipoEntradaAgenda");
+
+            entity.ToTable("TipoEntradaAgenda");
+
+            entity.Property(e => e.TipoEntrada).HasMaxLength(50).IsUnicode(false);
+            entity.Property(e => e.PermiteTraslape).HasColumnName("PermiteTraslape");
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }

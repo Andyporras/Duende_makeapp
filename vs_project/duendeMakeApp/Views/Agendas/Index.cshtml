@@ -71,18 +71,18 @@
                 <p id="fechaSeleccionada"></p>
                 <form>
                     <div class="form-group">
-                        <label for="titulo">Título:</label>
-                        <input type="text" class="form-control" id="titulo" placeholder="Ingrese el título">
+                        <label for="asunto">Asunto:</label>
+                        <input type="text" class="form-control" id="asunto" name="asunto" placeholder="Ingrese el Asunto">
                     </div>
                     <div class="form-group">
-                        <label for="descripcion">Descripción:</label>
-                        <textarea class="form-control" id="descripcion" rows="3" placeholder="Ingrese la descripción"></textarea>
+                        <label for="duracion">Duracion:</label>
+                        <input class="form-control" id="duracion" name="duracion" rows="3" placeholder="Ingrese la duracion">
                     </div>
                 </form>
             </div>
             
             <div class="modal-footer">
-                <a id="prueba" class="btn btn-primary" data-dismiss="modal" asp-controller="Maquillajes" asp-action="Index">Guardar</a>
+                <a id="prueba" class="btn btn-primary" data-dismiss="modal" asp-controller="Agenda" asp-action="AgregarEntrada">Guardar</a>
                 <button type="button" id = "cerrarBtn" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
@@ -90,7 +90,7 @@
 </div>
 
 <div>
-    <h2>Agenda Entries</h2>
+    @* <h2>Agenda Entries</h2> *@
     @if (ViewBag.AgendaEntries != null)
     {
         @foreach (var entry in ViewBag.AgendaEntries)
@@ -104,10 +104,13 @@
     }
 </div>
 
+<div id="agendaEntriesContainer"></div>
+
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
 <script>
 
     document.getElementById("x").addEventListener("click", function () {
@@ -121,6 +124,8 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
+        // json con los eventos existentes en la base de datos, GetAgendaEvents es el método que se encuentra en el controlador
+        var eventos = '/Agendas/GetAgendaEvents';
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
@@ -128,14 +133,13 @@
             headerToolbar: {
                 left: 'prev,next,today',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
             buttonText: {
                 today: 'Hoy',
                 month: 'Mes',
                 week: 'Semana',
-                day: 'Día',
-                list: 'Agenda'
+                day: 'Día'
             },
             navLinks: true,
             dateClick: function (info) {
@@ -158,9 +162,17 @@
                 // Acciones cuando se monta un evento
                 //alert(info.event.title);
             },
+            events: eventos
 
-            events: @Html.Raw(Json.Serialize(ViewBag.AgendaEntries))
-            });
+            // events: '/Agendas/GetAgendaEvents'
+            // eventAfterAllRender: function () {
+            //     // Load the partial view after rendering the calendar
+            //     $.get('/Agendas/GetAgendaEvents', function (data) {
+            //         $('#agendaEntriesContainer').html(data.PartialView);
+            //     });
+            // }
+            
+        });
 
         calendar.render();
     });

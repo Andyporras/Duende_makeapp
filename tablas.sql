@@ -310,3 +310,25 @@ INSERT into Usuario values ('admin', 'admin', 'admin@correo.com', 'adminPro', '1
 alter table carrito add estado bit
 
 select * from Venta
+
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Agenda' AND xtype='U')
+CREATE TABLE Agenda (
+    AgendaID INT IDENTITY(1,1) PRIMARY KEY,
+    UsuarioID INT,
+    Asunto NVARCHAR(100),
+    FechaInicio DATETIME,
+    DuracionMinutos INT,
+	TipoEntrada NVARCHAR(50),
+    CONSTRAINT fk_agenda_usuario FOREIGN KEY (UsuarioID) REFERENCES Usuario(UsuarioID)
+);
+
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='TipoEntradaAgenda' AND xtype='U')
+CREATE TABLE TipoEntradaAgenda (
+    TipoEntrada NVARCHAR(50) PRIMARY KEY,
+    PermiteTraslape BIT NOT NULL,
+);
+
+select *from TipoEntradaAgenda
+select *from Agenda	
+--drop table Agenda
+

@@ -63,21 +63,47 @@ namespace duendeMakeApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public IActionResult AgregarEntrada(string detalle, int duracion,DateTime fecha)
+        [HttpPost]
+        public IActionResult AgregarEntrada(string fecha,string asunto, string detalle, int duracion)
         {
+            DateTime fechaInicio;
+            try
+            {
+                fechaInicio = DateTime.Parse(fecha);
+            }
+            catch (Exception)
+            {
+                fechaInicio = DateTime.Now;
+            }
+            if(asunto=="entregar pedido")
+            {
+                //crear agenda con la fecha actual, los dias de entrega son martes, jueves y sabado. Solo se puede hacer esos dias entrega,
+                //si se aprueba un dia que no es martes, jueves o sabado, se debe hacer la entrega el dia martes, jueves o sabado mas cercano
+                if (fechaInicio.DayOfWeek == DayOfWeek.Tuesday || fechaInicio.DayOfWeek == DayOfWeek.Thursday || fechaInicio.DayOfWeek == DayOfWeek.Saturday)//si es martes, jueves o sabado se entrega el mismo dia 
+                {
+                    fechaInicio = fechaInicio;
+                }
+                else
+                {
+                    while (fechaInicio.DayOfWeek != DayOfWeek.Tuesday && fechaInicio.DayOfWeek != DayOfWeek.Thursday && fechaInicio.DayOfWeek != DayOfWeek.Saturday)
+                    {
+                        fechaInicio = fechaInicio.AddDays(1);
+                    }
+                }
+            }
             // Agregar la entrada a la base de datos
             using (SqlConnection conexion = new SqlConnection(concStr))
             {
                 conexion.Open();
-                SqlCommand cmd = new SqlCommand("INSERT INTO Agenda (UsuarioID, Detalle, FechaInicio, DuracionHoras, TipoEntrada) VALUES (@UsuarioID, @Detalle, @FechaInicio, @DuracionHoras, @TipoEntrada)", conexion);
-                cmd.Parameters.AddWithValue("@UsuarioID", _usuario?.UsuarioId);
+                SqlCommand cmd = new SqlCommand("INSERT INTO Agenda (Detalle, FechaInicio, DuracionHoras, TipoEntrada) VALUES (@Detalle, @FechaInicio, @DuracionHoras, @TipoEntrada)", conexion);
+                //cmd.Parameters.AddWithValue("@UsuarioID", _usuario?.UsuarioId);
                 cmd.Parameters.AddWithValue("@Detalle", detalle);
-                cmd.Parameters.AddWithValue("@FechaInicio", fecha);
+                cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio);
                 cmd.Parameters.AddWithValue("@DuracionHoras", duracion);
-                cmd.Parameters.AddWithValue("@TipoEntrada", "entregar pedido");
+                cmd.Parameters.AddWithValue("@TipoEntrada", asunto);
                 cmd.ExecuteNonQuery();
             }
-            // Redireccionar o devolver una vista según sea necesario
+            // redirigir a la página de agenda index
             return RedirectToAction("Index");
         }
 
@@ -170,6 +196,10 @@ namespace duendeMakeApp.Controllers
                             agendaEvents.Add(new EntregarPedidoDecorator(agenda));
                         }
                         if ((string)dr["TipoEntrada"] == "revisar inventario")
+                        {
+                            agendaEvents.Add(new RevisarInventarioDecorator(agenda));
+                        }
+                        if ((string)dr["TipoEntrada"] == "maquillajes")
                         {
                             agendaEvents.Add(new RevisarInventarioDecorator(agenda));
                         }

@@ -186,9 +186,9 @@ namespace duendeMakeApp.Controllers
             //crear agenda con la fecha actual, los dias de entrega son martes, jueves y sabado. Solo se puede hacer esos dias entrega,
             //si se aprueba un dia que no es martes, jueves o sabado, se debe hacer la entrega el dia martes, jueves o sabado mas cercano
             DateTime fechaEntrega = DateTime.Now;
-            if (fechaEntrega.DayOfWeek == DayOfWeek.Tuesday || fechaEntrega.DayOfWeek == DayOfWeek.Thursday || fechaEntrega.DayOfWeek == DayOfWeek.Saturday)
+            if (fechaEntrega.DayOfWeek == DayOfWeek.Tuesday || fechaEntrega.DayOfWeek == DayOfWeek.Thursday || fechaEntrega.DayOfWeek == DayOfWeek.Saturday)//si es martes, jueves o sabado se entrega el mismo dia 
             {
-                fechaEntrega = fechaEntrega.AddDays(1);
+                fechaEntrega = fechaEntrega;
             }
             else
             {

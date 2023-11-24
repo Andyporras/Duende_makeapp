@@ -55,7 +55,8 @@ namespace duendeMakeApp.Controllers
         public async Task<IActionResult> Index()
         {
 
-
+            Usuario usuario = UsuariosController.GetSessionUser(_httpContextAccessor, _context);
+            ViewBag.usuario = usuario;
             var oLista = new List<Pedido>();
 
             using (SqlConnection conexion = new SqlConnection(concStr))
@@ -180,6 +181,8 @@ namespace duendeMakeApp.Controllers
                 cmd.ExecuteNonQuery();
 
             }
+            //crear agenda con la fecha de la proxima entrega 
+
             return RedirectToAction("index", "Ventas");
         }
 

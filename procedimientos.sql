@@ -712,7 +712,7 @@ create or alter proc aprobarVenta
 as
 begin
 update venta 
-set estado = 1
+set estado = 2
 where @idVenta = venta.VentaID
 end;
 
@@ -723,7 +723,7 @@ create or alter proc denegarVenta
 as
 begin
 update venta 
-set estado = 2
+set estado = 3
 where @idVenta = venta.VentaID
 end;
 

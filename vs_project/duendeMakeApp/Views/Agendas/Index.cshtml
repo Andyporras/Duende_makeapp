@@ -162,15 +162,15 @@
                 // Acciones cuando se monta un evento
                 //alert(info.event.title);
             },
-            events: eventos
+            // events: eventos
 
-            // events: '/Agendas/GetAgendaEvents'
-            // eventAfterAllRender: function () {
-            //     // Load the partial view after rendering the calendar
-            //     $.get('/Agendas/GetAgendaEvents', function (data) {
-            //         $('#agendaEntriesContainer').html(data.PartialView);
-            //     });
-            // }
+            events: '/Agendas/GetAgendaEvents',
+            eventAfterAllRender: function () {
+                 // Load the partial view after rendering the calendar
+                $.get('/Agendas/GetAgendaEvents', function (data) {
+                     $('#agendaEntriesContainer').html(data.PartialView);
+                });
+            }
             
         });
 

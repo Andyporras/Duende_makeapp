@@ -1,5 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Index";
+    //definir ViewBag.id
+    ViewBag.id = 0;
 }
 
 @if(ViewBag.Usuario.Tipo.Tipo == "admin")
@@ -60,12 +62,12 @@
     <div id='calendar'></div>
 
     <!-- Agrega el siguiente código para el modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="myModalSinEventos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title" id="exampleModalLabel">Evento</h3>
-                    <button type="button" id ="x"class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" id ="x2"class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -99,11 +101,61 @@
 
                 <div class="modal-footer">
                     @* <a id="prueba" class="btn btn-primary" data-dismiss="modal" asp-controller="Agendas" asp-action="AgregarEntrada">Guardar</a> *@
-                    <button type="button" id="cerrarBtn" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="button" id="cerrarBtnSinEvento" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Modal para eventos -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">Evento</h3>
+                    <button type="button" id="x" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="EliminarEntrada">
+                        <!-- Mostrar la información del evento -->
+                        <p id="idEvento" name="idEvento"></p>
+                        <input class="form-control" id="idEvento2" name="idEvento" rows="3">
+                        <p id="fechaSeleccionada2" name="fecha2"></p>
+                        <input class="form-control" id="fecha2" name="fecha2" rows="3">
+                        <div class="form-group">
+                            <label for="asunto">Asunto:</label>
+                            <!-- Mostrar los asuntos disponibles para eventos -->
+                            <input class="form-control" id="asunto2" name="asunto2" rows="3" placeholder="Ingrese la duración">
+                            @* <select class="form-control" id="asunto2" name="asunto2">
+                                <option value="maquillajes">Maquillajes</option>
+                                <option value="entregar pedido">Entregar pedido</option>
+                                <option value="revisar inventario">Revisar inventario</option>
+                            </select> *@
+                        </div>
+                        <div class="form-group">
+                            <label for="detalle">Detalle</label>
+                            <textarea class="form-control" id="detalle2" name="detalle2" rows="3" placeholder="Ingrese el detalle"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="duracion">Duración:</label>
+                            <input class="form-control" id="duracion2" name="duracion2" rows="3" placeholder="Ingrese la duración">
+                        </div>
+                        <div class="form-group">
+                            <!-- Agregar cualquier botón o acción adicional para eventos -->
+                            @* <input type="submit" value="Actualizar evento" class="btn btn-primary" /> *@
+                            <input type="submit" value="Eliminar de agenda" class="btn btn-danger" />
+                            @* <button type="button" id="eliminarBtn" class="btn btn-danger">Eliminar evento</button> *@
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cerrarBtn" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
@@ -111,7 +163,17 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <script>
-
+        var eventoslist = @Html.Raw(Json.Serialize(ViewBag.EventInfo));
+        var idEvento = 0
+        var evento;
+        document.getElementById("x2").addEventListener("click", function () {
+            $('#titulo').val("");
+            $('#myModalSinEventos').modal('hide');
+        });
+        document.getElementById("cerrarBtnSinEvento").addEventListener("click", function () {
+            $('#titulo').val("");
+            $('#myModalSinEventos').modal('hide');
+        });
         document.getElementById("x").addEventListener("click", function () {
             $('#titulo').val("");
             $('#myModal').modal('hide');
@@ -126,7 +188,7 @@
             var calendarEl = document.getElementById('calendar');
             // json con los eventos existentes en la base de datos, GetAgendaEvents es el método que se encuentra en el controlador
             var eventos = '/Agendas/GetAgendaEvents';
-
+            
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 nowIndicator: true,
@@ -143,16 +205,42 @@
                 },
                 navLinks: true,
                 dateClick: function (info) {
-                    // Acciones cuando se hace clic en una fecha
-                    $('#fechaSeleccionada').text('Fecha: ' + info.dateStr);
-                    $('#myModal').modal('show');
+                    // dirigir al modal para agregar un evento
+                    $('#titulo').val("");
                     $('#fecha').val(info.dateStr);
+                    $('#myModalSinEventos').modal('show');
                 },
+
+                // Combina ambos manejadores de eventos eventClick en uno solo
                 eventClick: function (info) {
-                    // Acciones cuando se hace clic en un evento
                     $('#titulo').val("");
                     $('#titulo').val(info.event.title);
-                    $('#myModal').modal('show');
+                    if (info.event.id) {
+                        idEvento = info.event.id;
+                        console.log('ID:' + idEvento);
+                        evento = info.event;
+                        console.log(evento);
+                        // evento = eventoslist.find(x => x.id === idEvento);
+                        var duracion = 0;
+                        var fechaInicio = evento.start;
+                        var fechaFin = evento.end;
+                        if (fechaFin != null) {
+                            duracion = fechaFin.getHours() - fechaInicio.getHours();
+                        }
+                        //usar datos del evento
+                        $('#idEvento').text('Id: ');
+                        $('#idEvento2').val(evento.id);
+                        $('#fechaSeleccionada2').text('Fecha: ');
+                        $('#fecha2').val(evento.start.toDateString());
+                        $('#asunto2').val(evento.title);
+                        $('#detalle2').val(evento.detalle);
+                        $('#duracion2').val(duracion);
+                        $('#myModal').modal('show');
+                        // $('#myModal').modal('show');
+                    } else {
+                        idEvento = 0;
+                        $('#myModalSinEventos').modal('show');
+                    }
                 },
                 editable: false,
                 selectable: false,

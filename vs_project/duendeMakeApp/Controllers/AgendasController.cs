@@ -106,6 +106,20 @@ namespace duendeMakeApp.Controllers
             // redirigir a la página de agenda index
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public IActionResult EliminarEntrada(int idEvento)
+        {
+            // Eliminar la entrada de la base de datos
+            using (SqlConnection conexion = new SqlConnection(concStr))
+            {
+                conexion.Open();
+                SqlCommand cmd = new SqlCommand("DELETE FROM Agenda WHERE AgendaID = @AgendaID", conexion);
+                cmd.Parameters.AddWithValue("@AgendaID", idEvento);
+                cmd.ExecuteNonQuery();
+            }
+            // redirigir a la página de agenda index
+            return RedirectToAction("Index");
+        }
 
         public List<IAgendaEntry> GetAgendas ()
         {
@@ -233,10 +247,10 @@ namespace duendeMakeApp.Controllers
                     
                 }
             }
+            ViewBag.AgendaEvents = agendaEvent;
 
             return Json(agendaEvent);
         }
-
 
 
         private class AgendaEvent

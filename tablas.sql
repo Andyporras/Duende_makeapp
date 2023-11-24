@@ -322,8 +322,6 @@ CREATE TABLE Agenda (
     CONSTRAINT fk_agenda_usuario FOREIGN KEY (UsuarioID) REFERENCES Usuario(UsuarioID)
 );
 
-alter table agenda add detalle NVARCHAR(100)
-
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='TipoEntradaAgenda' AND xtype='U')
 CREATE TABLE TipoEntradaAgenda (
     TipoEntrada NVARCHAR(50) PRIMARY KEY,

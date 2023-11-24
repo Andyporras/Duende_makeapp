@@ -16,10 +16,10 @@ VALUES ('revisar inventario', 1);
 
 -- Insertar un evento en la agenda (cambiar los valores según sea necesario)
 DECLARE @UsuarioID INT = 3;
-DECLARE @Asunto NVARCHAR(100) = 'Entregar pedido';
+DECLARE @Detalle NVARCHAR(100) = 'Entregar pedido';
 DECLARE @FechaInicio DATETIME = '2023-11-22 10:00:00';
-DECLARE @DuracionMinutos INT = 60;
-DECLARE @TipoEntrada NVARCHAR(50) = 'entregar pedido';  -- Asegúrate de que este tipo exista en la tabla TipoEntradaAgenda
+DECLARE @DuracionHoras INT = 5;
+DECLARE @TipoEntrada NVARCHAR(50) = 'entregar pedido';  -- Asegurase de que este tipo exista en la tabla TipoEntradaAgenda
 
 -- Verificar si hay traslape (ajustar según sea necesario)
 IF NOT EXISTS (
@@ -28,14 +28,14 @@ IF NOT EXISTS (
     WHERE UsuarioID = @UsuarioID
         AND TipoEntrada = @TipoEntrada
         AND (
-            (@FechaInicio >= FechaInicio AND @FechaInicio < DATEADD(MINUTE, DuracionMinutos, FechaInicio))
-            OR (DATEADD(MINUTE, @DuracionMinutos, @FechaInicio) > FechaInicio AND DATEADD(MINUTE, @DuracionMinutos, @FechaInicio) <= DATEADD(MINUTE, DuracionMinutos, FechaInicio))
+            (@FechaInicio >= FechaInicio AND @FechaInicio < DATEADD(HOUR, @DuracionHoras, FechaInicio))
+            OR (DATEADD(HOUR, @DuracionHoras, @FechaInicio) > FechaInicio AND DATEADD(HOUR, @DuracionHoras, @FechaInicio) <= DATEADD(HOUR, @DuracionHoras, FechaInicio))
         )
 )
 BEGIN
     -- Insertar el evento si no hay traslape
-    INSERT INTO Agenda (UsuarioID, Asunto, FechaInicio, DuracionMinutos, TipoEntrada)
-    VALUES (@UsuarioID, @Asunto, @FechaInicio, @DuracionMinutos, @TipoEntrada);
+    INSERT INTO Agenda (UsuarioID, Detalle, FechaInicio, DuracionHoras, TipoEntrada)
+    VALUES (@UsuarioID, @Detalle, @FechaInicio, @DuracionHoras, @TipoEntrada);
     PRINT 'Evento insertado correctamente.';
 END
 ELSE

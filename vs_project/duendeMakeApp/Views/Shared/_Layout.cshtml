@@ -18,11 +18,14 @@
             {
                 <a class="navbar-brand" asp-area="" asp-controller="Usuarios" asp-action="Details" asp-route-id="@ViewBag.usuario.UsuarioId">
                     <span style="display: inline-block; border: 2px solid black; border-radius: 50%; width: 40px; height: 40px; line-height: 40px; text-align: center; color: black; background-color: white; text-decoration: none;">ME</span>
-                </a>
-                @* boton que dirige al usuario a la agenda*@
-                <a class="navbar-brand" asp-controller="Agendas" asp-action="Index">
-                    <span style="display: inline-block; border: 2px solid black; border-radius: 50%; width: 40px; height: 40px; line-height: 40px; text-align: center; color: black; background-color: white; text-decoration: none;">CD</span>
-                </a>
+                </a>    
+                @if(ViewBag.usuario.TipoId == 1)
+                {
+                    @* boton que dirige al usuario a la agenda*@
+                    <a class="navbar-brand" asp-controller="Agendas" asp-action="Index">
+                        <span style="display: inline-block; border: 2px solid black; border-radius: 50%; width: 40px; height: 40px; line-height: 40px; text-align: center; color: black; background-color: white; text-decoration: none;">CD</span>
+                    </a>
+                }
 
             }
             <a class="navbar-brand" asp-area="" asp-controller="Maquillajes" asp-action="Index"
@@ -53,13 +56,14 @@
                     </li>*@
                     @try
                     {
-                        @if (ViewBag.usuario.TipoId == 1)
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:#fafafa">
-                                    Otros
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:#fafafa">
+                                Otros
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                @if(ViewBag.usuario.TipoId == 1)
+                                {
                                     <a class="dropdown-item" asp-controller="Tags" asp-action="Index">Tags</a>
                                     <a class="dropdown-item" asp-controller="Imagenes" asp-action="Index">Imágenes</a>
                                     <a class="dropdown-item" asp-controller="Catalogos" asp-action="Index">Catálogos</a>
@@ -68,9 +72,15 @@
                                     <a class="dropdown-item" asp-controller="Subcategorias" asp-action="Index">Sub-categorías</a>                                
                                     <a class="dropdown-item" asp-controller="Usuarios" asp-action="Index">Usuarios</a>
                                     <a class="dropdown-item" asp-controller="Ventas" asp-action="Index">Ventas</a>
-                                </div>
-                            </li>
-                        }
+                                }
+                                else
+                                {
+                                    <a class="dropdown-item" asp-controller="Ventas" asp-action="Index">Mis pedidos</a> 
+                                }
+
+                            </div>
+                        </li>
+                    
                         if (ViewBag.usuario != null)
                         {
                             <h5 class="btn" id="notificationButton" data-toggle="popover" data-placement="bottom">

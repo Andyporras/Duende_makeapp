@@ -315,12 +315,14 @@ IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Agenda' AND xtype='U')
 CREATE TABLE Agenda (
     AgendaID INT IDENTITY(1,1) PRIMARY KEY,
     UsuarioID INT,
-    Asunto NVARCHAR(100),
+    Detalle NVARCHAR(100),
     FechaInicio DATETIME,
-    DuracionMinutos INT,
+    DuracionHoras INT,
 	TipoEntrada NVARCHAR(50),
     CONSTRAINT fk_agenda_usuario FOREIGN KEY (UsuarioID) REFERENCES Usuario(UsuarioID)
 );
+
+alter table agenda add detalle NVARCHAR(100)
 
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='TipoEntradaAgenda' AND xtype='U')
 CREATE TABLE TipoEntradaAgenda (
@@ -328,6 +330,7 @@ CREATE TABLE TipoEntradaAgenda (
     PermiteTraslape BIT NOT NULL,
 );
 
+select *from venta 
 select *from TipoEntradaAgenda
 select *from Agenda	
 --drop table Agenda

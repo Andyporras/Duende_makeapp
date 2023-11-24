@@ -508,10 +508,10 @@ public partial class DuendeappContext : DbContext
 
             entity.Property(e => e.AgendaID).HasColumnName("AgendaID");
             entity.Property(e => e.UsuarioID).HasColumnName("UsuarioID");
-            entity.Property(e => e.Asunto).HasMaxLength(100).IsUnicode(false);
+            entity.Property(e => e.Detalle).HasMaxLength(100).IsUnicode(false);
             entity.Property(e => e.FechaInicio).HasColumnType("datetime");
-            entity.Property(e => e.DuracionMinutos).HasColumnName("DuracionMinutos");
-            entity.Property(e => e.TipoEntrada).HasMaxLength(50).IsUnicode(false);
+            entity.Property(e => e.DuracionHoras).HasColumnName("DuracionMinutos");
+            //entity.Property(e => e.TipoEntrada).HasMaxLength(50).IsUnicode(false);
 
             // Relación con Usuario
             entity.HasOne(d => d.Usuario)

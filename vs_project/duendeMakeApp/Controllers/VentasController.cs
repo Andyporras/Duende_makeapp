@@ -114,6 +114,8 @@ namespace duendeMakeApp.Controllers
 
             var venta = await _context.Venta
                 .Include(v => v.Carrito)
+                .ThenInclude(c => c.Productos)
+                .ThenInclude(p => p.Imagen)
                 .Include(v => v.ImgComprobanteNavigation)
                 .FirstOrDefaultAsync(m => m.VentaId == id);
             if (venta == null)
@@ -181,7 +183,39 @@ namespace duendeMakeApp.Controllers
                 cmd.ExecuteNonQuery();
 
             }
-            //crear agenda con la fecha de la proxima entrega 
+            //crear agenda con la fecha actual, los dias de entrega son martes, jueves y sabado. Solo se puede hacer esos dias entrega,
+            //si se aprueba un dia que no es martes, jueves o sabado, se debe hacer la entrega el dia martes, jueves o sabado mas cercano
+            DateTime fechaEntrega = DateTime.Now;
+            if (fechaEntrega.DayOfWeek == DayOfWeek.Tuesday || fechaEntrega.DayOfWeek == DayOfWeek.Thursday || fechaEntrega.DayOfWeek == DayOfWeek.Saturday)
+            {
+                fechaEntrega = fechaEntrega.AddDays(1);
+            }
+            else
+            {
+                while (fechaEntrega.DayOfWeek != DayOfWeek.Tuesday && fechaEntrega.DayOfWeek != DayOfWeek.Thursday && fechaEntrega.DayOfWeek != DayOfWeek.Saturday)
+                {
+                    fechaEntrega = fechaEntrega.AddDays(1);
+                }
+            }   
+            
+            //insertar con into agenda
+            //obtener cliente con correo y id de venta
+            var cliente = _context.Venta.Where(v => v.VentaId == id).Include(v => v.Carrito).ThenInclude(c => c.Usuario).FirstOrDefault().Carrito.Usuario;
+            using (SqlConnection conexion = new SqlConnection(concStr))
+            {
+                conexion.Open();
+                SqlCommand cmd = new SqlCommand("INSERT INTO Agenda (Detalle, FechaInicio, DuracionHoras, TipoEntrada) VALUES (@Detalle, @FechaInicio, @DuracionHoras, @TipoEntrada)", conexion);
+                //cmd.Parameters.AddWithValue("@UsuarioID", _usuario?.UsuarioId);
+                cmd.Parameters.AddWithValue("@Detalle", "Se debe entregar el pedido "+id);
+                cmd.Parameters.AddWithValue("@FechaInicio", fechaEntrega);
+                cmd.Parameters.AddWithValue("@DuracionHoras", 6);
+                cmd.Parameters.AddWithValue("@TipoEntrada", "entregar pedido");
+                cmd.ExecuteNonQuery();
+            }
+
+
+            // Enviar notificacion al cliente
+            NotificacionesController.Notificar(_context, cliente.UsuarioId, "Venta aprobada", "Su venta ha sido aprobada, puede ver el estado de su venta en la seccion de pedidos");
 
             return RedirectToAction("index", "Ventas");
         }
@@ -198,6 +232,11 @@ namespace duendeMakeApp.Controllers
                 cmd.ExecuteNonQuery();
 
             }
+            //obtener cliente con correo y id de venta
+            var cliente = _context.Venta.Where(v => v.VentaId == id).Include(v => v.Carrito).ThenInclude(c => c.Usuario).FirstOrDefault().Carrito.Usuario;
+
+            // Enviar notificacion al cliente
+            NotificacionesController.Notificar(_context, cliente.UsuarioId, "Venta denegada", "Su venta ha sido denegada, puede ver el estado de su venta en la seccion de pedidos");
             return RedirectToAction("index", "Ventas");
         }
 

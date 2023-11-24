@@ -4,27 +4,34 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Detalle</h1>
 
 <div>
     <h4>Venta</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Carrito)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Carrito.CarritoId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImgComprobanteNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImgComprobanteNavigation.ImagenId)
-        </dd>
+        @foreach (var item in Model.Carrito.Productos)
+        {
+            <dd class = "col-sm-10">
+                <p>
+                    Nombre Producto:
+                </p>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </dd>
+            <dd class="col-sm-10">
+                <p>
+                    Precio:
+                </p>
+                @Html.DisplayFor(modelItem => item.Precio)
+            </dd>
+            <img class="card-img-top"
+                 src="@item.Imagen.Url"
+                 data-holder-rendered="true">
+            break;
+        }
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.VentaId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @* <a asp-action="Edit" asp-route-id="@Model?.VentaId">Edit</a> | *@
+    <a class="btn btn-primary" asp-action="Index">Regresar</a>
 </div>

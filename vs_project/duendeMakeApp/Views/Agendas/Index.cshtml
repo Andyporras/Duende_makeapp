@@ -2,179 +2,174 @@
     ViewData["Title"] = "Index";
 }
 
-<style>
-    /* Custom root property values */
-    :root {
-        --fc-small-font-size: .85em;
-        --fc-page-bg-color: #fff;
-        --fc-neutral-bg-color: hsla(0,0%,82%,.3);
-        --fc-neutral-text-color: grey;
-        --fc-border-color: #ddd;
-        --fc-button-text-color: #fff;
-        --fc-button-bg-color: #202124;
-        --fc-button-border-color: #2c3e50;
-        --fc-button-hover-bg-color: #1e2b37;
-        --fc-button-hover-border-color: #1a252f;
-        --fc-button-active-bg-color: #1a252f;
-        --fc-button-active-border-color: #151e27;
-        --fc-event-bg-color: #3788d8;
-        --fc-event-border-color: #3788d8;
-        --fc-event-text-color: #fff;
-        --fc-event-selected-overlay-color: rgba(0,0,0,.25);
-        --fc-more-link-bg-color: #d0d0d0;
-        --fc-more-link-text-color: inherit;
-        --fc-event-resizer-thickness: 8px;
-        --fc-event-resizer-dot-total-width: 8px;
-        --fc-event-resizer-dot-border-width: 1px;
-        --fc-non-business-color: hsla(0,0%,84%,.3);
-        --fc-bg-event-color: #8fdf82;
-        --fc-bg-event-opacity: 0.3;
-        --fc-highlight-color: rgba(188,232,241,.3);
-        --fc-today-bg-color: #A2D94A;
-        --fc-now-indicator-color: red;
-    }
-
-    body {
-        font-size: var(--fc-small-font-size);
-        background-color: var(--fc-page-bg-color);
-    }
-
-    .fc-dayGridMonth-button, .fc-timeGridWeek-button, .fc-timeGridDay-button, .fc-listWeek-button {
-        color: var(--fc-button-text-color);
-        background-color: var(--fc-button-bg-color);
-        border-color: var(--fc-button-border-color);
-    }
-
-        .fc-dayGridMonth-button:hover, .fc-timeGridWeek-button:hover, .fc-timeGridDay-button:hover, .fc-listWeek-button:hover {
-            background-color: var(--fc-button-hover-bg-color);
-            border-color: var(--fc-button-hover-border-color);
+@if(ViewBag.Usuario.Tipo.Tipo == "admin")
+{
+    <style>
+        /* Custom root property values */
+        :root {
+            --fc-small-font-size: .85em;
+            --fc-page-bg-color: #fff;
+            --fc-neutral-bg-color: hsla(0,0%,82%,.3);
+            --fc-neutral-text-color: grey;
+            --fc-border-color: #ddd;
+            --fc-button-text-color: #fff;
+            --fc-button-bg-color: #202124;
+            --fc-button-border-color: #2c3e50;
+            --fc-button-hover-bg-color: #1e2b37;
+            --fc-button-hover-border-color: #1a252f;
+            --fc-button-active-bg-color: #1a252f;
+            --fc-button-active-border-color: #151e27;
+            --fc-event-bg-color: #3788d8;
+            --fc-event-border-color: #3788d8;
+            --fc-event-text-color: #fff;
+            --fc-event-selected-overlay-color: rgba(0,0,0,.25);
+            --fc-more-link-bg-color: #d0d0d0;
+            --fc-more-link-text-color: inherit;
+            --fc-event-resizer-thickness: 8px;
+            --fc-event-resizer-dot-total-width: 8px;
+            --fc-event-resizer-dot-border-width: 1px;
+            --fc-non-business-color: hsla(0,0%,84%,.3);
+            --fc-bg-event-color: #8fdf82;
+            --fc-bg-event-opacity: 0.3;
+            --fc-highlight-color: rgba(188,232,241,.3);
+            --fc-today-bg-color: #A2D94A;
+            --fc-now-indicator-color: red;
         }
 
-        .fc-dayGridMonth-button:active, .fc-timeGridWeek-button:active, .fc-timeGridDay-button:active, .fc-listWeek-button:active {
-            background-color: var(--fc-button-active-bg-color);
-            border-color: var(--fc-button-active-border-color);
+        body {
+            font-size: var(--fc-small-font-size);
+            background-color: var(--fc-page-bg-color);
         }
-</style>
-<div id='calendar'></div>
 
-<!-- Agrega el siguiente código para el modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="exampleModalLabel">Evento</h3>
-                <button type="button" id ="x"class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p id="fechaSeleccionada"></p>
-                <form>
-                    <div class="form-group">
-                        <label for="asunto">Asunto:</label>
-                        <input type="text" class="form-control" id="asunto" name="asunto" placeholder="Ingrese el Asunto">
-                    </div>
-                    <div class="form-group">
-                        <label for="duracion">Duracion:</label>
-                        <input class="form-control" id="duracion" name="duracion" rows="3" placeholder="Ingrese la duracion">
-                    </div>
-                </form>
-            </div>
+        .fc-dayGridMonth-button, .fc-timeGridWeek-button, .fc-timeGridDay-button, .fc-listWeek-button {
+            color: var(--fc-button-text-color);
+            background-color: var(--fc-button-bg-color);
+            border-color: var(--fc-button-border-color);
+        }
+
+            .fc-dayGridMonth-button:hover, .fc-timeGridWeek-button:hover, .fc-timeGridDay-button:hover, .fc-listWeek-button:hover {
+                background-color: var(--fc-button-hover-bg-color);
+                border-color: var(--fc-button-hover-border-color);
+            }
+
+            .fc-dayGridMonth-button:active, .fc-timeGridWeek-button:active, .fc-timeGridDay-button:active, .fc-listWeek-button:active {
+                background-color: var(--fc-button-active-bg-color);
+                border-color: var(--fc-button-active-border-color);
+            }
+    </style>
+    <div id='calendar'></div>
+
+    <!-- Agrega el siguiente código para el modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">Evento</h3>
+                    <button type="button" id ="x"class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="fechaSeleccionada" name="fecha"></p>
+                    <form>
+                        <div class="form-group">
+                            <label for="asunto">Asunto:</label>
+                            <input type="text" class="form-control" id="asunto" name="asunto" placeholder="Ingrese el Asunto">
+                        </div>
+                        <div class="form-group">
+                            <label for="detalle">Detalle</label>
+                            <textarea class="form-control" id="detalle" name="detalle" rows="3" placeholder="Ingrese el detalle"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="duracion">Duracion:</label>
+                            <input class="form-control" id="duracion" name="duracion" rows="3" placeholder="Ingrese la duracion">
+                        </div>
+                    </form>
+                </div>
             
-            <div class="modal-footer">
-                <a id="prueba" class="btn btn-primary" data-dismiss="modal" asp-controller="Agenda" asp-action="AgregarEntrada">Guardar</a>
-                <button type="button" id = "cerrarBtn" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                <div class="modal-footer">
+                    <a id="prueba" class="btn btn-primary" data-dismiss="modal" asp-controller="Agendas" asp-action="AgregarEntrada">Guardar</a>
+                    <button type="button" id = "cerrarBtn" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div>
-    @* <h2>Agenda Entries</h2> *@
-    @if (ViewBag.AgendaEntries != null)
-    {
-        @foreach (var entry in ViewBag.AgendaEntries)
-        {
-            <p>@entry.Subject - @entry.StartTime - @entry.Duration</p>
-        }
-    }
-    else
-    {
-        <p>No hay entradas de agenda disponibles.</p>
-    }
-</div>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-<div id="agendaEntriesContainer"></div>
+    <script>
 
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
-<script>
-
-    document.getElementById("x").addEventListener("click", function () {
-        $('#titulo').val("");
-        $('#myModal').modal('hide');
-    });
-    document.getElementById("cerrarBtn").addEventListener("click", function () {
-        $('#titulo').val("");
-        $('#myModal').modal('hide');
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        var calendarEl = document.getElementById('calendar');
-        // json con los eventos existentes en la base de datos, GetAgendaEvents es el método que se encuentra en el controlador
-        var eventos = '/Agendas/GetAgendaEvents';
-
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            nowIndicator: true,
-            headerToolbar: {
-                left: 'prev,next,today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            },
-            buttonText: {
-                today: 'Hoy',
-                month: 'Mes',
-                week: 'Semana',
-                day: 'Día'
-            },
-            navLinks: true,
-            dateClick: function (info) {
-                // Acciones cuando se hace clic en una fecha
-                $('#fechaSeleccionada').text('Fecha: ' + info.dateStr);
-                $('#myModal').modal('show');
-            },
-            eventClick: function (info) {
-                // Acciones cuando se hace clic en un evento
-                $('#titulo').val("");
-                $('#titulo').val(info.event.title);
-                $('#myModal').modal('show');
-            },
-            editable: false,
-            selectable: false,
-            selectMirror: false,
-            dayMaxEvents: true,
-
-            eventDidMount: function (info) {
-                // Acciones cuando se monta un evento
-                //alert(info.event.title);
-            },
-            // events: eventos
-
-            events: '/Agendas/GetAgendaEvents',
-            eventAfterAllRender: function () {
-                 // Load the partial view after rendering the calendar
-                $.get('/Agendas/GetAgendaEvents', function (data) {
-                     $('#agendaEntriesContainer').html(data.PartialView);
-                });
-            }
-            
+        document.getElementById("x").addEventListener("click", function () {
+            $('#titulo').val("");
+            $('#myModal').modal('hide');
+        });
+        document.getElementById("cerrarBtn").addEventListener("click", function () {
+            $('#titulo').val("");
+            $('#myModal').modal('hide');
         });
 
-        calendar.render();
-    });
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            // json con los eventos existentes en la base de datos, GetAgendaEvents es el método que se encuentra en el controlador
+            var eventos = '/Agendas/GetAgendaEvents';
 
-</script>
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                nowIndicator: true,
+                headerToolbar: {
+                    left: 'prev,next,today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                buttonText: {
+                    today: 'Hoy',
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día'
+                },
+                navLinks: true,
+                dateClick: function (info) {
+                    // Acciones cuando se hace clic en una fecha
+                    $('#fechaSeleccionada').text('Fecha: ' + info.dateStr);
+                    $('#myModal').modal('show');
+                },
+                eventClick: function (info) {
+                    // Acciones cuando se hace clic en un evento
+                    $('#titulo').val("");
+                    $('#titulo').val(info.event.title);
+                    $('#myModal').modal('show');
+                },
+                editable: false,
+                selectable: false,
+                selectMirror: false,
+                dayMaxEvents: true,
+
+                eventDidMount: function (info) {
+                    // Acciones cuando se monta un evento
+                    //alert(info.event.title);
+                },
+                // events: eventos
+
+                events: '/Agendas/GetAgendaEvents',
+                eventAfterAllRender: function () {
+                     // Load the partial view after rendering the calendar
+                    $.get('/Agendas/GetAgendaEvents', function (data) {
+                         $('#agendaEntriesContainer').html(data.PartialView);
+                    });
+                }
+            
+            });
+
+            calendar.render();
+        });
+
+    </script>
+}
+else
+{
+    <div class="alert alert-danger">Acceso ddenegado.</div>
+}

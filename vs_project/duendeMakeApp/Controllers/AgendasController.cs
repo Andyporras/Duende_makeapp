@@ -63,13 +63,74 @@ namespace duendeMakeApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public IActionResult AgregarEntrada(string asunto, int duracion,DateTime date)
+        public IActionResult AgregarEntrada(string detalle, int duracion,DateTime fecha)
         {
-           
+            // Agregar la entrada a la base de datos
+            using (SqlConnection conexion = new SqlConnection(concStr))
+            {
+                conexion.Open();
+                SqlCommand cmd = new SqlCommand("INSERT INTO Agenda (UsuarioID, Detalle, FechaInicio, DuracionHoras, TipoEntrada) VALUES (@UsuarioID, @Detalle, @FechaInicio, @DuracionHoras, @TipoEntrada)", conexion);
+                cmd.Parameters.AddWithValue("@UsuarioID", _usuario?.UsuarioId);
+                cmd.Parameters.AddWithValue("@Detalle", detalle);
+                cmd.Parameters.AddWithValue("@FechaInicio", fecha);
+                cmd.Parameters.AddWithValue("@DuracionHoras", duracion);
+                cmd.Parameters.AddWithValue("@TipoEntrada", "entregar pedido");
+                cmd.ExecuteNonQuery();
+            }
             // Redireccionar o devolver una vista según sea necesario
             return RedirectToAction("Index");
         }
-    
+
+        public List<IAgendaEntry> GetAgendas ()
+        {
+            List<IAgendaEntry> agendaEntries = new List<IAgendaEntry>();
+
+            using (SqlConnection conexion = new SqlConnection(concStr))
+            {
+                conexion.Open();
+                SqlCommand cmd = new SqlCommand("SELECT * FROM Agenda", conexion);
+
+                using (var dr = cmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        DateTime? fechaInicio = null;
+
+                        try
+                        {
+                            if (dr["FechaInicio"] != DBNull.Value)
+                            {
+                                fechaInicio = (DateTime?)dr["FechaInicio"];
+                            }
+                        }
+                        catch (InvalidCastException)
+                        {
+                            fechaInicio = null;
+                        }
+                        AgendaEntry agenda = new AgendaEntry()
+                        {
+                            AgendaID = (int)dr["AgendaID"],
+                            UsuarioID = (int)dr["UsuarioID"],
+                            Detalle = (string)dr["Detalle"],
+                            FechaInicio = fechaInicio,
+                            DuracionHoras = (int)dr["DuracionHoras"]
+                        };
+                        if ((string)dr["TipoEntrada"] == "entregar pedido")
+                        {
+                            agendaEntries.Add(new EntregarPedidoDecorator(agenda));
+                        }
+                        if ((string)dr["TipoEntrada"] == "revisar inventario")
+                        {
+                            agendaEntries.Add(new RevisarInventarioDecorator(agenda));
+                        }
+                    }
+                }
+            }
+
+            return agendaEntries;
+        }
+
+
         public ActionResult GetAgendaEvents()
         {
             List<IAgendaEntry> agendaEvents = new List<IAgendaEntry>();
@@ -96,47 +157,63 @@ namespace duendeMakeApp.Controllers
                         {
                             fechaInicio = null;
                         }
-
-                        agendaEvents.Add(new AgendaEntry()
+                        AgendaEntry agenda = new AgendaEntry()
                         {
                             AgendaID = (int)dr["AgendaID"],
-                            UsuarioID = (int)dr["UsuarioID"],
-                            Asunto = (string)dr["Asunto"],
+                            //UsuarioID = (int)dr["UsuarioID"],
+                            Detalle = (string)dr["Detalle"],
                             FechaInicio = fechaInicio,
-                            DuracionMinutos = (int)dr["DuracionMinutos"]
-                            // Agrega otras propiedades según sea necesario
-                        });
+                            DuracionHoras = (int)dr["DuracionHoras"]
+                        };
+                        if ((string)dr["TipoEntrada"] == "entregar pedido")
+                        {
+                            agendaEvents.Add(new EntregarPedidoDecorator(agenda));
+                        }
+                        if ((string)dr["TipoEntrada"] == "revisar inventario")
+                        {
+                            agendaEvents.Add(new RevisarInventarioDecorator(agenda));
+                        }
                     }
                 }
             }
 
-            //return Json(agendaEvents);
-            //var jsonData = new { Events = agendaEvents, PartialView = PartialView("_AgendaPartialView", agendaEvents).ToString() };
-            // cambiar el formato 
             return formatoJsonEvent(agendaEvents);
         }
 
         public ActionResult formatoJsonEvent(List<IAgendaEntry> agendaEvents)
         {
             List<AgendaEvent> agendaEvent = new List<AgendaEvent>();
+
             foreach (var item in agendaEvents)
             {
-                agendaEvent.Add(new AgendaEvent()
+                if (item is IAgendaDecorator agendaDecorator)
                 {
-                    id = item.AgendaID,
-                    title = item.Asunto,
-                    start = item.FechaInicio,
-                    end = item.FechaInicio?.AddMinutes(item.DuracionMinutos ?? 0),
-                    allDay = false
-                });
+                    agendaEvent.Add(new AgendaEvent()
+                    {
+                        id = item.AgendaID ?? 0,
+                        title = agendaDecorator.DecoratorType,
+                        detalle = item.Detalle,
+                        start = item.FechaInicio,
+                        end = item.FechaInicio?.AddHours(item.DuracionHoras ?? 0),
+                        allDay = false
+                    });
+                }
+                else
+                {
+                    
+                }
             }
+
             return Json(agendaEvent);
         }
+
+
 
         private class AgendaEvent
         {
             public int? id { get; set; }
             public string? title { get; set; }
+            public string? detalle { get; set; }
             public DateTime? start { get; set; }
             public DateTime? end { get; set; }
             public bool? allDay { get; set; }   

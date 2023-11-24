@@ -4,9 +4,10 @@
     {
         int? AgendaID { get; set; }
         int? UsuarioID { get; set; }
-        string? Asunto { get; set; }
+        string? Detalle { get; set; }
         DateTime? FechaInicio { get; set; }
-        int? DuracionMinutos { get; set; }
+        int? DuracionHoras { get; set; }
     }
 }
+
 

@@ -252,7 +252,6 @@ namespace duendeMakeApp.Controllers
             return Json(agendaEvent);
         }
 
-
         private class AgendaEvent
         {
             public int? id { get; set; }
